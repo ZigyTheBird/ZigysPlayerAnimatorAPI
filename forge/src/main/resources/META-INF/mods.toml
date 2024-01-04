@@ -1,0 +1,36 @@
+modLoader = "javafml"
+loaderVersion = "[47,)"
+#issueTrackerURL = ""
+license = "MIT License"
+
+[[mods]]
+modId = "playeranimatorapi"
+version = "${version}"
+displayName = "Zigy's Player Animator API"
+authors = "Zigy"
+description = '''
+API for playing player animations from server side.
+'''
+
+logoFile = "icon.png"
+
+[[dependencies.playeranimatorapi]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.playeranimatorapi]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.playeranimatorapi]]
+modId = "playeranimator"
+mandatory = true
+versionRange = "[${player_anim_version},)"
+ordering = "AFTER"
+side = "CLIENT"

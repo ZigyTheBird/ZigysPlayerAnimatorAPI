@@ -1,0 +1,129 @@
+package zigy.playeranimatorapi.playeranims;
+
+import dev.kosmx.playerAnim.api.TransformType;
+import dev.kosmx.playerAnim.api.layered.IAnimation;
+import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
+import dev.kosmx.playerAnim.api.layered.ModifierLayer;
+import dev.kosmx.playerAnim.api.layered.modifier.AbstractFadeModifier;
+import dev.kosmx.playerAnim.api.layered.modifier.AbstractModifier;
+import dev.kosmx.playerAnim.core.util.Vec3f;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import zigy.playeranimatorapi.data.PlayerAnimationData;
+
+import static net.minecraft.client.renderer.entity.LivingEntityRenderer.isEntityUpsideDown;
+
+@Environment(EnvType.CLIENT)
+public class CustomModifierLayer<T extends IAnimation> extends ModifierLayer implements IAnimation {
+
+    public int tick;
+    public int modifierCount = 0;
+    public boolean hasModifier;
+
+    public float speedModifier;
+    public PlayerAnimationData data;
+    public ResourceLocation currentAnim;
+    public KeyframeAnimationPlayer animPlayer;
+    public AbstractClientPlayer player;
+
+    public void setAnimationData(PlayerAnimationData data) {
+        this.data = data;
+    }
+
+    public void setSpeedModifier(float speed) {
+        this.speedModifier = speed;
+    }
+
+    public void setAnimPlayer(KeyframeAnimationPlayer animPlayer) {
+        this.animPlayer = animPlayer;
+    }
+
+    public void setCurrentAnimationLocation(ResourceLocation animation) {
+        this.currentAnim = animation;
+    }
+
+    public CustomModifierLayer(@Nullable T animation, AbstractClientPlayer player, AbstractModifier... modifiers) {
+        hasModifier = false;
+        this.player = player;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        tick += 1;
+    }
+
+    public void addModifier(@NotNull AbstractModifier modifier) {
+        this.addModifier(modifier, modifierCount);
+        modifierCount += 1;
+        hasModifier = true;
+    }
+
+    public void removeAllModifiers() {
+        for (int i = modifierCount - 1; i >= 0; i--) {
+            this.removeModifier(i);
+        }
+        modifierCount = 0;
+        hasModifier = false;
+    }
+
+    public void replaceAnimationWithFade(AbstractFadeModifier fadeModifier, KeyframeAnimationPlayer newAnimation) {
+        tick = 0;
+        setAnimPlayer(newAnimation);
+        replaceAnimationWithFade(fadeModifier, newAnimation, false);
+    }
+
+    public void replaceAnimation(KeyframeAnimationPlayer newAnimation) {
+        tick = 0;
+        setAnimPlayer(newAnimation);
+        this.setAnimation(newAnimation);
+        this.linkModifiers();
+    }
+
+    @Override
+    public @NotNull Vec3f get3DTransform(@NotNull String modelName, @NotNull TransformType type, float tickDelta, @NotNull Vec3f value0) {
+        Vec3f transform = super.get3DTransform(modelName, type, tickDelta, value0);
+        if (type == TransformType.ROTATION && modelName.equals("body")) {
+            float f = Mth.rotLerp(tickDelta, player.yBodyRotO, player.yBodyRot);
+            float g = Mth.rotLerp(tickDelta, player.yHeadRotO, player.yHeadRot);
+            float h = g - f;
+            float i;
+            if (player.isPassenger() && player.getVehicle() instanceof LivingEntity) {
+                LivingEntity livingEntity = (LivingEntity) player.getVehicle();
+                f = Mth.rotLerp(tickDelta, livingEntity.yBodyRotO, livingEntity.yBodyRot);
+                h = g - f;
+                i = Mth.wrapDegrees(h);
+                if (i < -85.0F) {
+                    i = -85.0F;
+                }
+
+                if (i >= 85.0F) {
+                    i = 85.0F;
+                }
+
+                f = g - i;
+                if (i * i > 2500.0F) {
+                    f += i * 0.2F;
+                }
+
+                h = g - f;
+            }
+
+            if (isEntityUpsideDown(player)) {
+                h *= -1.0F;
+            }
+            transform = transform.add(new Vec3f(0, (float) (-h * 0.017453292), 0));
+        }
+        return transform;
+    }
+
+    public CustomModifierLayer(AbstractClientPlayer player) {
+        this((T) null, player);
+    }
+}

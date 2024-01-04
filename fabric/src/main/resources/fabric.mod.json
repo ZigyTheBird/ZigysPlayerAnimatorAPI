@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "playeranimatorapi",
+  "version": "${version}",
+  "name": "Zigy's Player Animator API",
+  "description": "API for playing player animations from server side.",
+  "authors": [
+    "Zigy"
+  ],
+  "contact": {
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "MIT License",
+  "icon": "assets/playeranimatorapi/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "zigy.playeranimatorapi.fabric.PlayerAnimatorAPIModFabric"
+    ],
+    "client": [
+      "zigy.playeranimatorapi.fabric.PlayerAnimatorAPIClientFabric"
+    ]
+  },
+  "mixins": [
+    "playeranimatorapi.mixins.json",
+    "playeranimatorapi-common.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": "${fabric_loader_version}",
+    "minecraft": ">=1.20",
+    "player-animator": ">=${player_anim_version}"
+  }
+}

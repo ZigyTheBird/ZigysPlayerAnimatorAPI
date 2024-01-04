@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "zigy.playeranimatorapi.forge.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "client": [
+    "EmoteCraftClientInitMixinForge"
+  ],
+  "mixins": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

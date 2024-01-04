@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "zigy.playeranimatorapi.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "client": [],
+  "mixins": [
+    "PlayerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
