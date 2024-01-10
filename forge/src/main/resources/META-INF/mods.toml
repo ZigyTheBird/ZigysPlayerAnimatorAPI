@@ -1,6 +1,6 @@
 modLoader = "javafml"
 loaderVersion = "[47,)"
-#issueTrackerURL = ""
+issueTrackerURL = "https://github.com/ZigyTheBird/ZigysPlayerAnimatorAPI/issues"
 license = "MIT License"
 
 [[mods]]

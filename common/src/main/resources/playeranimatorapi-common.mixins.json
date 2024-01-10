@@ -3,7 +3,10 @@
   "package": "zigy.playeranimatorapi.mixin",
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
-  "client": [],
+  "client": [
+    "LivingEntityRendererMixin",
+    "ModelPartMixin"
+  ],
   "mixins": [
     "PlayerMixin"
   ],

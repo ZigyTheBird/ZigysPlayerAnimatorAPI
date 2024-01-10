@@ -22,6 +22,8 @@ import static net.minecraft.client.renderer.entity.LivingEntityRenderer.isEntity
 @Environment(EnvType.CLIENT)
 public class CustomModifierLayer<T extends IAnimation> extends ModifierLayer implements IAnimation {
 
+    public static final Vec3f voidVector = new Vec3f(0, -10000000, 0);
+
     public int tick;
     public int modifierCount = 0;
     public boolean hasModifier;
@@ -120,10 +122,13 @@ public class CustomModifierLayer<T extends IAnimation> extends ModifierLayer imp
             }
             transform = transform.add(new Vec3f(0, (float) (-h * 0.017453292), 0));
         }
+        if (type == TransformType.POSITION && ((modelName.equals("leftItem") && !this.data.parts().leftItem.isVisible) || (modelName.equals("rightItem") && !this.data.parts().rightItem.isVisible))) {
+            transform = transform.add(voidVector);
+        }
         return transform;
     }
 
     public CustomModifierLayer(AbstractClientPlayer player) {
-        this((T) null, player);
+        this(null, player);
     }
 }

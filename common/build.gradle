@@ -9,6 +9,7 @@ loom {
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
 
+    modImplementation "mod.azure.azurelib:azurelib-fabric-$rootProject.minecraft_version:$rootProject.azurelib_version"
     modImplementation "dev.kosmx.player-anim:player-animation-lib-fabric:${rootProject.player_anim_version}"
 
     modCompileOnly "mezz.jei:jei-$rootProject.minecraft_version-common-api:$rootProject.jei_version"

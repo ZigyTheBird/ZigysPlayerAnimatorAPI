@@ -20,20 +20,27 @@ public class PlayerPart {
         list.add(part.roll);
         list.add(part.bend);
         list.add(part.bendDirection);
+        list.add(part.isVisible);
         return list;
     }
 
     public static DataResult<PlayerPart> readFromList(List<Boolean> list) {
         PlayerPart part = new PlayerPart();
-        part.setX(list.get(0));
-        part.setY(list.get(1));
-        part.setZ(list.get(2));
-        part.setPitch(list.get(3));
-        part.setYaw(list.get(4));
-        part.setRoll(list.get(5));
-        part.setBend(list.get(6));
-        part.setBendDirection(list.get(7));
-        return DataResult.success(part);
+        try {
+            part.setX(list.get(0));
+            part.setY(list.get(1));
+            part.setZ(list.get(2));
+            part.setPitch(list.get(3));
+            part.setYaw(list.get(4));
+            part.setRoll(list.get(5));
+            part.setBend(list.get(6));
+            part.setBendDirection(list.get(7));
+            part.isVisible(list.get(8));
+            return DataResult.success(part);
+        }
+        catch (IndexOutOfBoundsException e) {
+            return DataResult.success(part);
+        }
     }
 
     public boolean x = true;
@@ -44,33 +51,9 @@ public class PlayerPart {
     public boolean roll = true;
     public boolean bend = true;
     public boolean bendDirection = true;
+    public boolean isVisible = true;
 
     public PlayerPart() {}
-
-    public void fromInt(int n) {
-        if (n > 255) {
-            n -= 256;
-        }
-        if (n < 0) {
-            this.setEnabled(true);
-            return;
-        }
-
-        String binary2 = String.format("%8s", Integer.toBinaryString(n));
-        List<Boolean> list = new ArrayList<>();
-        for (int i = 0; i < binary2.length(); i++) {
-            list.add(binary2.charAt(i) == '1');
-        }
-
-        this.setX(list.get(0));
-        this.setY(list.get(1));
-        this.setZ(list.get(2));
-        this.setPitch(list.get(3));
-        this.setRoll(list.get(4));
-        this.setYaw(list.get(5));
-        this.setBend(list.get(6));
-        this.setBendDirection(list.get(7));
-    }
 
     public void setEnabled(boolean enabled) {
         x = enabled;
@@ -113,5 +96,9 @@ public class PlayerPart {
 
     public void setBendDirection(boolean bendDirection) {
         this.bendDirection = bendDirection;
+    }
+
+    public void isVisible(boolean isVisible) {
+        this.isVisible = isVisible;
     }
 }

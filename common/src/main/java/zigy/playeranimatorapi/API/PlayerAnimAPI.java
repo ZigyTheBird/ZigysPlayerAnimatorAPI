@@ -33,14 +33,13 @@ public class PlayerAnimAPI {
 
     //For emotes.
     public static void playPlayerAnim(ServerLevel level, Player player, ResourceLocation animationID) {
-        playPlayerAnim(level, player, animationID, null, null, PlayerParts.allEnabled,
+        playPlayerAnim(level, player, animationID, PlayerParts.allEnabled,
                 -1, -1, -1, false, false, false);
     }
 
     //For gameplay like player animations for items.
-    public static void playPlayerAnim(ServerLevel level, Player player, ResourceLocation normalAnimationID, ResourceLocation crouchedAnimationID,
-                                      ResourceLocation swimmingAnimationID, PlayerParts parts, boolean firstPersonEnabled) {
-        playPlayerAnim(level, player, normalAnimationID, crouchedAnimationID, swimmingAnimationID, parts, -1,
+    public static void playPlayerAnim(ServerLevel level, Player player, ResourceLocation animationID, PlayerParts parts, boolean firstPersonEnabled) {
+        playPlayerAnim(level, player, animationID, parts, -1,
                 -1, -1, firstPersonEnabled, true, true);
     }
 
@@ -53,12 +52,11 @@ public class PlayerAnimAPI {
     }
 
     //Play player animations with full customizability.
-    public static void playPlayerAnim(ServerLevel level, Player player, ResourceLocation normalAnimationID, ResourceLocation crouchedAnimationID,
-                                      ResourceLocation swimmingAnimationID, PlayerParts parts, int fadeLength, float desiredLength,
+    public static void playPlayerAnim(ServerLevel level, Player player, ResourceLocation animationID, PlayerParts parts, int fadeLength, float desiredLength,
                                       int easeID, boolean firstPersonEnabled, boolean shouldMirror, boolean shouldFollowPlayerView) {
 
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-        PlayerAnimationData data = new PlayerAnimationData(player.getUUID(), normalAnimationID, crouchedAnimationID, swimmingAnimationID,
+        PlayerAnimationData data = new PlayerAnimationData(player.getUUID(), animationID,
                 parts, fadeLength, desiredLength, easeID, firstPersonEnabled, shouldMirror, shouldFollowPlayerView);
 
         buf.writeUtf(gson.toJson(PlayerAnimationData.CODEC.encodeStart(JsonOps.INSTANCE, data).getOrThrow(true, logger::warn)));

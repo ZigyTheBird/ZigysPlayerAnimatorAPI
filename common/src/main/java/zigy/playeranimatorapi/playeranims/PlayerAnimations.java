@@ -3,7 +3,6 @@ package zigy.playeranimatorapi.playeranims;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import dev.kosmx.playerAnim.api.firstPerson.FirstPersonMode;
 import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
@@ -26,6 +25,7 @@ import zigy.playeranimatorapi.PlayerAnimatorAPIMod;
 import zigy.playeranimatorapi.data.PlayerAnimationData;
 import zigy.playeranimatorapi.data.PlayerParts;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -36,6 +36,7 @@ public class PlayerAnimations {
     public static Gson gson = new GsonBuilder().setLenient().serializeNulls().create();
 
     public static Map<ResourceLocation, Float> animLengthsMap;
+    public static List<String> extensions = List.of(new String[]{"crouch", "crawl", "swim"});
 
     public static final ResourceLocation animationLayerId = new ResourceLocation(PlayerAnimatorAPIMod.MOD_ID, "factory");
 
@@ -54,7 +55,7 @@ public class PlayerAnimations {
     public static void stopAnimation(AbstractClientPlayer player, ResourceLocation animationID) {
         CustomModifierLayer animationContainer = (CustomModifierLayer) PlayerAnimationAccess.getPlayerAssociatedData(player).get(animationLayerId);
 
-        if (animationContainer != null && animationContainer.isActive() && animationContainer.data.normalAnimationID() == animationID) {
+        if (animationContainer != null && animationContainer.isActive() && animationContainer.data.animationID().equals(animationID)) {
             animationContainer.animPlayer.stop();
         }
     }
@@ -78,7 +79,31 @@ public class PlayerAnimations {
                                      float desiredLength, int easeID, boolean firstPersonEnabled, boolean shouldMirror, boolean replaceTick) {
         try {
             CustomModifierLayer animationContainer = (CustomModifierLayer) PlayerAnimationAccess.getPlayerAssociatedData(player).get(animationLayerId);
-            if (animationContainer != null && data.normalAnimationID() != null) {
+
+            ResourceLocation normalAnimationID = data.animationID();
+            String[] split = (normalAnimationID.getPath().split("_"));
+
+            if (normalAnimationID.toString().equals("null:null") || extensions.contains(split[split.length -1])) {
+                return;
+            }
+
+            ResourceLocation crouchedAnimationID = data.animationID().withPath(data.animationID().getPath() + "_crouch");
+            ResourceLocation crawlingAnimationID = data.animationID().withPath(data.animationID().getPath() + "_crawl");
+            ResourceLocation swimmingAnimationID = data.animationID().withPath(data.animationID().getPath() + "_swim");
+
+            Map<ResourceLocation, KeyframeAnimation> animations = PlayerAnimationRegistry.getAnimations();
+
+            if (!animations.containsKey(crouchedAnimationID)) {
+                crouchedAnimationID = null;
+            }
+            if (!animations.containsKey(crawlingAnimationID)) {
+                crawlingAnimationID = null;
+            }
+            if (!animations.containsKey(swimmingAnimationID)) {
+                swimmingAnimationID = null;
+            }
+
+            if (animationContainer != null) {
 
                 animationContainer.setAnimationData(data);
 
@@ -86,11 +111,13 @@ public class PlayerAnimations {
                     fadeLength = 0;
                 }
 
-                ResourceLocation animationID = data.normalAnimationID();
-                if (player.isCrouching() && data.crouchedAnimationID() != null) {
-                    animationID = data.crouchedAnimationID();
-                } else if ((player.isVisuallyCrawling() || player.isVisuallySwimming()) && data.crouchedAnimationID() != null) {
-                    animationID = data.swimmingAnimationID();
+                ResourceLocation animationID = normalAnimationID;
+                if (player.isCrouching() && crouchedAnimationID != null) {
+                    animationID = crouchedAnimationID;
+                } else if (player.isVisuallyCrawling() && crawlingAnimationID != null) {
+                    animationID = crawlingAnimationID;
+                } else if (player.isVisuallySwimming() && swimmingAnimationID != null) {
+                    animationID = swimmingAnimationID;
                 }
 
                 animationContainer.setCurrentAnimationLocation(animationID);
@@ -182,14 +209,32 @@ public class PlayerAnimations {
                 leftLeg.bend.setEnabled(parts.leftLeg.bend);
                 leftLeg.bendDirection.setEnabled(parts.leftLeg.bendDirection);
 
+                var rightItem = builder.getPart("rightItem");
+                rightItem.x.setEnabled(parts.rightItem.x);
+                rightItem.y.setEnabled(parts.rightItem.y);
+                rightItem.z.setEnabled(parts.rightItem.z);
+                rightItem.pitch.setEnabled(parts.rightItem.pitch);
+                rightItem.yaw.setEnabled(parts.rightItem.yaw);
+                rightItem.roll.setEnabled(parts.rightItem.roll);
+                rightItem.bend.setEnabled(parts.rightItem.bend);
+                rightItem.bendDirection.setEnabled(parts.rightItem.bendDirection);
+
+                var leftItem = builder.getPart("leftItem");
+                leftItem.x.setEnabled(parts.leftItem.x);
+                leftItem.y.setEnabled(parts.leftItem.y);
+                leftItem.z.setEnabled(parts.leftItem.z);
+                leftItem.pitch.setEnabled(parts.leftItem.pitch);
+                leftItem.yaw.setEnabled(parts.leftItem.yaw);
+                leftItem.roll.setEnabled(parts.leftItem.roll);
+                leftItem.bend.setEnabled(parts.leftItem.bend);
+                leftItem.bendDirection.setEnabled(parts.leftItem.bendDirection);
+
+
                 anim = builder.build();
 
-                FirstPersonMode firstPersonMode;
+                FirstPersonMode firstPersonMode = FirstPersonMode.DISABLED;
                 if (firstPersonEnabled) {
                     firstPersonMode = FirstPersonMode.THIRD_PERSON_MODEL;
-                }
-                else  {
-                    firstPersonMode = FirstPersonMode.DISABLED;
                 }
 
                 if (!replaceTick) {
@@ -201,7 +246,7 @@ public class PlayerAnimations {
                 }
             }
         } catch (NullPointerException e) {
-            logger.warn("Arms & Artillery failed to play player animation: " + e);
+            logger.warn("Player Animator API failed to play player animation: " + e);
         }
     }
 

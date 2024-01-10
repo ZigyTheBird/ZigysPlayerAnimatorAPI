@@ -17,14 +17,13 @@ public class PlayerAnimAPIClient {
 
     //For emotes.
     public static void playPlayerAnim(AbstractClientPlayer player, ResourceLocation animationID) {
-        playPlayerAnim(player, animationID, null, null, PlayerParts.allEnabled,
+        playPlayerAnim(player, animationID, PlayerParts.allEnabled,
                 0, 0, -1, false, false, false, true);
     }
 
     //For gameplay like player animations for items.
-    public static void playPlayerAnim(AbstractClientPlayer player, ResourceLocation normalAnimationID, ResourceLocation crouchedAnimationID,
-                                      ResourceLocation swimmingAnimationID, PlayerParts parts, boolean firstPersonEnabled) {
-        playPlayerAnim(player, normalAnimationID, crouchedAnimationID, swimmingAnimationID, parts, 0,
+    public static void playPlayerAnim(AbstractClientPlayer player, ResourceLocation animationID, PlayerParts parts, boolean firstPersonEnabled) {
+        playPlayerAnim(player, animationID, parts, 0,
                 0, -1, firstPersonEnabled, true, true, true);
     }
 
@@ -34,12 +33,10 @@ public class PlayerAnimAPIClient {
     }
 
     //Play player animations with full customizability.
-    public static void playPlayerAnim(AbstractClientPlayer player, ResourceLocation normalAnimationID, ResourceLocation crouchedAnimationID,
-                                           ResourceLocation swimmingAnimationID, PlayerParts parts, int fadeLength, float desiredLength,
+    public static void playPlayerAnim(AbstractClientPlayer player, ResourceLocation animationID, PlayerParts parts, int fadeLength, float desiredLength,
                                            int easeID, boolean firstPersonEnabled, boolean shouldMirror, boolean shouldFollowPlayerView, boolean replaceTick) {
 
-        PlayerAnimations.playAnimation(player, new PlayerAnimationData(player.getUUID(), normalAnimationID,
-                        crouchedAnimationID, swimmingAnimationID, parts, fadeLength, desiredLength, easeID,
+        PlayerAnimations.playAnimation(player, new PlayerAnimationData(player.getUUID(), animationID, parts, fadeLength, desiredLength, easeID,
                         firstPersonEnabled, shouldMirror, shouldFollowPlayerView), parts, fadeLength, desiredLength,
                         easeID, firstPersonEnabled, shouldMirror, replaceTick);
     }

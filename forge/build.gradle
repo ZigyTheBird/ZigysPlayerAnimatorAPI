@@ -36,6 +36,7 @@ dependencies {
     modCompileOnly "mezz.jei:jei-$rootProject.minecraft_version-forge-api:$rootProject.jei_version"
     modLocalRuntime("mezz.jei:jei-$rootProject.minecraft_version-forge:$rootProject.jei_version") { transitive = false }
 
+    modImplementation "mod.azure.azurelib:azurelib-neo-$rootProject.minecraft_version:$rootProject.azurelib_version"
     modImplementation "dev.kosmx.player-anim:player-animation-lib-forge:${rootProject.player_anim_version}"
 
     modImplementation "curse.maven:emotecraft-forge-403422:4632460"
@@ -44,7 +45,7 @@ dependencies {
 processResources {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     filesMatching("META-INF/mods.toml") {
-        expand "version": rootProject.version, "player_anim_version": rootProject.player_anim_version
+        expand "version": rootProject.version, "player_anim_version": rootProject.player_anim_version, "azurelib_version": rootProject.azurelib_version
     }
 }
 

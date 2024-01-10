@@ -37,16 +37,17 @@ dependencies {
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:$rootProject.rei_version"
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:$rootProject.rei_version"
 
-    modImplementation "curse.maven:emotecraft-397809:4632459"
-
+    modImplementation "mod.azure.azurelib:azurelib-fabric-$rootProject.minecraft_version:$rootProject.azurelib_version"
     modImplementation "dev.kosmx.player-anim:player-animation-lib-fabric:${rootProject.player_anim_version}"
+
+    modImplementation "curse.maven:emotecraft-397809:4632459"
 }
 
 processResources {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     inputs.property "fabric_loader_version", rootProject.fabric_loader_version
     filesMatching("fabric.mod.json") {
-        expand "version": rootProject.version, "player_anim_version": rootProject.player_anim_version, fabric_loader_version: rootProject.fabric_loader_version
+        expand "version": rootProject.version, "player_anim_version": rootProject.player_anim_version, "azurelib_version": rootProject.azurelib_version, fabric_loader_version: rootProject.fabric_loader_version
     }
 }
 

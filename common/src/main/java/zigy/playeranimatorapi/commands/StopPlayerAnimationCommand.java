@@ -21,7 +21,7 @@ public class StopPlayerAnimationCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher){
         dispatcher.register(Commands.literal("stopPlayerAnimation").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
                 .then(Commands.argument("player", EntityArgument.player())
-                        .then(Commands.argument("normalAnimationID", ResourceLocationArgument.id())
+                        .then(Commands.argument("animationID", ResourceLocationArgument.id())
                                 .executes(StopPlayerAnimationCommand::execute))));
     }
 
@@ -29,7 +29,7 @@ public class StopPlayerAnimationCommand {
         try {
             ServerPlayer player = EntityArgument.getPlayer(command, "player");
             PlayerAnimAPI.stopPlayerAnim((ServerLevel) player.level(), player,
-                        ResourceLocationArgument.getId(command, "normalAnimationID"));
+                        ResourceLocationArgument.getId(command, "animationID"));
         } catch(CommandSyntaxException e){
             logger.warn(e);
         }

@@ -13,12 +13,15 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import zigy.playeranimatorapi.API.PlayerAnimAPI;
 import zigy.playeranimatorapi.PlayerAnimatorAPIMod;
 import zigy.playeranimatorapi.data.PlayerAnimationData;
 import zigy.playeranimatorapi.data.PlayerParts;
+
+import java.math.BigInteger;
 
 public class PlayPlayerAnimationCommand {
 
@@ -27,10 +30,8 @@ public class PlayPlayerAnimationCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher){
         dispatcher.register(Commands.literal("playPlayerAnimation").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
                 .then(Commands.argument("player", EntityArgument.player())
-                .then(Commands.argument("normalAnimationID", ResourceLocationArgument.id())
+                .then(Commands.argument("animationID", ResourceLocationArgument.id())
                         .executes(context -> execute(context, false))
-                .then(Commands.argument("crouchedAnimationID", ResourceLocationArgument.id())
-                .then(Commands.argument("swimmingAnimationID", ResourceLocationArgument.id())
                 .then(Commands.argument("playerParts", StringArgumentType.string())
                 .then(Commands.argument("fadeLength", IntegerArgumentType.integer())
                 .then(Commands.argument("desiredLength", FloatArgumentType.floatArg())
@@ -38,7 +39,7 @@ public class PlayPlayerAnimationCommand {
                 .then(Commands.argument("firstPersonEnabled", BoolArgumentType.bool())
                 .then(Commands.argument("shouldMirror", BoolArgumentType.bool())
                 .then(Commands.argument("shouldFollowPlayerView", BoolArgumentType.bool())
-                        .executes(context -> execute(context, true))))))))))))));
+                        .executes(context -> execute(context, true))))))))))));
     }
 
     private static int execute(CommandContext<CommandSourceStack> command, boolean full){
@@ -46,11 +47,10 @@ public class PlayPlayerAnimationCommand {
             if (!full) {
                 ServerPlayer player = EntityArgument.getPlayer(command, "player");
                 PlayerAnimAPI.playPlayerAnim((ServerLevel) player.level(), player,
-                        ResourceLocationArgument.getId(command, "normalAnimationID"));
+                        ResourceLocationArgument.getId(command, "animationID"));
             } else {
                 PlayerAnimationData data = new PlayerAnimationData(EntityArgument.getPlayer(command, "player").getUUID(),
-                        ResourceLocationArgument.getId(command, "normalAnimationID"), ResourceLocationArgument.getId(command, "crouchedAnimationID"),
-                        ResourceLocationArgument.getId(command, "swimmingAnimationID"), PlayerParts.fromInt(playerPartsIntFromString(StringArgumentType.getString(command, "playerParts"))),
+                        ResourceLocationArgument.getId(command, "animationID"), PlayerParts.fromBigInteger(playerPartsIntFromString(StringArgumentType.getString(command, "playerParts"))),
                         IntegerArgumentType.getInteger(command, "fadeLength"), FloatArgumentType.getFloat(command, "desiredLength"),
                         IntegerArgumentType.getInteger(command, "easeID"),BoolArgumentType.getBool(command, "firstPersonEnabled"),
                         BoolArgumentType.getBool(command, "shouldMirror"), BoolArgumentType.getBool(command, "shouldFollowPlayerView"));
@@ -64,24 +64,12 @@ public class PlayPlayerAnimationCommand {
         return 1;
     }
 
-    public static int playerPartsIntFromString(String string) {
-        if (isNumeric(string) && string.length() == 14) {
-            return Integer.parseInt(string);
-        }
-        else {
-            return -1;
-        }
-    }
-
-    public static boolean isNumeric(String strNum) {
-        if (strNum == null) {
-            return false;
-        }
+    public static BigInteger playerPartsIntFromString(String string) {
         try {
-            double d = Double.parseDouble(strNum);
-        } catch (NumberFormatException nfe) {
-            return false;
+            return new BigInteger(Base64.decodeBase64(string));
         }
-        return true;
+        catch (NumberFormatException e) {
+            return new BigInteger(Base64.decodeBase64("axq5j8k4e1uiyz27"));
+        }
     }
 }
