@@ -15,33 +15,33 @@ import zigy.playeranimatorapi.playeranims.PlayerAnimations;
 @Environment(EnvType.CLIENT)
 public class PlayerAnimAPIClient {
 
-    //For emotes.
+    /**For emotes.*/
     public static void playPlayerAnim(AbstractClientPlayer player, ResourceLocation animationID) {
         playPlayerAnim(player, animationID, PlayerParts.allEnabled,
-                0, 0, -1, false, false, false, true);
+                -1, -1, -1, false, false, false, true);
     }
 
-    //For gameplay like player animations for items.
-    public static void playPlayerAnim(AbstractClientPlayer player, ResourceLocation animationID, PlayerParts parts, boolean firstPersonEnabled) {
-        playPlayerAnim(player, animationID, parts, 0,
-                0, -1, firstPersonEnabled, true, true, true);
+    /**For gameplay like player animations for items.*/
+    public static void playPlayerAnim(AbstractClientPlayer player, ResourceLocation animationID, PlayerParts parts, float desiredLength, boolean important) {
+        playPlayerAnim(player, animationID, parts, -1,
+                desiredLength, -1, important, true, true, true);
     }
 
-    //Play player animations with the PlayerAnimationData class.
+    /**Play player animations with the PlayerAnimationData class.*/
     public static void playPlayerAnim(AbstractClientPlayer player, PlayerAnimationData data) {
         PlayerAnimations.playAnimation(player, data);
     }
 
-    //Play player animations with full customizability.
+    /**Play player animations with full customizability.*/
     public static void playPlayerAnim(AbstractClientPlayer player, ResourceLocation animationID, PlayerParts parts, int fadeLength, float desiredLength,
-                                           int easeID, boolean firstPersonEnabled, boolean shouldMirror, boolean shouldFollowPlayerView, boolean replaceTick) {
+                                      int easeID, boolean firstPersonEnabled, boolean shouldMirror, boolean important, boolean replaceTick) {
 
         PlayerAnimations.playAnimation(player, new PlayerAnimationData(player.getUUID(), animationID, parts, fadeLength, desiredLength, easeID,
-                        firstPersonEnabled, shouldMirror, shouldFollowPlayerView), parts, fadeLength, desiredLength,
-                        easeID, firstPersonEnabled, shouldMirror, replaceTick);
+                        firstPersonEnabled, shouldMirror, important), parts, fadeLength, desiredLength,
+                easeID, firstPersonEnabled, shouldMirror, replaceTick);
     }
 
-    //Stop a player animation
+    /**Stop a player animation*/
     public static void stopPlayerAnim(AbstractClientPlayer player, ResourceLocation animationID) {
         PlayerAnimations.stopAnimation(player, animationID);
     }

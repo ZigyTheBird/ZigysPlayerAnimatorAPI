@@ -13,7 +13,7 @@ public class ModEvents {
     public class ModEventListener {
 
         @SubscribeEvent
-        public static void registerCommands(RegisterCommandsEvent event){
+        public static void registerCommands(RegisterCommandsEvent event) {
             PlayPlayerAnimationCommand.register(event.getDispatcher());
             StopPlayerAnimationCommand.register(event.getDispatcher());
         }

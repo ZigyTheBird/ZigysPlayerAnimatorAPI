@@ -10,10 +10,12 @@ import java.util.List;
 import java.util.UUID;
 
 public record PlayerAnimationData(UUID playerUUID, ResourceLocation animationID, PlayerParts parts, int fadeLength,
-                                  float desiredLength, int easeID, boolean firstPersonEnabled, boolean shouldMirror, boolean shouldFollowPlayerView) {
+                                  float desiredLength, int easeID, boolean firstPersonEnabled, boolean shouldMirror,
+                                  boolean important) {
 
     public static final Codec<UUID> UUID_CODEC = Codec.list(Codec.LONG).comapFlatMap(PlayerAnimationData::readUUID, PlayerAnimationData::writeUUID).stable();
-        public static final Codec<ResourceLocation> RESOURCE_LOCATION_CODEC = Codec.STRING.comapFlatMap(ResourceLocation::read, PlayerAnimationData::resourceLocationToString).stable();;
+    public static final Codec<ResourceLocation> RESOURCE_LOCATION_CODEC = Codec.STRING.comapFlatMap(ResourceLocation::read, PlayerAnimationData::resourceLocationToString).stable();
+    ;
 
     public static DataResult<UUID> readUUID(List<Long> input) {
         return DataResult.success(new UUID(input.get(0), input.get(1)));
@@ -43,6 +45,6 @@ public record PlayerAnimationData(UUID playerUUID, ResourceLocation animationID,
             Codec.INT.fieldOf("easeID").forGetter(PlayerAnimationData::easeID),
             Codec.BOOL.fieldOf("firstPersonEnabled").forGetter(PlayerAnimationData::firstPersonEnabled),
             Codec.BOOL.fieldOf("shouldMirror").forGetter(PlayerAnimationData::shouldMirror),
-            Codec.BOOL.fieldOf("shouldFollowPlayerView").forGetter(PlayerAnimationData::shouldFollowPlayerView)
-            ).apply(playerAnimationDataInstance, PlayerAnimationData::new));
+            Codec.BOOL.fieldOf("important").forGetter(PlayerAnimationData::important)
+    ).apply(playerAnimationDataInstance, PlayerAnimationData::new));
 }

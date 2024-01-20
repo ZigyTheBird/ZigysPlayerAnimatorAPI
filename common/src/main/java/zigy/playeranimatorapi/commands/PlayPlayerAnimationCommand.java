@@ -27,22 +27,22 @@ public class PlayPlayerAnimationCommand {
 
     private static final Logger logger = LogManager.getLogger(PlayerAnimatorAPIMod.class);
 
-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher){
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("playPlayerAnimation").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
                 .then(Commands.argument("player", EntityArgument.player())
-                .then(Commands.argument("animationID", ResourceLocationArgument.id())
-                        .executes(context -> execute(context, false))
-                .then(Commands.argument("playerParts", StringArgumentType.string())
-                .then(Commands.argument("fadeLength", IntegerArgumentType.integer())
-                .then(Commands.argument("desiredLength", FloatArgumentType.floatArg())
-                .then(Commands.argument("easeID", IntegerArgumentType.integer())
-                .then(Commands.argument("firstPersonEnabled", BoolArgumentType.bool())
-                .then(Commands.argument("shouldMirror", BoolArgumentType.bool())
-                .then(Commands.argument("shouldFollowPlayerView", BoolArgumentType.bool())
-                        .executes(context -> execute(context, true))))))))))));
+                        .then(Commands.argument("animationID", ResourceLocationArgument.id())
+                                .executes(context -> execute(context, false))
+                                .then(Commands.argument("playerParts", StringArgumentType.string())
+                                        .then(Commands.argument("fadeLength", IntegerArgumentType.integer())
+                                                .then(Commands.argument("desiredLength", FloatArgumentType.floatArg())
+                                                        .then(Commands.argument("easeID", IntegerArgumentType.integer())
+                                                                .then(Commands.argument("firstPersonEnabled", BoolArgumentType.bool())
+                                                                        .then(Commands.argument("shouldMirror", BoolArgumentType.bool())
+                                                                                .then(Commands.argument("important", BoolArgumentType.bool())
+                                                                                        .executes(context -> execute(context, true))))))))))));
     }
 
-    private static int execute(CommandContext<CommandSourceStack> command, boolean full){
+    private static int execute(CommandContext<CommandSourceStack> command, boolean full) {
         try {
             if (!full) {
                 ServerPlayer player = EntityArgument.getPlayer(command, "player");
@@ -52,12 +52,12 @@ public class PlayPlayerAnimationCommand {
                 PlayerAnimationData data = new PlayerAnimationData(EntityArgument.getPlayer(command, "player").getUUID(),
                         ResourceLocationArgument.getId(command, "animationID"), PlayerParts.fromBigInteger(playerPartsIntFromString(StringArgumentType.getString(command, "playerParts"))),
                         IntegerArgumentType.getInteger(command, "fadeLength"), FloatArgumentType.getFloat(command, "desiredLength"),
-                        IntegerArgumentType.getInteger(command, "easeID"),BoolArgumentType.getBool(command, "firstPersonEnabled"),
-                        BoolArgumentType.getBool(command, "shouldMirror"), BoolArgumentType.getBool(command, "shouldFollowPlayerView"));
+                        IntegerArgumentType.getInteger(command, "easeID"), BoolArgumentType.getBool(command, "firstPersonEnabled"),
+                        BoolArgumentType.getBool(command, "shouldMirror"), BoolArgumentType.getBool(command, "important"));
 
                 PlayerAnimAPI.playPlayerAnim(command.getSource().getLevel(), EntityArgument.getPlayer(command, "player"), data);
             }
-        } catch(CommandSyntaxException e){
+        } catch (CommandSyntaxException e) {
             logger.warn(e);
         }
 
@@ -67,8 +67,7 @@ public class PlayPlayerAnimationCommand {
     public static BigInteger playerPartsIntFromString(String string) {
         try {
             return new BigInteger(Base64.decodeBase64(string));
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return new BigInteger(Base64.decodeBase64("axq5j8k4e1uiyz27"));
         }
     }

@@ -8,12 +8,7 @@ architectury {
 }
 
 loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
-
     forge {
-        convertAccessWideners = true
-        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
-
         mixinConfig "playeranimatorapi-common.mixins.json"
         mixinConfig "playeranimatorapi.mixins.json"
     }
@@ -40,12 +35,16 @@ dependencies {
     modImplementation "dev.kosmx.player-anim:player-animation-lib-forge:${rootProject.player_anim_version}"
 
     modImplementation "curse.maven:emotecraft-forge-403422:4632460"
+
+    implementation "org.tomlj:tomlj:1.1.1"
+    forgeRuntimeLibrary "org.tomlj:tomlj:1.1.1"
+    include "org.tomlj:tomlj:1.1.1"
 }
 
 processResources {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     filesMatching("META-INF/mods.toml") {
-        expand "version": rootProject.version, "player_anim_version": rootProject.player_anim_version, "azurelib_version": rootProject.azurelib_version
+        expand "version": rootProject.version, "player_anim_version": rootProject.player_anim_version
     }
 }
 

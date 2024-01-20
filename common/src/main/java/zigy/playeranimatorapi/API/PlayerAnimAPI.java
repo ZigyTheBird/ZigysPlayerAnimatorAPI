@@ -4,8 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.serialization.JsonOps;
 import io.netty.buffer.Unpooled;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -31,19 +29,19 @@ public class PlayerAnimAPI {
 
     public static Gson gson = new GsonBuilder().setLenient().serializeNulls().create();
 
-    //For emotes.
+    /**For emotes.*/
     public static void playPlayerAnim(ServerLevel level, Player player, ResourceLocation animationID) {
         playPlayerAnim(level, player, animationID, PlayerParts.allEnabled,
                 -1, -1, -1, false, false, false);
     }
 
-    //For gameplay like player animations for items.
-    public static void playPlayerAnim(ServerLevel level, Player player, ResourceLocation animationID, PlayerParts parts, boolean firstPersonEnabled) {
+    /**For gameplay related stuff like player animations for items.*/
+    public static void playPlayerAnim(ServerLevel level, Player player, ResourceLocation animationID, PlayerParts parts, float desiredLength, boolean important) {
         playPlayerAnim(level, player, animationID, parts, -1,
-                -1, -1, firstPersonEnabled, true, true);
+                desiredLength, -1, false, true, important);
     }
 
-    //Play player animations with the PlayerAnimationData class.
+    /**Play player animations with the PlayerAnimationData class.*/
     public static void playPlayerAnim(ServerLevel level, Player player, PlayerAnimationData data) {
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
 
@@ -51,19 +49,19 @@ public class PlayerAnimAPI {
         NetworkManager.sendToPlayers(CommonPlayerLookup.tracking(level, player.chunkPosition()), playerAnimPacket, buf);
     }
 
-    //Play player animations with full customizability.
+    /**Play player animations with full customizability.*/
     public static void playPlayerAnim(ServerLevel level, Player player, ResourceLocation animationID, PlayerParts parts, int fadeLength, float desiredLength,
-                                      int easeID, boolean firstPersonEnabled, boolean shouldMirror, boolean shouldFollowPlayerView) {
+                                      int easeID, boolean firstPersonEnabled, boolean shouldMirror, boolean important) {
 
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         PlayerAnimationData data = new PlayerAnimationData(player.getUUID(), animationID,
-                parts, fadeLength, desiredLength, easeID, firstPersonEnabled, shouldMirror, shouldFollowPlayerView);
+                parts, fadeLength, desiredLength, easeID, firstPersonEnabled, shouldMirror, important);
 
         buf.writeUtf(gson.toJson(PlayerAnimationData.CODEC.encodeStart(JsonOps.INSTANCE, data).getOrThrow(true, logger::warn)));
         NetworkManager.sendToPlayers(CommonPlayerLookup.tracking(level, player.chunkPosition()), playerAnimPacket, buf);
     }
 
-    //Stop a player animation
+    /**Stop a player animation*/
     public static void stopPlayerAnim(ServerLevel level, Player player, ResourceLocation animationID) {
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         buf.writeUUID(player.getUUID());

@@ -20,8 +20,7 @@ public class NetworkManagerImpl {
         for (ServerPlayer player : players) {
             if (packet.equals(playerAnimPacket)) {
                 PlayerAPIPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new PlayerAnimPacketS2C(buf));
-            }
-            else if (packet.equals(playerAnimStopPacket)) {
+            } else if (packet.equals(playerAnimStopPacket)) {
                 PlayerAPIPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new PlayerAnimStopPacketS2C(buf));
             }
         }

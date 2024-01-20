@@ -5,23 +5,37 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import zigy.playeranimatorapi.azure.PlayerAnimationModel;
+import zigy.playeranimatorapi.azure.PlayerAnimationRenderer;
 import zigy.playeranimatorapi.data.PlayerParts;
 import zigy.playeranimatorapi.playeranims.CustomModifierLayer;
 import zigy.playeranimatorapi.playeranims.PlayerAnimations;
 
 @Mixin(LivingEntityRenderer.class)
-public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extends EntityModel<T>> {
+public class LivingEntityRendererAzureMixin<T extends LivingEntity, M extends EntityModel<T>> {
+
+    @Unique
+    private static PlayerAnimationRenderer animationRenderer;
 
     @Shadow
     protected M model;
+
+    @Inject(method = "<init>", at = @At("TAIL"))
+    private void constructor(EntityRendererProvider.Context context, EntityModel model, float shadowRadius, CallbackInfo ci) {
+        if (model instanceof PlayerModel<?>) {
+            animationRenderer = new PlayerAnimationRenderer(context);
+        }
+    }
 
     @Inject(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At("HEAD"))
     private void render(T entity, float entityYaw, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int packedLight, CallbackInfo ci) {
@@ -31,6 +45,10 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
 
             if (animationContainer != null && animationContainer.isActive()) {
                 PlayerParts parts = animationContainer.data.parts();
+
+                if (((PlayerAnimationModel)(animationRenderer.getGeoModel())).allResourcesExist((AbstractClientPlayer) entity)) {
+                    animationRenderer.render((AbstractClientPlayer) entity, entityYaw, partialTicks, matrixStack, buffer, packedLight);
+                }
 
                 if (!parts.body.isVisible) {
                     return;

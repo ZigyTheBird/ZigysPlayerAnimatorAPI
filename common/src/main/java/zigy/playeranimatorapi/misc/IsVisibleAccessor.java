@@ -1,8 +1,9 @@
-package zigy.playeranimatorapi.mixin;
+package zigy.playeranimatorapi.misc;
 
 public interface IsVisibleAccessor {
 
-    default void zigysPlayerAnimatorAPI$setIsVisible(Boolean value) {}
+    default void zigysPlayerAnimatorAPI$setIsVisible(Boolean value) {
+    }
 
     default boolean zigysPlayerAnimatorAPI$getIsVisible() {
         return true;

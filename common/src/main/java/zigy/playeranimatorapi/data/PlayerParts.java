@@ -134,12 +134,21 @@ public class PlayerParts {
             parts.leftItem.roll = list.get(63);
             parts.leftItem.bend = list.get(64);
             parts.leftItem.bendDirection = list.get(65);
-        } catch (NumberFormatException ignore) {}
+        } catch (NumberFormatException ignore) {
+        }
 
         return parts;
     }
 
     public static final PlayerParts allEnabled = new PlayerParts();
+
+    public static final PlayerParts allExceptHeadRot() {
+        PlayerParts part = new PlayerParts();
+        part.head.setPitch(false);
+        part.head.setYaw(false);
+        part.head.setRoll(false);
+        return part;
+    }
 
     public PlayerPart body = new PlayerPart();
     public PlayerPart head = new PlayerPart();
@@ -151,5 +160,6 @@ public class PlayerParts {
     public PlayerPart rightItem = new PlayerPart();
     public PlayerPart leftItem = new PlayerPart();
 
-    public PlayerParts() {}
+    public PlayerParts() {
+    }
 }

@@ -1,4 +1,3 @@
-
 # ZigysPlayerAnimatorAPI
 
 Zigy's Player Animator API is a library mod that helps you play player animations.

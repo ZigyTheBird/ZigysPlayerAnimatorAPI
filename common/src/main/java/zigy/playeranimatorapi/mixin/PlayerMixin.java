@@ -12,6 +12,6 @@ public abstract class PlayerMixin {
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void inject(CallbackInfo ci) {
-        ClientPlayerTickEvent.tick((Player)(Object)this);
+        ClientPlayerTickEvent.tick((Player) (Object) this);
     }
 }

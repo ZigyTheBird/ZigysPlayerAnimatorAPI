@@ -37,8 +37,7 @@ public class PlayerPart {
             part.setBendDirection(list.get(7));
             part.isVisible(list.get(8));
             return DataResult.success(part);
-        }
-        catch (IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             return DataResult.success(part);
         }
     }
@@ -53,7 +52,8 @@ public class PlayerPart {
     public boolean bendDirection = true;
     public boolean isVisible = true;
 
-    public PlayerPart() {}
+    public PlayerPart() {
+    }
 
     public void setEnabled(boolean enabled) {
         x = enabled;

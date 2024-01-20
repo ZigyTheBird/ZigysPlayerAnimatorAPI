@@ -22,6 +22,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import zigy.playeranimatorapi.PlayerAnimatorAPIMod;
+import zigy.playeranimatorapi.azure.ModAzureUtilsClient;
 import zigy.playeranimatorapi.data.PlayerAnimationData;
 import zigy.playeranimatorapi.data.PlayerParts;
 
@@ -36,7 +37,7 @@ public class PlayerAnimations {
     public static Gson gson = new GsonBuilder().setLenient().serializeNulls().create();
 
     public static Map<ResourceLocation, Float> animLengthsMap;
-    public static List<String> extensions = List.of(new String[]{"crouch", "crawl", "swim"});
+    public static List<String> extensions = List.of(new String[]{"crouch", "crawl", "swim", "run", "walk"});
 
     public static final ResourceLocation animationLayerId = new ResourceLocation(PlayerAnimatorAPIMod.MOD_ID, "factory");
 
@@ -53,10 +54,11 @@ public class PlayerAnimations {
     }
 
     public static void stopAnimation(AbstractClientPlayer player, ResourceLocation animationID) {
-        CustomModifierLayer animationContainer = (CustomModifierLayer) PlayerAnimationAccess.getPlayerAssociatedData(player).get(animationLayerId);
+        CustomModifierLayer animationContainer = getModifierLayer(player);
 
         if (animationContainer != null && animationContainer.isActive() && animationContainer.data.animationID().equals(animationID)) {
             animationContainer.animPlayer.stop();
+            ModAzureUtilsClient.stopGeckoAnimation(player);
         }
     }
 
@@ -78,29 +80,13 @@ public class PlayerAnimations {
     public static void playAnimation(AbstractClientPlayer player, PlayerAnimationData data, PlayerParts parts, int fadeLength,
                                      float desiredLength, int easeID, boolean firstPersonEnabled, boolean shouldMirror, boolean replaceTick) {
         try {
-            CustomModifierLayer animationContainer = (CustomModifierLayer) PlayerAnimationAccess.getPlayerAssociatedData(player).get(animationLayerId);
+            CustomModifierLayer animationContainer = getModifierLayer(player);
 
-            ResourceLocation normalAnimationID = data.animationID();
-            String[] split = (normalAnimationID.getPath().split("_"));
+            ResourceLocation baseAnimationID = data.animationID();
+            String[] split = (baseAnimationID.getPath().split("_"));
 
-            if (normalAnimationID.toString().equals("null:null") || extensions.contains(split[split.length -1])) {
+            if (baseAnimationID.toString().equals("null:null") || extensions.contains(split[split.length - 1])) {
                 return;
-            }
-
-            ResourceLocation crouchedAnimationID = data.animationID().withPath(data.animationID().getPath() + "_crouch");
-            ResourceLocation crawlingAnimationID = data.animationID().withPath(data.animationID().getPath() + "_crawl");
-            ResourceLocation swimmingAnimationID = data.animationID().withPath(data.animationID().getPath() + "_swim");
-
-            Map<ResourceLocation, KeyframeAnimation> animations = PlayerAnimationRegistry.getAnimations();
-
-            if (!animations.containsKey(crouchedAnimationID)) {
-                crouchedAnimationID = null;
-            }
-            if (!animations.containsKey(crawlingAnimationID)) {
-                crawlingAnimationID = null;
-            }
-            if (!animations.containsKey(swimmingAnimationID)) {
-                swimmingAnimationID = null;
             }
 
             if (animationContainer != null) {
@@ -111,15 +97,7 @@ public class PlayerAnimations {
                     fadeLength = 0;
                 }
 
-                ResourceLocation animationID = normalAnimationID;
-                if (player.isCrouching() && crouchedAnimationID != null) {
-                    animationID = crouchedAnimationID;
-                } else if (player.isVisuallyCrawling() && crawlingAnimationID != null) {
-                    animationID = crawlingAnimationID;
-                } else if (player.isVisuallySwimming() && swimmingAnimationID != null) {
-                    animationID = swimmingAnimationID;
-                }
-
+                ResourceLocation animationID = ConditionalAnimations.getAnimationForCurrentConditions(data);
                 animationContainer.setCurrentAnimationLocation(animationID);
 
                 KeyframeAnimation anim = PlayerAnimationRegistry.getAnimation(animationID);
@@ -132,8 +110,7 @@ public class PlayerAnimations {
                         SpeedModifier speedModifier = new SpeedModifier(speed);
                         animationContainer.addModifier(speedModifier);
                         animationContainer.setSpeedModifier(1);
-                    }
-                    else {
+                    } else {
                         animationContainer.setSpeedModifier(1);
                     }
 
@@ -216,8 +193,6 @@ public class PlayerAnimations {
                 rightItem.pitch.setEnabled(parts.rightItem.pitch);
                 rightItem.yaw.setEnabled(parts.rightItem.yaw);
                 rightItem.roll.setEnabled(parts.rightItem.roll);
-                rightItem.bend.setEnabled(parts.rightItem.bend);
-                rightItem.bendDirection.setEnabled(parts.rightItem.bendDirection);
 
                 var leftItem = builder.getPart("leftItem");
                 leftItem.x.setEnabled(parts.leftItem.x);
@@ -226,8 +201,6 @@ public class PlayerAnimations {
                 leftItem.pitch.setEnabled(parts.leftItem.pitch);
                 leftItem.yaw.setEnabled(parts.leftItem.yaw);
                 leftItem.roll.setEnabled(parts.leftItem.roll);
-                leftItem.bend.setEnabled(parts.leftItem.bend);
-                leftItem.bendDirection.setEnabled(parts.leftItem.bendDirection);
 
 
                 anim = builder.build();
@@ -244,6 +217,8 @@ public class PlayerAnimations {
                     KeyframeAnimationPlayer animPlayer = new KeyframeAnimationPlayer(anim).setFirstPersonMode(firstPersonMode);
                     animationContainer.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(fadeLength, getEase(easeID)), animPlayer);
                 }
+
+                ModAzureUtilsClient.playGeckoAnimation(player, data);
             }
         } catch (NullPointerException e) {
             logger.warn("Player Animator API failed to play player animation: " + e);
@@ -252,10 +227,13 @@ public class PlayerAnimations {
 
     public static Ease getEase(int ID) {
         if (0 <= ID && ID <= 35) {
-            return Ease.getEase((byte)ID);
-        }
-        else {
+            return Ease.getEase((byte) ID);
+        } else {
             return Ease.INOUTQUAD;
         }
+    }
+
+    public static CustomModifierLayer getModifierLayer(AbstractClientPlayer player) {
+        return (CustomModifierLayer) PlayerAnimationAccess.getPlayerAssociatedData(player).get(animationLayerId);
     }
 }
