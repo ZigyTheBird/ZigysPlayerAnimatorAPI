@@ -69,5 +69,6 @@ allprojects {
     java {
         withJavadocJar()
         withSourcesJar()
+        javadoc.options.addStringOption('Xdoclint:none', '-quiet')
     }
 }

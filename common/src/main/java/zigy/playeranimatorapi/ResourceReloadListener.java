@@ -28,7 +28,11 @@ public class ResourceReloadListener implements ResourceManagerReloadListener {
                 JsonObject jsonObject = GsonHelper.convertToJsonObject(JsonParser.parseReader(resource.getValue().openAsReader()), "resource");
                 if (jsonObject.has("animations")) {
                     for (var object : jsonObject.get("animations").getAsJsonObject().asMap().entrySet()) {
-                        PlayerAnimations.animLengthsMap.put(new ResourceLocation(resource.getKey().getNamespace(), object.getKey().toLowerCase(Locale.ROOT)), object.getValue().getAsJsonObject().get("animation_length").getAsFloat());
+                        ResourceLocation resourceLocation = new ResourceLocation(resource.getKey().getNamespace(), object.getKey().toLowerCase(Locale.ROOT));
+                        PlayerAnimations.animLengthsMap.put(resourceLocation, object.getValue().getAsJsonObject().get("animation_length").getAsFloat());
+                        if (jsonObject.has("geckoResource")) {
+                            PlayerAnimations.geckoMap.put(resourceLocation, new ResourceLocation(jsonObject.get("gecko").getAsString()));
+                        }
                     }
                 } else {
                     try (var input = resource.getValue().open()) {

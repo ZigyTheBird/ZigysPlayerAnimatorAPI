@@ -28,7 +28,7 @@ public class ClientPlayerTickEvent {
 
                     ResourceLocation currentAnim = animationContainer.currentAnim;
 
-                    if (currentAnim != null && animationContainer.tick > 1 / animationContainer.speedModifier
+                    if (currentAnim != null && animationContainer.tick > 1
                             && !ConditionalAnimations.getAnimationForCurrentConditions(data).equals(currentAnim)) {
                         PlayerAnimations.playAnimation((AbstractClientPlayer) player, data, true);
                     }

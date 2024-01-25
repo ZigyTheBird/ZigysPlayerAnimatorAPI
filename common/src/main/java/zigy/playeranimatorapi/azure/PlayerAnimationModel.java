@@ -19,24 +19,28 @@ public class PlayerAnimationModel extends GeoModel<AbstractClientPlayer> {
 
     @Override
     public ResourceLocation getModelResource(AbstractClientPlayer player) {
-        ResourceLocation currentAnim = getCurrentAnim(player);
-        return getResourceLocation(currentAnim.getNamespace() + ":geo/player_animation/" + currentAnim.getPath() + ".geo.json");
+        ResourceLocation geckoResource = getCurrentGeckoResource(player);
+        return getResourceLocation(geckoResource.getNamespace() + ":geo/player_animation/" + geckoResource.getPath() + ".geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(AbstractClientPlayer player) {
-        ResourceLocation currentAnim = getCurrentAnim(player);
-        return getResourceLocation(currentAnim.getNamespace() + ":textures/player_animation/" + currentAnim.getPath() + ".png");
+        ResourceLocation geckoResource = getCurrentGeckoResource(player);
+        return getResourceLocation(geckoResource.getNamespace() + ":textures/player_animation/" + geckoResource.getPath() + ".png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(AbstractClientPlayer player) {
-        ResourceLocation currentAnim = getCurrentAnim(player);
-        return getResourceLocation(currentAnim.getNamespace() + ":animations/player_animation/" + currentAnim.getPath() + ".animation.json");
+        ResourceLocation geckoResource = getCurrentGeckoResource(player);
+        return getResourceLocation(geckoResource.getNamespace() + ":animations/player_animation/" + geckoResource.getPath() + ".animation.json");
     }
 
-    public static ResourceLocation getCurrentAnim(AbstractClientPlayer player) {
-        return PlayerAnimations.getModifierLayer(player).currentAnim;
+    public static ResourceLocation getCurrentGeckoResource(AbstractClientPlayer player) {
+        ResourceLocation currentAnim = PlayerAnimations.getModifierLayer(player).currentAnim;
+        if (PlayerAnimations.geckoMap.containsKey(currentAnim)) {
+            return PlayerAnimations.geckoMap.get(currentAnim);
+        }
+        return currentAnim;
     }
 
     public static ResourceLocation getResourceLocation(String resource) {
@@ -49,6 +53,6 @@ public class PlayerAnimationModel extends GeoModel<AbstractClientPlayer> {
     public boolean allResourcesExist(AbstractClientPlayer player) {
         ResourceManager manager = Minecraft.getInstance().getResourceManager();
         return manager.getResource(getModelResource(player)).isPresent() && manager.getResource(getTextureResource(player)).isPresent()
-                && manager.getResource(getCurrentAnim(player)).isPresent();
+                && manager.getResource(getCurrentGeckoResource(player)).isPresent();
     }
 }

@@ -14,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zigy.playeranimatorapi.data.PlayerAnimationData;
+import zigy.playeranimatorapi.modifier.CameraModifier;
 
 @Environment(EnvType.CLIENT)
 public class CustomModifierLayer<T extends IAnimation> extends ModifierLayer implements IAnimation {
@@ -23,8 +24,8 @@ public class CustomModifierLayer<T extends IAnimation> extends ModifierLayer imp
     public int tick;
     public int modifierCount = 0;
     public boolean hasModifier;
+    public boolean cameraAnimEnabled;
 
-    public float speedModifier;
     public boolean important = false;
     public PlayerAnimationData data;
     public ResourceLocation currentAnim;
@@ -34,10 +35,6 @@ public class CustomModifierLayer<T extends IAnimation> extends ModifierLayer imp
     public void setAnimationData(PlayerAnimationData data) {
         this.data = data;
         this.important = data.important();
-    }
-
-    public void setSpeedModifier(float speed) {
-        this.speedModifier = speed;
     }
 
     public void setAnimPlayer(KeyframeAnimationPlayer animPlayer) {
@@ -63,6 +60,9 @@ public class CustomModifierLayer<T extends IAnimation> extends ModifierLayer imp
         this.addModifier(modifier, modifierCount);
         modifierCount += 1;
         hasModifier = true;
+        if (modifier instanceof CameraModifier) {
+            cameraAnimEnabled = true;
+        }
     }
 
     public void removeAllModifiers() {
@@ -70,6 +70,7 @@ public class CustomModifierLayer<T extends IAnimation> extends ModifierLayer imp
             this.removeModifier(i);
         }
         modifierCount = 0;
+        cameraAnimEnabled = false;
         hasModifier = false;
     }
 

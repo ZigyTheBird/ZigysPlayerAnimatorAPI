@@ -13,8 +13,13 @@ import org.apache.logging.log4j.Logger;
 import zigy.playeranimatorapi.PlayerAnimatorAPIMod;
 import zigy.playeranimatorapi.data.PlayerAnimationData;
 import zigy.playeranimatorapi.data.PlayerParts;
+import zigy.playeranimatorapi.modifier.CommonModifier;
+import zigy.playeranimatorapi.registry.AnimModifierRegistry;
 import zigy.playeranimatorapi.utils.CommonPlayerLookup;
 import zigy.playeranimatorapi.utils.NetworkManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class for playing player animations from server side.
@@ -25,6 +30,15 @@ public class PlayerAnimAPI {
     public static final ResourceLocation playerAnimPacket = new ResourceLocation(PlayerAnimatorAPIMod.MOD_ID, "player_anim");
     public static final ResourceLocation playerAnimStopPacket = new ResourceLocation(PlayerAnimatorAPIMod.MOD_ID, "player_anim_stop");
 
+    public static final ResourceLocation MIRROR_ON_ALT_HAND = new ResourceLocation("playeranimatorapi", "mirrorOnAltHand");
+
+    /**Use this if you are using an animation for an item.*/
+    public static final List<CommonModifier> gameplayModifiers = new ArrayList<>(){
+        {
+            add(new CommonModifier(MIRROR_ON_ALT_HAND, null));
+        }
+    };
+
     private static final Logger logger = LogManager.getLogger(PlayerAnimatorAPIMod.class);
 
     public static Gson gson = new GsonBuilder().setLenient().serializeNulls().create();
@@ -32,13 +46,12 @@ public class PlayerAnimAPI {
     /**For emotes.*/
     public static void playPlayerAnim(ServerLevel level, Player player, ResourceLocation animationID) {
         playPlayerAnim(level, player, animationID, PlayerParts.allEnabled,
-                -1, -1, -1, false, false, false);
+                null, -1, -1, false, false);
     }
 
     /**For gameplay related stuff like player animations for items.*/
-    public static void playPlayerAnim(ServerLevel level, Player player, ResourceLocation animationID, PlayerParts parts, float desiredLength, boolean important) {
-        playPlayerAnim(level, player, animationID, parts, -1,
-                desiredLength, -1, false, true, important);
+    public static void playPlayerAnim(ServerLevel level, Player player, ResourceLocation animationID, PlayerParts parts, List<CommonModifier> modifiers, boolean important) {
+        playPlayerAnim(level, player, animationID, parts, modifiers, -1, -1, false, important);
     }
 
     /**Play player animations with the PlayerAnimationData class.*/
@@ -50,12 +63,12 @@ public class PlayerAnimAPI {
     }
 
     /**Play player animations with full customizability.*/
-    public static void playPlayerAnim(ServerLevel level, Player player, ResourceLocation animationID, PlayerParts parts, int fadeLength, float desiredLength,
-                                      int easeID, boolean firstPersonEnabled, boolean shouldMirror, boolean important) {
+    public static void playPlayerAnim(ServerLevel level, Player player, ResourceLocation animationID, PlayerParts parts, List<CommonModifier> modifiers,
+                                      int fadeLength, int easeID, boolean firstPersonEnabled, boolean important) {
 
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         PlayerAnimationData data = new PlayerAnimationData(player.getUUID(), animationID,
-                parts, fadeLength, desiredLength, easeID, firstPersonEnabled, shouldMirror, important);
+                parts, modifiers, fadeLength, easeID, firstPersonEnabled, important);
 
         buf.writeUtf(gson.toJson(PlayerAnimationData.CODEC.encodeStart(JsonOps.INSTANCE, data).getOrThrow(true, logger::warn)));
         NetworkManager.sendToPlayers(CommonPlayerLookup.tracking(level, player.chunkPosition()), playerAnimPacket, buf);

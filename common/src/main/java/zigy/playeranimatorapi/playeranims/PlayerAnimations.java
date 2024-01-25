@@ -7,8 +7,6 @@ import com.mojang.serialization.JsonOps;
 import dev.kosmx.playerAnim.api.firstPerson.FirstPersonMode;
 import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import dev.kosmx.playerAnim.api.layered.modifier.AbstractFadeModifier;
-import dev.kosmx.playerAnim.api.layered.modifier.MirrorModifier;
-import dev.kosmx.playerAnim.api.layered.modifier.SpeedModifier;
 import dev.kosmx.playerAnim.core.data.KeyframeAnimation;
 import dev.kosmx.playerAnim.core.util.Ease;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
@@ -25,10 +23,10 @@ import zigy.playeranimatorapi.PlayerAnimatorAPIMod;
 import zigy.playeranimatorapi.azure.ModAzureUtilsClient;
 import zigy.playeranimatorapi.data.PlayerAnimationData;
 import zigy.playeranimatorapi.data.PlayerParts;
+import zigy.playeranimatorapi.modifier.CommonModifier;
+import zigy.playeranimatorapi.registry.AnimModifierRegistry;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Environment(EnvType.CLIENT)
 public class PlayerAnimations {
@@ -37,6 +35,7 @@ public class PlayerAnimations {
     public static Gson gson = new GsonBuilder().setLenient().serializeNulls().create();
 
     public static Map<ResourceLocation, Float> animLengthsMap;
+    public static Map<ResourceLocation, ResourceLocation> geckoMap;
     public static List<String> extensions = List.of(new String[]{"crouch", "crawl", "swim", "run", "walk"});
 
     public static final ResourceLocation animationLayerId = new ResourceLocation(PlayerAnimatorAPIMod.MOD_ID, "factory");
@@ -73,12 +72,11 @@ public class PlayerAnimations {
     }
 
     public static void playAnimation(AbstractClientPlayer player, PlayerAnimationData data, boolean replaceTick) {
-        playAnimation(player, data, data.parts(), data.fadeLength(), data.desiredLength(), data.easeID(),
-                data.firstPersonEnabled(), data.shouldMirror(), replaceTick);
+        playAnimation(player, data, data.parts(), data.modifiers(), data.fadeLength(), data.easeID(), data.firstPersonEnabled(), replaceTick);
     }
 
-    public static void playAnimation(AbstractClientPlayer player, PlayerAnimationData data, PlayerParts parts, int fadeLength,
-                                     float desiredLength, int easeID, boolean firstPersonEnabled, boolean shouldMirror, boolean replaceTick) {
+    public static void playAnimation(AbstractClientPlayer player, PlayerAnimationData data, PlayerParts parts, List<CommonModifier> modifiers,
+                                     int fadeLength, int easeID, boolean firstPersonEnabled, boolean replaceTick) {
         try {
             CustomModifierLayer animationContainer = getModifierLayer(player);
 
@@ -104,19 +102,8 @@ public class PlayerAnimations {
 
                 if (replaceTick) {
                     animationContainer.removeAllModifiers();
-
-                    if (desiredLength > 0) {
-                        float speed = animLengthsMap.get(animationID) / desiredLength;
-                        SpeedModifier speedModifier = new SpeedModifier(speed);
-                        animationContainer.addModifier(speedModifier);
-                        animationContainer.setSpeedModifier(1);
-                    } else {
-                        animationContainer.setSpeedModifier(1);
-                    }
-
-                    if (shouldMirror && player == Minecraft.getInstance().player && Minecraft.getInstance().options.mainHand().get().getId() == 0) {
-                        MirrorModifier mirrorModifier = new MirrorModifier();
-                        animationContainer.addModifier(mirrorModifier);
+                    if (modifiers != null) {
+                        AnimModifierRegistry.applyModifiers(animationContainer, modifiers);
                     }
                 }
 

@@ -2,7 +2,6 @@ package zigy.playeranimatorapi.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
-import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -11,6 +10,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import org.apache.commons.codec.binary.Base64;
@@ -20,8 +20,11 @@ import zigy.playeranimatorapi.API.PlayerAnimAPI;
 import zigy.playeranimatorapi.PlayerAnimatorAPIMod;
 import zigy.playeranimatorapi.data.PlayerAnimationData;
 import zigy.playeranimatorapi.data.PlayerParts;
+import zigy.playeranimatorapi.modifier.CommonModifier;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayPlayerAnimationCommand {
 
@@ -32,14 +35,13 @@ public class PlayPlayerAnimationCommand {
                 .then(Commands.argument("player", EntityArgument.player())
                         .then(Commands.argument("animationID", ResourceLocationArgument.id())
                                 .executes(context -> execute(context, false))
-                                .then(Commands.argument("playerParts", StringArgumentType.string())
-                                        .then(Commands.argument("fadeLength", IntegerArgumentType.integer())
-                                                .then(Commands.argument("desiredLength", FloatArgumentType.floatArg())
-                                                        .then(Commands.argument("easeID", IntegerArgumentType.integer())
-                                                                .then(Commands.argument("firstPersonEnabled", BoolArgumentType.bool())
-                                                                        .then(Commands.argument("shouldMirror", BoolArgumentType.bool())
-                                                                                .then(Commands.argument("important", BoolArgumentType.bool())
-                                                                                        .executes(context -> execute(context, true))))))))))));
+                                    .then(Commands.argument("playerParts", StringArgumentType.string())
+                                        .then(Commands.argument("modifiers", StringArgumentType.string()))
+                                            .then(Commands.argument("fadeLength", IntegerArgumentType.integer())
+                                                    .then(Commands.argument("easeID", IntegerArgumentType.integer())
+                                                            .then(Commands.argument("firstPersonEnabled", BoolArgumentType.bool())
+                                                                    .then(Commands.argument("important", BoolArgumentType.bool())
+                                                                            .executes(context -> execute(context, true))))))))));
     }
 
     private static int execute(CommandContext<CommandSourceStack> command, boolean full) {
@@ -51,9 +53,9 @@ public class PlayPlayerAnimationCommand {
             } else {
                 PlayerAnimationData data = new PlayerAnimationData(EntityArgument.getPlayer(command, "player").getUUID(),
                         ResourceLocationArgument.getId(command, "animationID"), PlayerParts.fromBigInteger(playerPartsIntFromString(StringArgumentType.getString(command, "playerParts"))),
-                        IntegerArgumentType.getInteger(command, "fadeLength"), FloatArgumentType.getFloat(command, "desiredLength"),
-                        IntegerArgumentType.getInteger(command, "easeID"), BoolArgumentType.getBool(command, "firstPersonEnabled"),
-                        BoolArgumentType.getBool(command, "shouldMirror"), BoolArgumentType.getBool(command, "important"));
+                        modifierList(StringArgumentType.getString(command, "modifiers")),
+                        IntegerArgumentType.getInteger(command, "fadeLength"), IntegerArgumentType.getInteger(command, "easeID"),
+                        BoolArgumentType.getBool(command, "firstPersonEnabled"), BoolArgumentType.getBool(command, "important"));
 
                 PlayerAnimAPI.playPlayerAnim(command.getSource().getLevel(), EntityArgument.getPlayer(command, "player"), data);
             }
@@ -62,6 +64,14 @@ public class PlayPlayerAnimationCommand {
         }
 
         return 1;
+    }
+
+    public static List<CommonModifier> modifierList(String input) {
+        List<CommonModifier> list = new ArrayList<>();
+        for (String str : input.split(",")) {
+            list.add(new CommonModifier(new ResourceLocation(str), null));
+        }
+        return list;
     }
 
     public static BigInteger playerPartsIntFromString(String string) {
