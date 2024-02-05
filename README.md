@@ -6,6 +6,8 @@ You may also play animations using a server side command.
 
 Use the GitHub wiki to see all the features of the mod and get started.
 
-
+# Mod Downloads
+CurseForge: https://www.curseforge.com/minecraft/mc-mods/zigys-player-animator-api  
+Modrinth: Still under review :/
 
 
