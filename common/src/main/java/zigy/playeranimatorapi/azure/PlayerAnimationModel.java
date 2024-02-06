@@ -40,7 +40,7 @@ public class PlayerAnimationModel extends GeoModel<AbstractClientPlayer> {
         if (PlayerAnimations.geckoMap.containsKey(currentAnim)) {
             return PlayerAnimations.geckoMap.get(currentAnim);
         }
-        return currentAnim;
+        return null;
     }
 
     public static ResourceLocation getResourceLocation(String resource) {
@@ -52,7 +52,7 @@ public class PlayerAnimationModel extends GeoModel<AbstractClientPlayer> {
 
     public boolean allResourcesExist(AbstractClientPlayer player) {
         ResourceManager manager = Minecraft.getInstance().getResourceManager();
-        return manager.getResource(getModelResource(player)).isPresent() && manager.getResource(getTextureResource(player)).isPresent()
-                && manager.getResource(getCurrentGeckoResource(player)).isPresent();
+        return getCurrentGeckoResource(player) != null && manager.getResource(getModelResource(player)).isPresent() && manager.getResource(getTextureResource(player)).isPresent()
+                && manager.getResource(getAnimationResource(player)).isPresent();
     }
 }

@@ -23,6 +23,7 @@ public class ResourceReloadListener implements ResourceManagerReloadListener {
     @Override
     public void onResourceManagerReload(ResourceManager resourceManager) {
         PlayerAnimations.animLengthsMap = new HashMap<>();
+        PlayerAnimations.geckoMap = new HashMap<>();
         for (var resource : resourceManager.listResources("player_animation", location -> location.getPath().endsWith(".json")).entrySet()) {
             try {
                 JsonObject jsonObject = GsonHelper.convertToJsonObject(JsonParser.parseReader(resource.getValue().openAsReader()), "resource");
@@ -30,18 +31,19 @@ public class ResourceReloadListener implements ResourceManagerReloadListener {
                     for (var object : jsonObject.get("animations").getAsJsonObject().asMap().entrySet()) {
                         ResourceLocation resourceLocation = new ResourceLocation(resource.getKey().getNamespace(), object.getKey().toLowerCase(Locale.ROOT));
                         PlayerAnimations.animLengthsMap.put(resourceLocation, object.getValue().getAsJsonObject().get("animation_length").getAsFloat());
-                        if (jsonObject.has("geckoResource")) {
-                            PlayerAnimations.geckoMap.put(resourceLocation, new ResourceLocation(jsonObject.get("gecko").getAsString()));
+                        if (object.getValue().getAsJsonObject().has("geckoResource")) {
+                            PlayerAnimations.geckoMap.put(resourceLocation, new ResourceLocation(object.getValue().getAsJsonObject().get("geckoResource").getAsString()));
                         }
                     }
                 } else {
                     try (var input = resource.getValue().open()) {
 
-                        //Deserialize the animation json. GeckoLib animation json can contain multiple animations.
                         for (var animation : AnimationSerializing.deserializeAnimation(input)) {
 
-                            //Save the animation for later use.
                             PlayerAnimations.animLengthsMap.put(new ResourceLocation(resource.getKey().getNamespace(), PlayerAnimationRegistry.serializeTextToString((String) animation.extraData.get("name")).toLowerCase(Locale.ROOT)), (float) (animation.endTick / 20));
+                            if (jsonObject.has("geckoResource")) {
+                                PlayerAnimations.geckoMap.put(new ResourceLocation(resource.getKey().getNamespace(), PlayerAnimationRegistry.serializeTextToString((String) animation.extraData.get("name")).toLowerCase(Locale.ROOT)), new ResourceLocation(jsonObject.get("geckoResource").getAsString()));
+                            }
                         }
                     }
                 }

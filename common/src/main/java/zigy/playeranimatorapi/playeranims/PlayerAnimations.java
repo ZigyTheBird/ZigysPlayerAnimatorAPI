@@ -25,6 +25,7 @@ import zigy.playeranimatorapi.data.PlayerAnimationData;
 import zigy.playeranimatorapi.data.PlayerParts;
 import zigy.playeranimatorapi.modifier.CommonModifier;
 import zigy.playeranimatorapi.registry.AnimModifierRegistry;
+import zigy.playeranimatorapi.utils.Platform;
 
 import java.util.*;
 
@@ -36,7 +37,6 @@ public class PlayerAnimations {
 
     public static Map<ResourceLocation, Float> animLengthsMap;
     public static Map<ResourceLocation, ResourceLocation> geckoMap;
-    public static List<String> extensions = List.of(new String[]{"crouch", "crawl", "swim", "run", "walk"});
 
     public static final ResourceLocation animationLayerId = new ResourceLocation(PlayerAnimatorAPIMod.MOD_ID, "factory");
 
@@ -57,7 +57,9 @@ public class PlayerAnimations {
 
         if (animationContainer != null && animationContainer.isActive() && animationContainer.data.animationID().equals(animationID)) {
             animationContainer.animPlayer.stop();
-            ModAzureUtilsClient.stopGeckoAnimation(player);
+            if (Platform.isModLoaded("azurelib")) {
+                ModAzureUtilsClient.stopGeckoAnimation(player);
+            }
         }
     }
 
@@ -81,19 +83,18 @@ public class PlayerAnimations {
             CustomModifierLayer animationContainer = getModifierLayer(player);
 
             ResourceLocation baseAnimationID = data.animationID();
-            String[] split = (baseAnimationID.getPath().split("_"));
 
-            if (baseAnimationID.toString().equals("null:null") || extensions.contains(split[split.length - 1])) {
+            if (baseAnimationID.toString().equals("null:null")) {
+                return;
+            }
+
+            if (animationContainer.data != null && animationContainer.data.important() && animationContainer.isActive() && !data.important()) {
                 return;
             }
 
             if (animationContainer != null) {
 
                 animationContainer.setAnimationData(data);
-
-                if (fadeLength < 0) {
-                    fadeLength = 0;
-                }
 
                 ResourceLocation animationID = ConditionalAnimations.getAnimationForCurrentConditions(data);
                 animationContainer.setCurrentAnimationLocation(animationID);
@@ -103,7 +104,15 @@ public class PlayerAnimations {
                 if (replaceTick) {
                     animationContainer.removeAllModifiers();
                     if (modifiers != null) {
-                        AnimModifierRegistry.applyModifiers(animationContainer, modifiers);
+                        for (CommonModifier commonModifier : modifiers) {
+                            if (AnimModifierRegistry.getModifiers().containsKey(commonModifier.ID)) {
+                                try {
+                                    animationContainer.addModifier(AnimModifierRegistry.getModifiers().get(commonModifier.ID).apply(animationContainer, commonModifier.data));
+                                } catch (NullPointerException | UnsupportedOperationException e) {
+                                    PlayerAnimatorAPIMod.LOGGER.error("Failed to apply modifier: " + commonModifier.ID + " :" + e);
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -202,10 +211,17 @@ public class PlayerAnimations {
                     animationContainer.replaceAnimation(animPlayer);
                 } else {
                     KeyframeAnimationPlayer animPlayer = new KeyframeAnimationPlayer(anim).setFirstPersonMode(firstPersonMode);
-                    animationContainer.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(fadeLength, getEase(easeID)), animPlayer);
+                    if (fadeLength > 0) {
+                        animationContainer.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(fadeLength, getEase(easeID)), animPlayer);
+                    }
+                    else {
+                        animationContainer.replaceAnimation(animPlayer);
+                    }
                 }
 
-                ModAzureUtilsClient.playGeckoAnimation(player, data);
+                if (Platform.isModLoaded("azurelib")) {
+                    ModAzureUtilsClient.playGeckoAnimation(player, data);
+                }
             }
         } catch (NullPointerException e) {
             logger.warn("Player Animator API failed to play player animation: " + e);
@@ -213,11 +229,7 @@ public class PlayerAnimations {
     }
 
     public static Ease getEase(int ID) {
-        if (0 <= ID && ID <= 35) {
-            return Ease.getEase((byte) ID);
-        } else {
-            return Ease.INOUTQUAD;
-        }
+        return (0 <= ID && ID <= 35) ? Ease.getEase((byte) ID) : Ease.INOUTQUAD;
     }
 
     public static CustomModifierLayer getModifierLayer(AbstractClientPlayer player) {

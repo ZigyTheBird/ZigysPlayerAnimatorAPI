@@ -30,7 +30,7 @@ public class PlayerAnimAPI {
     public static final ResourceLocation playerAnimPacket = new ResourceLocation(PlayerAnimatorAPIMod.MOD_ID, "player_anim");
     public static final ResourceLocation playerAnimStopPacket = new ResourceLocation(PlayerAnimatorAPIMod.MOD_ID, "player_anim_stop");
 
-    public static final ResourceLocation MIRROR_ON_ALT_HAND = new ResourceLocation("playeranimatorapi", "mirrorOnAltHand");
+    public static final ResourceLocation MIRROR_ON_ALT_HAND = new ResourceLocation("playeranimatorapi", "mirroronalthand");
 
     /**Use this if you are using an animation for an item.*/
     public static final List<CommonModifier> gameplayModifiers = new ArrayList<>(){
@@ -74,7 +74,7 @@ public class PlayerAnimAPI {
         NetworkManager.sendToPlayers(CommonPlayerLookup.tracking(level, player.chunkPosition()), playerAnimPacket, buf);
     }
 
-    /**Stop a player animation*/
+    /**Stop a specific player animation.*/
     public static void stopPlayerAnim(ServerLevel level, Player player, ResourceLocation animationID) {
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         buf.writeUUID(player.getUUID());

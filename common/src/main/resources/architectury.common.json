@@ -5,6 +5,9 @@
     ],
     "net/minecraft/world/entity/player/Player": [
       "mod/azure/azurelib/animatable/GeoEntity"
+    ],
+    "net/minecraft/client/Camera": [
+      "zigy/playeranimatorapi/misc/CameraInterface"
     ]
   }
 }

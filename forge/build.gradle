@@ -35,10 +35,6 @@ dependencies {
     modImplementation "dev.kosmx.player-anim:player-animation-lib-forge:${rootProject.player_anim_version}"
 
     modImplementation "curse.maven:emotecraft-forge-403422:4632460"
-
-    implementation "org.tomlj:tomlj:1.1.1"
-    forgeRuntimeLibrary "org.tomlj:tomlj:1.1.1"
-    include "org.tomlj:tomlj:1.1.1"
 }
 
 processResources {
@@ -60,7 +56,7 @@ remapJar {
 }
 
 jar {
-    archivesBaseName = "$mod_id-forge"
+    archivesBaseName = "$mod_id-forge-$minecraft_version"
 }
 
 sourcesJar {

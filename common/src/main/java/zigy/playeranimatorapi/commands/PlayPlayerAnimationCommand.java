@@ -34,30 +34,42 @@ public class PlayPlayerAnimationCommand {
         dispatcher.register(Commands.literal("playPlayerAnimation").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
                 .then(Commands.argument("player", EntityArgument.player())
                         .then(Commands.argument("animationID", ResourceLocationArgument.id())
-                                .executes(context -> execute(context, false))
-                                    .then(Commands.argument("playerParts", StringArgumentType.string())
-                                        .then(Commands.argument("modifiers", StringArgumentType.string()))
-                                            .then(Commands.argument("fadeLength", IntegerArgumentType.integer())
-                                                    .then(Commands.argument("easeID", IntegerArgumentType.integer())
-                                                            .then(Commands.argument("firstPersonEnabled", BoolArgumentType.bool())
-                                                                    .then(Commands.argument("important", BoolArgumentType.bool())
-                                                                            .executes(context -> execute(context, true))))))))));
+                                .executes(context -> execute(context, CommandState.Minimal))
+                                    .then(Commands.argument("fadeLength", IntegerArgumentType.integer())
+                                            .then(Commands.argument("easeID", IntegerArgumentType.integer())
+                                                    .then(Commands.argument("firstPersonEnabled", BoolArgumentType.bool())
+                                                            .then(Commands.argument("important", BoolArgumentType.bool())
+                                                                    .executes(context -> execute(context, CommandState.Advanced))
+                                                                        .then(Commands.argument("playerParts", StringArgumentType.string())
+                                                                            .then(Commands.argument("modifiers", StringArgumentType.string())
+                                                                                .executes(context -> execute(context, CommandState.Complete)))))))))));
     }
 
-    private static int execute(CommandContext<CommandSourceStack> command, boolean full) {
+    private static int execute(CommandContext<CommandSourceStack> command, CommandState state) {
         try {
-            if (!full) {
-                ServerPlayer player = EntityArgument.getPlayer(command, "player");
-                PlayerAnimAPI.playPlayerAnim((ServerLevel) player.level(), player,
-                        ResourceLocationArgument.getId(command, "animationID"));
-            } else {
-                PlayerAnimationData data = new PlayerAnimationData(EntityArgument.getPlayer(command, "player").getUUID(),
-                        ResourceLocationArgument.getId(command, "animationID"), PlayerParts.fromBigInteger(playerPartsIntFromString(StringArgumentType.getString(command, "playerParts"))),
-                        modifierList(StringArgumentType.getString(command, "modifiers")),
-                        IntegerArgumentType.getInteger(command, "fadeLength"), IntegerArgumentType.getInteger(command, "easeID"),
-                        BoolArgumentType.getBool(command, "firstPersonEnabled"), BoolArgumentType.getBool(command, "important"));
+            switch (state) {
+                case Minimal -> {
+                    ServerPlayer player = EntityArgument.getPlayer(command, "player");
+                    PlayerAnimAPI.playPlayerAnim((ServerLevel) player.level(), player,
+                            ResourceLocationArgument.getId(command, "animationID"));
+                }
+                case Advanced -> {
+                    PlayerAnimationData data = new PlayerAnimationData(EntityArgument.getPlayer(command, "player").getUUID(),
+                            ResourceLocationArgument.getId(command, "animationID"), null, null,
+                            IntegerArgumentType.getInteger(command, "fadeLength"), IntegerArgumentType.getInteger(command, "easeID"),
+                            BoolArgumentType.getBool(command, "firstPersonEnabled"), BoolArgumentType.getBool(command, "important"));
 
-                PlayerAnimAPI.playPlayerAnim(command.getSource().getLevel(), EntityArgument.getPlayer(command, "player"), data);
+                    PlayerAnimAPI.playPlayerAnim(command.getSource().getLevel(), EntityArgument.getPlayer(command, "player"), data);
+                }
+                case Complete -> {
+                    PlayerAnimationData data = new PlayerAnimationData(EntityArgument.getPlayer(command, "player").getUUID(),
+                            ResourceLocationArgument.getId(command, "animationID"), PlayerParts.fromBigInteger(playerPartsIntFromString(StringArgumentType.getString(command, "playerParts"))),
+                            modifierList(StringArgumentType.getString(command, "modifiers")),
+                            IntegerArgumentType.getInteger(command, "fadeLength"), IntegerArgumentType.getInteger(command, "easeID"),
+                            BoolArgumentType.getBool(command, "firstPersonEnabled"), BoolArgumentType.getBool(command, "important"));
+
+                    PlayerAnimAPI.playPlayerAnim(command.getSource().getLevel(), EntityArgument.getPlayer(command, "player"), data);
+                }
             }
         } catch (CommandSyntaxException e) {
             logger.warn(e);
@@ -76,9 +88,9 @@ public class PlayPlayerAnimationCommand {
 
     public static BigInteger playerPartsIntFromString(String string) {
         try {
-            return new BigInteger(Base64.decodeBase64(string));
+            return new BigInteger(string, Character.MAX_RADIX);
         } catch (NumberFormatException e) {
-            return new BigInteger(Base64.decodeBase64("axq5j8k4e1uiyz27"));
+            return new BigInteger("axq5j8k4e1uiyz27", Character.MAX_RADIX);
         }
     }
 }

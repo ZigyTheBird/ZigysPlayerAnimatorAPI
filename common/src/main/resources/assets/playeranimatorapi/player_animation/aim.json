@@ -1,0 +1,20 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"aim": {
+			"animation_length": 2,
+			"bones": {
+				"right_arm": {
+					"rotation": {
+						"vector": [-90, -30, 0]
+					}
+				},
+				"left_arm": {
+					"rotation": {
+						"vector": [-90, 30, 0]
+					}
+				}
+			}
+		}
+	}
+}

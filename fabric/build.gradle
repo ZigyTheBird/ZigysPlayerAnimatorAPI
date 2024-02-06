@@ -61,7 +61,7 @@ remapJar {
 }
 
 jar {
-    archivesBaseName = "$mod_id-fabric"
+    archivesBaseName = "$mod_id-fabric-$minecraft_version"
 }
 
 sourcesJar {

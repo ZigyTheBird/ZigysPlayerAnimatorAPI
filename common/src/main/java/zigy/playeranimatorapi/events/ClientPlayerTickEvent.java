@@ -13,7 +13,6 @@ import zigy.playeranimatorapi.playeranims.ConditionalAnimations;
 import zigy.playeranimatorapi.playeranims.CustomModifierLayer;
 import zigy.playeranimatorapi.playeranims.PlayerAnimations;
 
-@Environment(EnvType.CLIENT)
 public class ClientPlayerTickEvent {
 
     public static ResourceLocation playerAnimation = new ResourceLocation(PlayerAnimatorAPIMod.MOD_ID, "player");

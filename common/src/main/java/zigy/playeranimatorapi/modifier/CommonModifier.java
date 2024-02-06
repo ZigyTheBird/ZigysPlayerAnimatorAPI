@@ -26,7 +26,9 @@ public class CommonModifier {
         List<String> list = new ArrayList<>();
         if (modifier != null) {
             list.add(modifier.ID.toString());
-            list.add(modifier.data.toString());
+            if (modifier.data != null) {
+                list.add(modifier.data.toString());
+            }
         }
         return list;
     }
@@ -34,6 +36,8 @@ public class CommonModifier {
     public static DataResult<CommonModifier> decode(List<String> data) {
         if (data.size() == 2) {
             return DataResult.success(new CommonModifier(new ResourceLocation(data.get(0)), gson.fromJson(data.get(1), TypeToken.get(JsonObject.class))));
+        } else if (data.size() == 1) {
+            return DataResult.success(new CommonModifier(new ResourceLocation(data.get(0)), null));
         }
         return DataResult.success(nullModifer);
     }

@@ -5,7 +5,7 @@
   "minVersion": "0.8",
   "plugin": "zigy.playeranimatorapi.ModMixinPlugin",
   "client": [
-    "GameRendererMixin",
+    "CameraMixin",
     "LivingEntityRendererAzureMixin",
     "LivingEntityRendererMixin",
     "ModelPartMixin"
