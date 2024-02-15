@@ -7,12 +7,11 @@ import dev.kosmx.playerAnim.api.layered.modifier.SpeedModifier;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.resources.ResourceLocation;
-import zigy.playeranimatorapi.PlayerAnimatorAPIMod;
-import zigy.playeranimatorapi.modifier.*;
+import zigy.playeranimatorapi.modifier.LengthModifier;
+import zigy.playeranimatorapi.modifier.MirrorOnAltHandModifier;
 import zigy.playeranimatorapi.playeranims.CustomModifierLayer;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 

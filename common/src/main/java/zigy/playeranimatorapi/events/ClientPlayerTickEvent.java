@@ -1,8 +1,6 @@
 package zigy.playeranimatorapi.events;
 
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;

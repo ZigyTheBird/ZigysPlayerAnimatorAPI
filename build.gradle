@@ -57,6 +57,10 @@ allprojects {
                 includeGroup "curse.maven"
             }
         }
+        maven {
+            name "zigythebirdMods"
+            url "https://maven.zigythebird.com/mods"
+        }
     }
 
     tasks.withType(JavaCompile).tap {

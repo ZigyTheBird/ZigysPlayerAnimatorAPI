@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
-import zigy.playeranimatorapi.utils.Platform;
+import zigy.zigysmultiloaderutils.utils.Platform;
 
 import java.util.List;
 import java.util.Map;
@@ -16,9 +16,9 @@ public class ModMixinPlugin implements IMixinConfigPlugin {
     private static final Supplier<Boolean> TRUE = () -> true;
 
     private static final Map<String, Supplier<Boolean>> CONDITIONS = ImmutableMap.of(
-            "zigy.playeranimatorapi.mixin.PlayerAzureMixin", () -> Platform.isModLoaded("azurelib"),
-            "zigy.playeranimatorapi.mixin.LivingEntityRendererAzureMixin", () -> Platform.isModLoaded("azurelib"),
-            "zigy.playeranimatorapi.mixin.LivingEntityRendererMixin", () -> !Platform.isModLoaded("azurelib")
+            "zigy.playeranimatorapi.mixin.PlayerAzureMixin", () -> Platform.isModLoaded("azurelib", "mod.azure.azurelib.AzureLib"),
+            "zigy.playeranimatorapi.mixin.LivingEntityRendererAzureMixin", () -> Platform.isModLoaded("azurelib", "mod.azure.azurelib.AzureLib"),
+            "zigy.playeranimatorapi.mixin.LivingEntityRendererMixin", () -> !Platform.isModLoaded("azurelib", "mod.azure.azurelib.AzureLib")
     );
 
     @Override

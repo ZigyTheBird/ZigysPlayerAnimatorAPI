@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
+import dev.architectury.platform.Platform;
 import dev.kosmx.playerAnim.api.firstPerson.FirstPersonMode;
 import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import dev.kosmx.playerAnim.api.layered.modifier.AbstractFadeModifier;
@@ -25,9 +26,11 @@ import zigy.playeranimatorapi.data.PlayerAnimationData;
 import zigy.playeranimatorapi.data.PlayerParts;
 import zigy.playeranimatorapi.modifier.CommonModifier;
 import zigy.playeranimatorapi.registry.AnimModifierRegistry;
-import zigy.playeranimatorapi.utils.Platform;
+import zigy.zigysmultiloaderutils.utils.NetworkManager;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Environment(EnvType.CLIENT)
 public class PlayerAnimations {
@@ -38,6 +41,8 @@ public class PlayerAnimations {
     public static Map<ResourceLocation, Float> animLengthsMap;
     public static Map<ResourceLocation, ResourceLocation> geckoMap;
 
+    public static final ResourceLocation playerAnimPacket = new ResourceLocation(PlayerAnimatorAPIMod.MOD_ID, "player_anim");
+    public static final ResourceLocation playerAnimStopPacket = new ResourceLocation(PlayerAnimatorAPIMod.MOD_ID, "player_anim_stop");
     public static final ResourceLocation animationLayerId = new ResourceLocation(PlayerAnimatorAPIMod.MOD_ID, "factory");
 
     public static void init() {
@@ -46,6 +51,13 @@ public class PlayerAnimations {
                 42,
                 player -> new CustomModifierLayer(player)
         );
+
+        NetworkManager.registerReceiver(NetworkManager.Side.S2C, playerAnimPacket, (buf, context) -> {
+            PlayerAnimations.receivePacket(buf.readUtf());
+        });
+        NetworkManager.registerReceiver(NetworkManager.Side.S2C, playerAnimStopPacket, (buf, context) -> {
+            PlayerAnimations.stopAnimation(buf.readUUID(), buf.readResourceLocation());
+        });
     }
 
     public static void stopAnimation(UUID playerUUID, ResourceLocation animationID) {

@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
-import zigy.playeranimatorapi.utils.Platform;
+import zigy.zigysmultiloaderutils.utils.Platform;
 
 import java.util.List;
 import java.util.Map;
@@ -16,7 +16,7 @@ public class ModMixinPluginForge implements IMixinConfigPlugin {
     private static final Supplier<Boolean> TRUE = () -> true;
 
     private static final Map<String, Supplier<Boolean>> CONDITIONS = ImmutableMap.of(
-            "zigy.playeranimatorapi.forge.mixin.EmoteCraftClientInitMixinForge", () -> Platform.isModLoaded("emotecraft")
+            "zigy.playeranimatorapi.forge.mixin.EmoteCraftClientInitMixinForge", () -> Platform.isModLoaded("emotecraft", "io.github.kosmx.emotes.forge.ForgeWrapper")
     );
 
     @Override

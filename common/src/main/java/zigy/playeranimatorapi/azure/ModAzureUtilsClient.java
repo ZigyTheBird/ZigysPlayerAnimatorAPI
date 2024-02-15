@@ -1,6 +1,9 @@
 package zigy.playeranimatorapi.azure;
 
-import mod.azure.azurelib.core.animation.*;
+import mod.azure.azurelib.core.animation.AnimatableManager;
+import mod.azure.azurelib.core.animation.Animation;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
 import net.minecraft.client.player.AbstractClientPlayer;
 import zigy.playeranimatorapi.PlayerAnimatorAPIMod;
 import zigy.playeranimatorapi.data.PlayerAnimationData;

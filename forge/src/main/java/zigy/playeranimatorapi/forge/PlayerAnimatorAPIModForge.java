@@ -6,7 +6,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import zigy.playeranimatorapi.PlayerAnimatorAPIClient;
 import zigy.playeranimatorapi.PlayerAnimatorAPIMod;
-import zigy.playeranimatorapi.forge.network.PlayerAPIPacketHandler;
 
 @Mod(PlayerAnimatorAPIMod.MOD_ID)
 public class PlayerAnimatorAPIModForge {
@@ -15,7 +14,6 @@ public class PlayerAnimatorAPIModForge {
         modEventBus.addListener(this::ClientInit);
 
         PlayerAnimatorAPIMod.init();
-        PlayerAPIPacketHandler.register();
     }
 
     private void ClientInit(final FMLClientSetupEvent event) {

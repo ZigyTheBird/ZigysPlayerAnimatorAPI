@@ -14,9 +14,8 @@ import zigy.playeranimatorapi.PlayerAnimatorAPIMod;
 import zigy.playeranimatorapi.data.PlayerAnimationData;
 import zigy.playeranimatorapi.data.PlayerParts;
 import zigy.playeranimatorapi.modifier.CommonModifier;
-import zigy.playeranimatorapi.registry.AnimModifierRegistry;
 import zigy.playeranimatorapi.utils.CommonPlayerLookup;
-import zigy.playeranimatorapi.utils.NetworkManager;
+import zigy.zigysmultiloaderutils.utils.NetworkManager;
 
 import java.util.ArrayList;
 import java.util.List;

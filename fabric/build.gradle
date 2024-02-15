@@ -28,6 +28,9 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
 
+    modImplementation "zigy.zigysmultiloaderutils:zigysmultiloaderutils-fabric-1.20.1:1.0.0"
+    include "zigy.zigysmultiloaderutils:zigysmultiloaderutils-fabric-1.20.1:1.0.0"
+
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
