@@ -8,6 +8,6 @@ Use the GitHub wiki to see all the features of the mod and get started.
 
 # Mod Downloads
 CurseForge: https://www.curseforge.com/minecraft/mc-mods/zigys-player-animator-api  
-Modrinth: Still under review :/
+Modrinth: https://modrinth.com/mod/playeranimatorapi
 
 
