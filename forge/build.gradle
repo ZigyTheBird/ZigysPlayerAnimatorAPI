@@ -25,8 +25,8 @@ configurations {
 dependencies {
     forge "net.minecraftforge:forge:$rootProject.minecraft_version-$rootProject.forge_version"
 
-    modImplementation "zigy.zigysmultiloaderutils:zigysmultiloaderutils-forge-1.20.1:1.0.0"
-    include "zigy.zigysmultiloaderutils:zigysmultiloaderutils-forge-1.20.1:1.0.0"
+    modImplementation "zigy.zigysmultiloaderutils:zigysmultiloaderutils-forge-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
+    include "zigy.zigysmultiloaderutils:zigysmultiloaderutils-forge-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }

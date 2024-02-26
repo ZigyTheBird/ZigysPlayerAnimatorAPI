@@ -5,6 +5,7 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.LivingEntity;
@@ -18,8 +19,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import zigy.playeranimatorapi.azure.PlayerAnimationModel;
 import zigy.playeranimatorapi.azure.PlayerAnimationRenderer;
 import zigy.playeranimatorapi.data.PlayerParts;
+import zigy.playeranimatorapi.misc.PlayerModelInterface;
 import zigy.playeranimatorapi.playeranims.CustomModifierLayer;
 import zigy.playeranimatorapi.playeranims.PlayerAnimations;
+import zigy.playeranimatorapi.registry.PlayerEffectsRendererRegistry;
 
 @Mixin(LivingEntityRenderer.class)
 public class LivingEntityRendererAzureMixin<T extends LivingEntity, M extends EntityModel<T>> {
@@ -37,16 +40,24 @@ public class LivingEntityRendererAzureMixin<T extends LivingEntity, M extends En
         }
     }
 
-    @Inject(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At("HEAD"))
+    @Inject(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At("TAIL"))
     private void render(T entity, float entityYaw, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int packedLight, CallbackInfo ci) {
         if (entity instanceof Player) {
             CustomModifierLayer animationContainer = PlayerAnimations.getModifierLayer((AbstractClientPlayer) entity);
             PlayerModel playerModel = ((PlayerModel) (this.model));
 
+            for (EntityRenderer renderer : PlayerEffectsRendererRegistry.getRenderers()) {
+                if (renderer instanceof PlayerModelInterface) {
+                    ((PlayerModelInterface)renderer).setPlayerModel(playerModel);
+                    renderer.render(entity, entityYaw, partialTicks, matrixStack, buffer, packedLight);
+                }
+            }
+
             if (animationContainer != null && animationContainer.isActive()) {
                 PlayerParts parts = animationContainer.data.parts();
 
                 if (((PlayerAnimationModel)(animationRenderer.getGeoModel())).allResourcesExist((AbstractClientPlayer) entity)) {
+                    animationRenderer.setPlayerModel(playerModel);
                     animationRenderer.render((AbstractClientPlayer) entity, entityYaw, partialTicks, matrixStack, buffer, packedLight);
                 }
 

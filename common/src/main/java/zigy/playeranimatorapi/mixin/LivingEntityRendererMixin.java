@@ -5,6 +5,7 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -14,8 +15,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import zigy.playeranimatorapi.data.PlayerParts;
+import zigy.playeranimatorapi.misc.PlayerModelInterface;
 import zigy.playeranimatorapi.playeranims.CustomModifierLayer;
 import zigy.playeranimatorapi.playeranims.PlayerAnimations;
+import zigy.playeranimatorapi.registry.PlayerEffectsRendererRegistry;
 
 @Mixin(LivingEntityRenderer.class)
 public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extends EntityModel<T>> {
@@ -28,6 +31,13 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
         if (entity instanceof Player) {
             CustomModifierLayer animationContainer = PlayerAnimations.getModifierLayer((AbstractClientPlayer) entity);
             PlayerModel playerModel = ((PlayerModel) (this.model));
+
+            for (EntityRenderer renderer : PlayerEffectsRendererRegistry.getRenderers()) {
+                if (renderer instanceof PlayerModelInterface) {
+                    ((PlayerModelInterface)renderer).setPlayerModel(playerModel);
+                    renderer.render(entity, entityYaw, partialTicks, matrixStack, buffer, packedLight);
+                }
+            }
 
             if (animationContainer != null && animationContainer.isActive()) {
                 PlayerParts parts = animationContainer.data.parts();

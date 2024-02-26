@@ -14,7 +14,7 @@ public class ModAzureUtilsClient {
     public static void playGeckoAnimation(AbstractClientPlayer player, PlayerAnimationData data) {
         AnimatableManager<AbstractClientPlayer> manager = player.getAnimatableInstanceCache().getManagerForId(player.getId());
         AnimationController<AbstractClientPlayer> controller = manager.getAnimationControllers().get(PlayerAnimatorAPIMod.MOD_ID);
-        controller.triggerableAnim(data.animationID().getPath(), RawAnimation.begin().then(data.animationID().getPath(), Animation.LoopType.DEFAULT));
+        controller.triggerableAnim(ConditionalAnimations.getAnimationForCurrentConditions(data).getPath(), RawAnimation.begin().then(ConditionalAnimations.getAnimationForCurrentConditions(data).getPath(), Animation.LoopType.DEFAULT));
         controller.tryTriggerAnimation(ConditionalAnimations.getAnimationForCurrentConditions(data).getPath());
     }
 
