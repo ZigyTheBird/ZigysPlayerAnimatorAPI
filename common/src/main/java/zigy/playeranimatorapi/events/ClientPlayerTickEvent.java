@@ -1,8 +1,11 @@
 package zigy.playeranimatorapi.events;
 
+import net.minecraft.client.CameraType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import zigy.playeranimatorapi.PlayerAnimatorAPIClient;
 import zigy.playeranimatorapi.data.PlayerAnimationData;
 import zigy.playeranimatorapi.playeranims.ConditionalAnimations;
 import zigy.playeranimatorapi.playeranims.CustomModifierLayer;
@@ -22,6 +25,10 @@ public class ClientPlayerTickEvent {
                 if (currentAnim != null && animationContainer.tick > 1
                         && !ConditionalAnimations.getAnimationForCurrentConditions(data).equals(currentAnim)) {
                     PlayerAnimations.playAnimation((AbstractClientPlayer) player, data, true);
+                }
+
+                if (player.equals(Minecraft.getInstance().player) && Minecraft.getInstance().options.getCameraType() == CameraType.FIRST_PERSON) {
+                    PlayerAnimatorAPIClient.animationRenderer.tickAnim((AbstractClientPlayer) player);
                 }
             }
         }

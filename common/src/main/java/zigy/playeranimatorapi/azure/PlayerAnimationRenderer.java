@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.cache.object.GeoBone;
+import mod.azure.azurelib.core.animation.AnimationState;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -30,6 +31,12 @@ public class PlayerAnimationRenderer extends GeoEntityRenderer<AbstractClientPla
         matchPlayerModel(model, playerModel.leftArm, "left_arm");
         matchPlayerModel(model, playerModel.rightLeg, "right_leg");
         matchPlayerModel(model, playerModel.leftLeg, "left_leg");
+    }
+
+    public void tickAnim(AbstractClientPlayer player) {
+        long instanceId = this.getInstanceId(player);
+        AnimationState<AbstractClientPlayer> animationState = new AnimationState(player, 0, 0, 0,false);
+        this.model.handleAnimations(player, instanceId, animationState);
     }
 
     public void setPlayerModel(PlayerModel model) {

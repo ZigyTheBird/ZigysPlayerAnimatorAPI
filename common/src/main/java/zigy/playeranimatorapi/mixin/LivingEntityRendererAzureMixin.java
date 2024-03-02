@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import zigy.playeranimatorapi.PlayerAnimatorAPIClient;
 import zigy.playeranimatorapi.azure.PlayerAnimationModel;
 import zigy.playeranimatorapi.azure.PlayerAnimationRenderer;
 import zigy.playeranimatorapi.data.PlayerParts;
@@ -28,7 +29,7 @@ import zigy.playeranimatorapi.registry.PlayerEffectsRendererRegistry;
 public class LivingEntityRendererAzureMixin<T extends LivingEntity, M extends EntityModel<T>> {
 
     @Unique
-    private static PlayerAnimationRenderer animationRenderer;
+    private PlayerAnimationRenderer animationRenderer;
 
     @Shadow
     protected M model;
@@ -37,6 +38,7 @@ public class LivingEntityRendererAzureMixin<T extends LivingEntity, M extends En
     private void constructor(EntityRendererProvider.Context context, EntityModel model, float shadowRadius, CallbackInfo ci) {
         if (model instanceof PlayerModel<?>) {
             animationRenderer = new PlayerAnimationRenderer(context);
+            PlayerAnimatorAPIClient.animationRenderer = animationRenderer;
         }
     }
 

@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
-import dev.architectury.platform.Platform;
 import dev.kosmx.playerAnim.api.firstPerson.FirstPersonMode;
 import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import dev.kosmx.playerAnim.api.layered.modifier.AbstractFadeModifier;
@@ -27,6 +26,7 @@ import zigy.playeranimatorapi.data.PlayerParts;
 import zigy.playeranimatorapi.modifier.CommonModifier;
 import zigy.playeranimatorapi.registry.AnimModifierRegistry;
 import zigy.zigysmultiloaderutils.utils.NetworkManager;
+import zigy.zigysmultiloaderutils.utils.Platform;
 
 import java.util.List;
 import java.util.Map;
