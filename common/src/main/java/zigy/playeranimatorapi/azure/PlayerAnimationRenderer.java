@@ -17,7 +17,7 @@ import zigy.zigysmultiloaderutils.utils.Platform;
 
 public class PlayerAnimationRenderer extends GeoEntityRenderer<AbstractClientPlayer> implements PlayerModelInterface {
 
-    private PlayerModel playerModel;
+    public PlayerModel playerModel;
 
     public PlayerAnimationRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager, new PlayerAnimationModel());

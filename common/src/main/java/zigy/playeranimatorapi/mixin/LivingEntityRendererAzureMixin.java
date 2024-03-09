@@ -44,7 +44,6 @@ public class LivingEntityRendererAzureMixin<T extends LivingEntity, M extends En
     private void constructor(EntityRendererProvider.Context context, EntityModel model, float shadowRadius, CallbackInfo ci) {
         if (model instanceof PlayerModel<?>) {
             animationRenderer = new PlayerAnimationRenderer(context);
-            ModInitClient.animationRenderer = animationRenderer;
         }
     }
 
