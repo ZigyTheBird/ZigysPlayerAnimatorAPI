@@ -2,16 +2,21 @@ architectury {
     common(rootProject.enabled_platforms.split(","))
 }
 
-loom {}
+loom {
+    accessWidenerPath = file("src/main/resources/playeranimatorapi.accesswidener")
+}
 
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
 
-    modImplementation "zigy.zigysmultiloaderutils:zigysmultiloaderutils-fabric-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
-    include "zigy.zigysmultiloaderutils:zigysmultiloaderutils-fabric-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
+    modImplementation "zigy.zigysmultiloaderutils:zigysmultiloaderutils-common-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
 
     modImplementation "mod.azure.azurelib:azurelib-fabric-$rootProject.minecraft_version:$rootProject.azurelib_version"
     modImplementation "dev.kosmx.player-anim:player-animation-lib-fabric:${rootProject.player_anim_version}"
+
+    modApi("com.github.Virtuoel:Pehkui:${pehkui_version}", {
+        exclude group: "net.fabricmc.fabric-api"
+    })
 
     modCompileOnly "mezz.jei:jei-$rootProject.minecraft_version-common-api:$rootProject.jei_version"
     modRuntimeOnly "mezz.jei:jei-$rootProject.minecraft_version-common:$rootProject.jei_version"
@@ -20,6 +25,10 @@ dependencies {
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin:$rootProject.rei_version"
 
     modCompileOnly "curse.maven:emotecraft-397809:4632459"
+}
+
+jar {
+    archivesBaseName = "$mod_id-common-$minecraft_version"
 }
 
 processResources {

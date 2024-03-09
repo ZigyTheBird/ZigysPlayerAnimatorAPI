@@ -12,11 +12,11 @@ import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import zigy.playeranimatorapi.API.PlayerAnimAPI;
-import zigy.playeranimatorapi.PlayerAnimatorAPIMod;
+import zigy.playeranimatorapi.ModInit;
 
 public class StopPlayerAnimationCommand {
 
-    private static final Logger logger = LogManager.getLogger(PlayerAnimatorAPIMod.class);
+    private static final Logger logger = LogManager.getLogger(ModInit.class);
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("stopPlayerAnimation").requires(commandSourceStack -> commandSourceStack.hasPermission(2))

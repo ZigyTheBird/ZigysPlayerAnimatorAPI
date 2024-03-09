@@ -6,17 +6,20 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import zigy.playeranimatorapi.API.PlayerAnimAPI;
-import zigy.playeranimatorapi.PlayerAnimatorAPIMod;
+import zigy.playeranimatorapi.ModInit;
 import zigy.playeranimatorapi.data.PlayerAnimationData;
 import zigy.playeranimatorapi.data.PlayerParts;
 import zigy.playeranimatorapi.modifier.CommonModifier;
@@ -27,11 +30,11 @@ import java.util.List;
 
 public class PlayPlayerAnimationCommand {
 
-    private static final Logger logger = LogManager.getLogger(PlayerAnimatorAPIMod.class);
+    private static final Logger logger = LogManager.getLogger(ModInit.class);
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("playPlayerAnimation").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
-                .then(Commands.argument("player", EntityArgument.player())
+                .then(Commands.argument("player", EntityArgument.players())
                         .then(Commands.argument("animationID", ResourceLocationArgument.id())
                                 .executes(context -> execute(context, CommandState.Minimal))
                                     .then(Commands.argument("fadeLength", IntegerArgumentType.integer())
@@ -48,30 +51,38 @@ public class PlayPlayerAnimationCommand {
         try {
             switch (state) {
                 case Minimal -> {
-                    ServerPlayer player = EntityArgument.getPlayer(command, "player");
-                    PlayerAnimAPI.playPlayerAnim((ServerLevel) player.level(), player,
-                            ResourceLocationArgument.getId(command, "animationID"));
+                    for (ServerPlayer player : EntityArgument.getPlayers(command, "player")) {
+                        PlayerAnimAPI.playPlayerAnim((ServerLevel) player.level(), player,
+                                ResourceLocationArgument.getId(command, "animationID"));
+                    }
                 }
                 case Advanced -> {
-                    PlayerAnimationData data = new PlayerAnimationData(EntityArgument.getPlayer(command, "player").getUUID(),
-                            ResourceLocationArgument.getId(command, "animationID"), null, null,
-                            IntegerArgumentType.getInteger(command, "fadeLength"), IntegerArgumentType.getInteger(command, "easeID"),
-                            BoolArgumentType.getBool(command, "firstPersonEnabled"), BoolArgumentType.getBool(command, "important"));
+                    for (ServerPlayer player : EntityArgument.getPlayers(command, "player")) {
+                        PlayerAnimationData data = new PlayerAnimationData(player.getUUID(),
+                                ResourceLocationArgument.getId(command, "animationID"), null, null,
+                                IntegerArgumentType.getInteger(command, "fadeLength"), IntegerArgumentType.getInteger(command, "easeID"),
+                                BoolArgumentType.getBool(command, "firstPersonEnabled"), BoolArgumentType.getBool(command, "important"));
 
-                    PlayerAnimAPI.playPlayerAnim(command.getSource().getLevel(), EntityArgument.getPlayer(command, "player"), data);
+                        PlayerAnimAPI.playPlayerAnim(command.getSource().getLevel(), player, data);
+                    }
                 }
                 case Complete -> {
-                    PlayerAnimationData data = new PlayerAnimationData(EntityArgument.getPlayer(command, "player").getUUID(),
-                            ResourceLocationArgument.getId(command, "animationID"), PlayerParts.fromBigInteger(playerPartsIntFromString(StringArgumentType.getString(command, "playerParts"))),
-                            modifierList(StringArgumentType.getString(command, "modifiers")),
-                            IntegerArgumentType.getInteger(command, "fadeLength"), IntegerArgumentType.getInteger(command, "easeID"),
-                            BoolArgumentType.getBool(command, "firstPersonEnabled"), BoolArgumentType.getBool(command, "important"));
+                    for (ServerPlayer player : EntityArgument.getPlayers(command, "player")) {
+                        PlayerAnimationData data = new PlayerAnimationData(player.getUUID(),
+                                ResourceLocationArgument.getId(command, "animationID"), PlayerParts.fromBigInteger(playerPartsIntFromString(StringArgumentType.getString(command, "playerParts"))),
+                                modifierList(StringArgumentType.getString(command, "modifiers")),
+                                IntegerArgumentType.getInteger(command, "fadeLength"), IntegerArgumentType.getInteger(command, "easeID"),
+                                BoolArgumentType.getBool(command, "firstPersonEnabled"), BoolArgumentType.getBool(command, "important"));
 
-                    PlayerAnimAPI.playPlayerAnim(command.getSource().getLevel(), EntityArgument.getPlayer(command, "player"), data);
+                        PlayerAnimAPI.playPlayerAnim(command.getSource().getLevel(), player, data);
+                    }
                 }
             }
         } catch (CommandSyntaxException e) {
-            logger.warn(e);
+            Player player = command.getSource().getPlayer();
+            if (player != null) {
+                player.sendSystemMessage(Component.literal(e.getMessage()).withStyle(ChatFormatting.RED));
+            }
         }
 
         return 1;

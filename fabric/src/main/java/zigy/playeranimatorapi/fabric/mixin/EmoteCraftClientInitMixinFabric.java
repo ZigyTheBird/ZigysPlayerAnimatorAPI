@@ -11,13 +11,13 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import zigy.playeranimatorapi.PlayerAnimatorAPIMod;
+import zigy.playeranimatorapi.ModInit;
 import zigy.playeranimatorapi.playeranims.CustomModifierLayer;
 import zigy.playeranimatorapi.playeranims.PlayerAnimations;
 
 @Mixin(ClientInit.class)
 public abstract class EmoteCraftClientInitMixinFabric {
-    private static final ResourceLocation animationLayerId = new ResourceLocation(PlayerAnimatorAPIMod.MOD_ID, "factory");
+    private static final ResourceLocation animationLayerId = new ResourceLocation(ModInit.MOD_ID, "factory");
 
     private static CustomModifierLayer animationContainer(AbstractClientPlayer player) {
         return (CustomModifierLayer) PlayerAnimationAccess.getPlayerAssociatedData(player).get(animationLayerId);

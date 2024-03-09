@@ -8,7 +8,11 @@ architectury {
 }
 
 loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+
     forge {
+        convertAccessWideners = true
+        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
         mixinConfig "playeranimatorapi-common.mixins.json"
         mixinConfig "playeranimatorapi.mixins.json"
     }
@@ -27,6 +31,8 @@ dependencies {
 
     modImplementation "zigy.zigysmultiloaderutils:zigysmultiloaderutils-forge-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
     include "zigy.zigysmultiloaderutils:zigysmultiloaderutils-forge-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
+
+    modApi("com.github.Virtuoel:Pehkui:${pehkui_version}-$rootProject.minecraft_version-forge")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }

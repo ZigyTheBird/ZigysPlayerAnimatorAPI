@@ -19,7 +19,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import zigy.playeranimatorapi.PlayerAnimatorAPIMod;
+import zigy.playeranimatorapi.ModInit;
 import zigy.playeranimatorapi.azure.ModAzureUtilsClient;
 import zigy.playeranimatorapi.data.PlayerAnimationData;
 import zigy.playeranimatorapi.data.PlayerParts;
@@ -34,16 +34,16 @@ import java.util.UUID;
 
 @Environment(EnvType.CLIENT)
 public class PlayerAnimations {
-    private static final Logger logger = LogManager.getLogger(PlayerAnimatorAPIMod.class);
+    private static final Logger logger = LogManager.getLogger(ModInit.class);
 
     public static Gson gson = new GsonBuilder().setLenient().serializeNulls().create();
 
     public static Map<ResourceLocation, Float> animLengthsMap;
     public static Map<ResourceLocation, ResourceLocation> geckoMap;
 
-    public static final ResourceLocation playerAnimPacket = new ResourceLocation(PlayerAnimatorAPIMod.MOD_ID, "player_anim");
-    public static final ResourceLocation playerAnimStopPacket = new ResourceLocation(PlayerAnimatorAPIMod.MOD_ID, "player_anim_stop");
-    public static final ResourceLocation animationLayerId = new ResourceLocation(PlayerAnimatorAPIMod.MOD_ID, "factory");
+    public static final ResourceLocation playerAnimPacket = new ResourceLocation(ModInit.MOD_ID, "player_anim");
+    public static final ResourceLocation playerAnimStopPacket = new ResourceLocation(ModInit.MOD_ID, "player_anim_stop");
+    public static final ResourceLocation animationLayerId = new ResourceLocation(ModInit.MOD_ID, "factory");
 
     public static void init() {
         PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(
@@ -121,7 +121,7 @@ public class PlayerAnimations {
                                 try {
                                     animationContainer.addModifier(AnimModifierRegistry.getModifiers().get(commonModifier.ID).apply(animationContainer, commonModifier.data));
                                 } catch (NullPointerException | UnsupportedOperationException e) {
-                                    PlayerAnimatorAPIMod.LOGGER.error("Failed to apply modifier: " + commonModifier.ID + " :" + e);
+                                    ModInit.LOGGER.error("Failed to apply modifier: " + commonModifier.ID + " :" + e);
                                 }
                             }
                         }
@@ -232,7 +232,7 @@ public class PlayerAnimations {
                 }
 
                 if (Platform.isModLoaded("azurelib")) {
-                    ModAzureUtilsClient.playGeckoAnimation(player, data);
+                    ModAzureUtilsClient.playGeckoAnimation(player, data, animationContainer.getSpeed());
                 }
             }
         } catch (NullPointerException e) {

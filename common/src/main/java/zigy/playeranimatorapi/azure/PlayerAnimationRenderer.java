@@ -4,14 +4,16 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.cache.object.GeoBone;
-import mod.azure.azurelib.core.animation.AnimationState;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.world.phys.Vec2;
+import zigy.playeranimatorapi.compatibility.PehkuiCompat;
 import zigy.playeranimatorapi.misc.PlayerModelInterface;
+import zigy.zigysmultiloaderutils.utils.Platform;
 
 public class PlayerAnimationRenderer extends GeoEntityRenderer<AbstractClientPlayer> implements PlayerModelInterface {
 
@@ -25,18 +27,19 @@ public class PlayerAnimationRenderer extends GeoEntityRenderer<AbstractClientPla
     public void preRender(PoseStack poseStack, AbstractClientPlayer player, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
 
+        poseStack.pushPose();
+        if (Platform.isModLoaded("pehkui")) {
+            Vec2 scale = PehkuiCompat.getScale(player, partialTick);
+            poseStack.scale(scale.x, scale.y, scale.x);
+        }
+        poseStack.popPose();
+
         matchPlayerModel(model, playerModel.head, "head");
         matchPlayerModel(model, playerModel.body, "torso");
         matchPlayerModel(model, playerModel.rightArm, "right_arm");
         matchPlayerModel(model, playerModel.leftArm, "left_arm");
         matchPlayerModel(model, playerModel.rightLeg, "right_leg");
         matchPlayerModel(model, playerModel.leftLeg, "left_leg");
-    }
-
-    public void tickAnim(AbstractClientPlayer player) {
-        long instanceId = this.getInstanceId(player);
-        AnimationState<AbstractClientPlayer> animationState = new AnimationState(player, 0, 0, 0,false);
-        this.model.handleAnimations(player, instanceId, animationState);
     }
 
     public void setPlayerModel(PlayerModel model) {

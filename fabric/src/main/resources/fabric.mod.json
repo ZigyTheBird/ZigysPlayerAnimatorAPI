@@ -29,5 +29,10 @@
     "fabricloader": ">=${fabric_loader_version}",
     "minecraft": ">=1.20",
     "player-animator": ">=${player_anim_version}"
+  },
+  "custom": {
+    "modmenu": {
+      "badges": ["library"]
+    }
   }
 }

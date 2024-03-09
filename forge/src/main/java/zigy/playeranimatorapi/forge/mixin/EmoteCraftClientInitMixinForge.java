@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import zigy.playeranimatorapi.PlayerAnimatorAPIMod;
+import zigy.playeranimatorapi.ModInit;
 import zigy.playeranimatorapi.playeranims.PlayerAnimations;
 
 import javax.annotation.Nullable;
@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 @Mixin(ClientInit.class)
 public class EmoteCraftClientInitMixinForge {
 
-    private static final ResourceLocation animationLayerId = new ResourceLocation(PlayerAnimatorAPIMod.MOD_ID, "factory");
+    private static final ResourceLocation animationLayerId = new ResourceLocation(ModInit.MOD_ID, "factory");
 
     @Redirect(method = "lambda$initKeyBinding$2", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;setScreen(Lnet/minecraft/client/gui/screens/Screen;)V"))
     private static void initKeybinding(Minecraft instance, @Nullable Screen guiScreen) {

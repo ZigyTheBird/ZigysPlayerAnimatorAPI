@@ -6,6 +6,7 @@ import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import dev.kosmx.playerAnim.api.layered.ModifierLayer;
 import dev.kosmx.playerAnim.api.layered.modifier.AbstractFadeModifier;
 import dev.kosmx.playerAnim.api.layered.modifier.AbstractModifier;
+import dev.kosmx.playerAnim.api.layered.modifier.SpeedModifier;
 import dev.kosmx.playerAnim.core.util.Vec3f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -26,7 +27,6 @@ public class CustomModifierLayer<T extends IAnimation> extends ModifierLayer imp
 
     public List<AbstractCameraModifier> cameraModifiers = new ArrayList<>();
 
-    public int tick;
     public int modifierCount = 0;
     public boolean hasModifier;
     public boolean cameraAnimEnabled;
@@ -36,6 +36,7 @@ public class CustomModifierLayer<T extends IAnimation> extends ModifierLayer imp
     public ResourceLocation currentAnim;
     public KeyframeAnimationPlayer animPlayer;
     public AbstractClientPlayer player;
+    private float speed = 1;
 
     public void setAnimationData(PlayerAnimationData data) {
         this.data = data;
@@ -58,7 +59,6 @@ public class CustomModifierLayer<T extends IAnimation> extends ModifierLayer imp
     @Override
     public void tick() {
         super.tick();
-        tick += 1;
     }
 
     public void addModifier(@NotNull AbstractModifier modifier) {
@@ -69,6 +69,9 @@ public class CustomModifierLayer<T extends IAnimation> extends ModifierLayer imp
             cameraAnimEnabled = true;
             this.cameraModifiers.add((AbstractCameraModifier) modifier);
         }
+        if (modifier instanceof SpeedModifier) {
+            speed *= ((SpeedModifier)modifier).speed;
+        }
     }
 
     public void removeAllModifiers() {
@@ -78,17 +81,16 @@ public class CustomModifierLayer<T extends IAnimation> extends ModifierLayer imp
         modifierCount = 0;
         cameraAnimEnabled = false;
         hasModifier = false;
+        speed = 1;
         this.cameraModifiers= new ArrayList<>();
     }
 
     public void replaceAnimationWithFade(AbstractFadeModifier fadeModifier, KeyframeAnimationPlayer newAnimation) {
-        tick = 0;
         setAnimPlayer(newAnimation);
         replaceAnimationWithFade(fadeModifier, newAnimation, false);
     }
 
     public void replaceAnimation(KeyframeAnimationPlayer newAnimation) {
-        tick = 0;
         setAnimPlayer(newAnimation);
         this.setAnimation(newAnimation);
         this.linkModifiers();
@@ -101,6 +103,10 @@ public class CustomModifierLayer<T extends IAnimation> extends ModifierLayer imp
             transform = transform.add(voidVector);
         }
         return transform;
+    }
+
+    public float getSpeed() {
+        return speed;
     }
 
     public CustomModifierLayer(AbstractClientPlayer player) {

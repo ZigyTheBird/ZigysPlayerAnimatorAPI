@@ -11,6 +11,11 @@
     "ModelPartMixin"
   ],
   "mixins": [
+    "AnimatableManagerAccessor",
+    "AnimationControllerAccessor",
+    "AnimationProcessorMixin",
+    "GeoModelMixin",
+    "KeyframeAnimationPlayerAccessor",
     "PlayerAzureMixin",
     "PlayerMixin"
   ],

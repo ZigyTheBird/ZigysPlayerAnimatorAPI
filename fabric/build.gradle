@@ -24,12 +24,20 @@ configurations {
     developmentFabric.extendsFrom common
 }
 
+loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+}
+
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
 
     modImplementation "zigy.zigysmultiloaderutils:zigysmultiloaderutils-fabric-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
     include "zigy.zigysmultiloaderutils:zigysmultiloaderutils-fabric-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
+
+    modApi("com.github.Virtuoel:Pehkui:${pehkui_version}", {
+        exclude group: "net.fabricmc.fabric-api"
+    })
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
@@ -59,8 +67,10 @@ shadowJar {
 }
 
 remapJar {
-    input.set shadowJar.archiveFile
+    injectAccessWidener = true
+    inputFile.set shadowJar.archiveFile
     dependsOn shadowJar
+    archiveClassifier.set(null)
 }
 
 jar {

@@ -1,12 +1,12 @@
 package zigy.playeranimatorapi.fabric;
 
 import net.fabricmc.api.ClientModInitializer;
-import zigy.playeranimatorapi.PlayerAnimatorAPIClient;
+import zigy.playeranimatorapi.ModInitClient;
 
 public class PlayerAnimatorAPIClientFabric implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        PlayerAnimatorAPIClient.init();
+        ModInitClient.init();
     }
 }

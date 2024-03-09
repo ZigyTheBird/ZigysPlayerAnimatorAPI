@@ -4,7 +4,7 @@ import zigy.playeranimatorapi.azure.PlayerAnimationRenderer;
 import zigy.playeranimatorapi.playeranims.PlayerAnimations;
 import zigy.playeranimatorapi.registry.AnimModifierRegistry;
 
-public class PlayerAnimatorAPIClient {
+public class ModInitClient {
 
     public static PlayerAnimationRenderer animationRenderer;
 

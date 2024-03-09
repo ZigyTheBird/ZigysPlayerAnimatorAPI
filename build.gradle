@@ -61,6 +61,9 @@ allprojects {
             name "zigythebirdMods"
             url "https://maven.zigythebird.com/mods"
         }
+        maven {
+            url = "https://jitpack.io"
+        }
     }
 
     tasks.withType(JavaCompile).tap {

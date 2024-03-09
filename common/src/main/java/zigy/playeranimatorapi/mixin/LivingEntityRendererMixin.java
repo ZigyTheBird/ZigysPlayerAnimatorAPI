@@ -26,24 +26,17 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
     @Shadow
     protected M model;
 
-    @Inject(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At("HEAD"))
+    @Inject(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At("TAIL"), cancellable = true)
     private void render(T entity, float entityYaw, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int packedLight, CallbackInfo ci) {
         if (entity instanceof Player) {
             CustomModifierLayer animationContainer = PlayerAnimations.getModifierLayer((AbstractClientPlayer) entity);
             PlayerModel playerModel = ((PlayerModel) (this.model));
 
-            for (EntityRenderer renderer : PlayerEffectsRendererRegistry.getRenderers()) {
-                if (renderer instanceof PlayerModelInterface) {
-                    ((PlayerModelInterface)renderer).setPlayerModel(playerModel);
-                    renderer.render(entity, entityYaw, partialTicks, matrixStack, buffer, packedLight);
-                }
-            }
-
             if (animationContainer != null && animationContainer.isActive()) {
                 PlayerParts parts = animationContainer.data.parts();
 
                 if (!parts.body.isVisible) {
-                    return;
+                    ci.cancel();
                 }
 
                 playerModel.head.zigysPlayerAnimatorAPI$setIsVisible(parts.head.isVisible);
@@ -71,6 +64,13 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
                 playerModel.leftSleeve.zigysPlayerAnimatorAPI$setIsVisible(true);
                 playerModel.rightPants.zigysPlayerAnimatorAPI$setIsVisible(true);
                 playerModel.leftPants.zigysPlayerAnimatorAPI$setIsVisible(true);
+            }
+
+            for (EntityRenderer renderer : PlayerEffectsRendererRegistry.getRenderers()) {
+                if (renderer instanceof PlayerModelInterface) {
+                    ((PlayerModelInterface)renderer).setPlayerModel(playerModel);
+                    renderer.render(entity, entityYaw, partialTicks, matrixStack, buffer, packedLight);
+                }
             }
         }
     }

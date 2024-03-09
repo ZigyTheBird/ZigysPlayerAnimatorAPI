@@ -10,7 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import zigy.playeranimatorapi.PlayerAnimatorAPIMod;
+import zigy.playeranimatorapi.ModInit;
 import zigy.playeranimatorapi.data.PlayerAnimationData;
 import zigy.playeranimatorapi.data.PlayerParts;
 import zigy.playeranimatorapi.modifier.CommonModifier;
@@ -26,8 +26,8 @@ import java.util.List;
  */
 public class PlayerAnimAPI {
 
-    public static final ResourceLocation playerAnimPacket = new ResourceLocation(PlayerAnimatorAPIMod.MOD_ID, "player_anim");
-    public static final ResourceLocation playerAnimStopPacket = new ResourceLocation(PlayerAnimatorAPIMod.MOD_ID, "player_anim_stop");
+    public static final ResourceLocation playerAnimPacket = new ResourceLocation(ModInit.MOD_ID, "player_anim");
+    public static final ResourceLocation playerAnimStopPacket = new ResourceLocation(ModInit.MOD_ID, "player_anim_stop");
 
     public static final ResourceLocation MIRROR_ON_ALT_HAND = new ResourceLocation("playeranimatorapi", "mirroronalthand");
 
@@ -38,7 +38,7 @@ public class PlayerAnimAPI {
         }
     };
 
-    private static final Logger logger = LogManager.getLogger(PlayerAnimatorAPIMod.class);
+    private static final Logger logger = LogManager.getLogger(ModInit.class);
 
     public static Gson gson = new GsonBuilder().setLenient().serializeNulls().create();
 

@@ -1,4 +1,5 @@
 {
+  "accessWidener": "playeranimatorapi.accesswidener",
   "injected_interfaces": {
     "net/minecraft/client/model/geom/ModelPart": [
       "zigy/playeranimatorapi/misc/IsVisibleAccessor"

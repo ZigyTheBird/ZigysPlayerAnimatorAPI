@@ -18,7 +18,7 @@ import java.util.Locale;
 
 public class ResourceReloadListener implements ResourceManagerReloadListener {
 
-    private static final Logger logger = LogManager.getLogger(PlayerAnimatorAPIMod.class);
+    private static final Logger logger = LogManager.getLogger(ModInit.class);
 
     @Override
     public void onResourceManagerReload(ResourceManager resourceManager) {
