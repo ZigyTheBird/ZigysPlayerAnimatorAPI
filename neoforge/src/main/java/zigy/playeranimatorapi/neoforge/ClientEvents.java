@@ -4,13 +4,14 @@ import dev.kosmx.playerAnim.core.util.Vec3f;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import zigy.playeranimatorapi.ModInit;
+import zigy.playeranimatorapi.ModInitClient;
 import zigy.playeranimatorapi.ResourceReloadListener;
 import zigy.playeranimatorapi.utils.CameraUtils;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = ModInit.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientEvents {
 
     @Mod.EventBusSubscriber(modid = ModInit.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)

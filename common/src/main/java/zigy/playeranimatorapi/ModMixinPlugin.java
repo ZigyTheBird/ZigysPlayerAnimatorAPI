@@ -11,10 +11,10 @@ import java.util.Set;
 public class ModMixinPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if (mixinClassName.endsWith("_azureOnly") && !Platform.isModLoaded("azurelib", "mod.azure.azurelib.AzureLib")) {
+        if (mixinClassName.endsWith("_azureOnly") && !Platform.isModLoaded("azurelib", "mod.azure.azurelib.common.internal.common.AzureLib")) {
             return false;
         }
-        if (mixinClassName.equals("zigy.playeranimatorapi.mixin.LivingEntityRendererMixin") && Platform.isModLoaded("azurelib", "mod.azure.azurelib.AzureLib")) {
+        if (mixinClassName.equals("zigy.playeranimatorapi.mixin.LivingEntityRendererMixin") && Platform.isModLoaded("azurelib", "mod.azure.azurelib.common.internal.common.AzureLib")) {
             return false;
         }
         return true;
