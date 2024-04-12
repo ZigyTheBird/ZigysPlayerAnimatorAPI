@@ -26,7 +26,7 @@ public class ModMixinPluginForge implements IMixinConfigPlugin {
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (!madeInterface) {
             madeInterface = true;
-            if (Platform.isModLoaded("azurelib", "mod.azure.azurelib.common.internal.common.AzureLib")) {
+            if (!Platform.isModLoaded("azurelib", "mod.azure.azurelib.common.internal.common.AzureLib")) {
                 ClassWriter cw = new ClassWriter(0);
                 cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC | Opcodes.ACC_INTERFACE, "zigy/playeranimatorapi/GeoPlayer", null, "java/lang/Object", null);
                 cw.visitEnd();
