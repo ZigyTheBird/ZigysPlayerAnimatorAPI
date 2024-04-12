@@ -1,11 +1,11 @@
 package zigy.playeranimatorapi.forge;
 
 import com.google.common.collect.ImmutableMap;
-import javassist.*;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
-import zigy.playeranimatorapi.ModInit;
 import zigy.zigysmultiloaderutils.utils.Platform;
 
 import java.util.List;
