@@ -21,7 +21,7 @@ public class EmoteCraftClientInitMixinForge {
     @Unique
     private static final ResourceLocation animationLayerId = new ResourceLocation(ModInit.MOD_ID, "factory");
 
-    @Redirect(method = "lambda$initKeyBinding$2", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;setScreen(Lnet/minecraft/client/gui/screens/Screen;)V"), remap = false)
+    @Redirect(method = "lambda$initKeyBinding$2", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;setScreen(Lnet/minecraft/client/gui/screens/Screen;)V"))
     private static void initKeybinding(Minecraft instance, @Nullable Screen guiScreen) {
         if (instance.player != null && PlayerAnimations.getModifierLayer(instance.player).isActive() && PlayerAnimations.getModifierLayer(instance.player).important) {
             instance.player.displayClientMessage(Component.translatable("warn.playeranimatorapi.cannotEmote"), true);
