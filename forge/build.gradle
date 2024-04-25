@@ -39,6 +39,10 @@ dependencies {
     modImplementation "mod.azure.azurelib:azurelib-neo-$rootProject.minecraft_version:$rootProject.azurelib_version"
     modImplementation "dev.kosmx.player-anim:player-animation-lib-forge:${rootProject.player_anim_version}"
 
+    include 'org.javassist:javassist:3.30.2-GA'
+    implementation 'org.javassist:javassist:3.30.2-GA'
+    forgeRuntimeLibrary 'org.javassist:javassist:3.30.2-GA'
+
     modImplementation "curse.maven:emotecraft-forge-403422:4632460"
 }
 
