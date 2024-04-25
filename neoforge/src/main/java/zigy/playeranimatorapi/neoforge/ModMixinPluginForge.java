@@ -36,7 +36,7 @@ public class ModMixinPluginForge implements IMixinConfigPlugin {
 //        }
         if (!madeInterface) {
             madeInterface = true;
-            if (!Platform.isModLoaded("azurelib", "mod.azure.azurelib.AzureLib")) {
+            if (!Platform.isModLoaded("azurelib", "mod.azure.azurelib.common.internal.common.AzureLib")) {
                 ClassPool pool = ClassPool.getDefault();
                 CtClass dynamicClass;
                 dynamicClass = pool.makeInterface("zigy.playeranimatorapi.GeoPlayer");
