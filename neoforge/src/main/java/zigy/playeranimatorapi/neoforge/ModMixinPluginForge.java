@@ -1,13 +1,11 @@
 package zigy.playeranimatorapi.neoforge;
 
 import com.google.common.collect.ImmutableMap;
-import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.CtClass;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
-import zigy.playeranimatorapi.ModInit;
 import zigy.zigysmultiloaderutils.utils.Platform;
 
 import java.util.List;
@@ -26,28 +24,28 @@ public class ModMixinPluginForge implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-//        if (!madeInterface) {
-//            madeInterface = true;
-//            if (!Platform.isModLoaded("azurelib", "mod.azure.azurelib.common.internal.common.AzureLib")) {
-//                ClassWriter cw = new ClassWriter(0);
-//                cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC | Opcodes.ACC_INTERFACE, "zigy/playeranimatorapi/GeoPlayer", null, "java/lang/Object", null);
-//                cw.visitEnd();
-//            }
-//        }
         if (!madeInterface) {
             madeInterface = true;
             if (!Platform.isModLoaded("azurelib", "mod.azure.azurelib.common.internal.common.AzureLib")) {
-                ClassPool pool = ClassPool.getDefault();
-                CtClass dynamicClass;
-                dynamicClass = pool.makeInterface("zigy.playeranimatorapi.GeoPlayer");
-                try {
-                    dynamicClass.toClass(ModInit.class);
-                    Class.forName("zigy.playeranimatorapi.GeoPlayer");
-                } catch (CannotCompileException | ClassNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
+                ClassWriter cw = new ClassWriter(0);
+                cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC | Opcodes.ACC_INTERFACE, "zigy/playeranimatorapi/GeoPlayer", null, "java/lang/Object", null);
+                cw.visitEnd();
             }
         }
+//        if (!madeInterface) {
+//            madeInterface = true;
+//            if (!Platform.isModLoaded("azurelib", "mod.azure.azurelib.common.internal.common.AzureLib")) {
+//                ClassPool pool = ClassPool.getDefault();
+//                CtClass dynamicClass;
+//                dynamicClass = pool.makeInterface("zigy.playeranimatorapi.GeoPlayer");
+//                try {
+//                    dynamicClass.toClass(ModInit.class);
+//                    Class.forName("zigy.playeranimatorapi.GeoPlayer");
+//                } catch (CannotCompileException | ClassNotFoundException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//        }
         return CONDITIONS.getOrDefault(mixinClassName, TRUE).get();
     }
 
