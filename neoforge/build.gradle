@@ -34,9 +34,9 @@ dependencies {
 
 //    modImplementation "curse.maven:emotecraft-forge-403422:4632460"
 
-//    include 'org.javassist:javassist:3.30.2-GA'
-//    implementation 'org.javassist:javassist:3.30.2-GA'
-//    forgeRuntimeLibrary 'org.javassist:javassist:3.30.2-GA'
+    include 'org.javassist:javassist:3.30.2-GA'
+    implementation 'org.javassist:javassist:3.30.2-GA'
+    forgeRuntimeLibrary 'org.javassist:javassist:3.30.2-GA'
 }
 
 processResources {
