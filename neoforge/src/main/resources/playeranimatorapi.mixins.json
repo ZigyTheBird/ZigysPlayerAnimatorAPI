@@ -1,9 +1,9 @@
 {
   "required": true,
-  "package": "zigy.playeranimatorapi.neoforge.mixin",
+  "package": "com.zigythebird.playeranimatorapi.neoforge.mixin",
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
-  "plugin": "zigy.playeranimatorapi.neoforge.ModMixinPluginForge",
+  "plugin": "ModMixinPluginForge",
   "client": [],
   "mixins": [],
   "injectors": {
