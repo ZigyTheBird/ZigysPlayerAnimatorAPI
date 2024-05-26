@@ -18,8 +18,8 @@ configurations {
 dependencies {
     neoForge "net.neoforged:neoforge:${rootProject.neoforge_version}"
 
-    modImplementation "com.zigythebird.multiloaderutils:zigysmultiloaderutils-neoforge-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
-    include "com.zigythebird.multiloaderutils:zigysmultiloaderutils-neoforge-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
+    modImplementation "zigy.zigysmultiloaderutils:zigysmultiloaderutils-neoforge-$rootProject.minecraft_version:$rootProject.multiloader_utils_version-b"
+    include "zigy.zigysmultiloaderutils:zigysmultiloaderutils-neoforge-$rootProject.minecraft_version:$rootProject.multiloader_utils_version-b"
 
     modApi("com.github.Virtuoel:Pehkui:$rootProject.pehkui_version-1.20.4-neoforge")
 
@@ -33,6 +33,10 @@ dependencies {
     modImplementation "dev.kosmx.player-anim:player-animation-lib-forge:${rootProject.player_anim_version}"
 
 //    modImplementation "curse.maven:emotecraft-forge-403422:4632460"
+
+    include 'org.javassist:javassist:3.30.2-GA'
+    implementation 'org.javassist:javassist:3.30.2-GA'
+    forgeRuntimeLibrary 'org.javassist:javassist:3.30.2-GA'
 }
 
 processResources {
@@ -67,26 +71,5 @@ sourcesJar {
 components.java {
     withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
         skip()
-    }
-}
-
-publishing {
-    repositories {
-        maven {
-            name = "zigythebirdmods"
-            url = "https://maven.zigythebird.com/mods"
-            credentials(PasswordCredentials)
-            authentication {
-                basic(BasicAuthentication)
-            }
-        }
-    }
-    publications {
-        maven(MavenPublication) {
-            groupId = "com.zigythebird.playeranimatorapi"
-            artifactId = "$mod_id-neoforge-$minecraft_version"
-            version = rootProject.mod_version
-            from components.java
-        }
     }
 }

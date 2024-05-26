@@ -15,10 +15,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.zigythebird.playeranimatorapi.fabric.PlayerAnimatorAPIModFabric"
+      "zigy.playeranimatorapi.fabric.PlayerAnimatorAPIModFabric"
     ],
     "client": [
-      "com.zigythebird.playeranimatorapi.fabric.PlayerAnimatorAPIClientFabric"
+      "zigy.playeranimatorapi.fabric.PlayerAnimatorAPIClientFabric"
     ]
   },
   "mixins": [
@@ -35,7 +35,7 @@
       "badges": ["library"]
     },
     "loom:injected_interfaces": {
-      "net/minecraft/class_4184": ["com/zigythebird/playeranimatorapi/fabric/interfaces/CameraInterface"]
+      "net/minecraft/class_4184": ["zigy/playeranimatorapi/fabric/interfaces/CameraInterface"]
     }
   }
 }
