@@ -1,5 +1,6 @@
 package com.zigythebird.playeranimatorapi.azure;
 
+import com.zigythebird.playeranimatorapi.ModInit;
 import mod.azure.azurelib.common.internal.client.util.RenderUtils;
 import mod.azure.azurelib.common.internal.common.core.animatable.GeoAnimatable;
 import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
@@ -14,7 +15,6 @@ import mod.azure.azurelib.common.platform.Services;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
-import com.zigythebird.playeranimatorapi.ModInit;
 
 public class AnimatablePlayerLayer implements GeoAnimatable {
 

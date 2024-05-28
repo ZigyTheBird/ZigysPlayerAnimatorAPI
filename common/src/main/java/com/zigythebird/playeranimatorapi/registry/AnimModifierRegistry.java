@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.zigythebird.playeranimatorapi.modifier.HeadPosBoundCamera;
 import com.zigythebird.playeranimatorapi.modifier.HeadRotBoundCamera;
 import com.zigythebird.playeranimatorapi.modifier.LengthModifier;
+import com.zigythebird.playeranimatorapi.modifier.MirrorOnAltHandModifier;
 import com.zigythebird.playeranimatorapi.playeranims.CustomModifierLayer;
 import dev.kosmx.playerAnim.api.layered.modifier.AbstractModifier;
 import dev.kosmx.playerAnim.api.layered.modifier.MirrorModifier;
@@ -11,7 +12,6 @@ import dev.kosmx.playerAnim.api.layered.modifier.SpeedModifier;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.resources.ResourceLocation;
-import com.zigythebird.playeranimatorapi.modifier.MirrorOnAltHandModifier;
 
 import java.util.HashMap;
 import java.util.Map;

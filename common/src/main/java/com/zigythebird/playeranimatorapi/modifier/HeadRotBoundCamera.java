@@ -1,5 +1,6 @@
 package com.zigythebird.playeranimatorapi.modifier;
 
+import com.zigythebird.playeranimatorapi.playeranims.CustomModifierLayer;
 import dev.kosmx.playerAnim.api.TransformType;
 import dev.kosmx.playerAnim.core.util.Vec3f;
 import net.minecraft.ChatFormatting;
@@ -13,7 +14,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import org.jetbrains.annotations.NotNull;
-import com.zigythebird.playeranimatorapi.playeranims.CustomModifierLayer;
 
 public class HeadRotBoundCamera extends AbstractCameraModifier {
 

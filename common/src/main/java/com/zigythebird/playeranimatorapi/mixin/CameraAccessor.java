@@ -9,10 +9,4 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface CameraAccessor {
     @Invoker
     void callSetPosition(double x, double y, double z);
-
-    @Accessor
-    float getEyeHeightOld();
-
-    @Accessor
-    float getEyeHeight();
 }

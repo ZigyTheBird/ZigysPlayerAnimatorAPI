@@ -1,5 +1,8 @@
 package com.zigythebird.playeranimatorapi.mixin;
 
+import com.zigythebird.playeranimatorapi.azure.ModAzureUtilsClient;
+import com.zigythebird.playeranimatorapi.azure.PlayerAnimationModel;
+import com.zigythebird.playeranimatorapi.azure.PlayerAnimationRenderer;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -8,9 +11,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import com.zigythebird.playeranimatorapi.azure.ModAzureUtilsClient;
-import com.zigythebird.playeranimatorapi.azure.PlayerAnimationModel;
-import com.zigythebird.playeranimatorapi.azure.PlayerAnimationRenderer;
 
 @Mixin(PlayerModel.class)
 public class PlayerModelMixin_azureOnly<T extends LivingEntity> {

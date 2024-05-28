@@ -1,14 +1,14 @@
 package com.zigythebird.playeranimatorapi.events;
 
 import com.zigythebird.multiloaderutils.utils.Platform;
-import com.zigythebird.playeranimatorapi.playeranims.PlayerAnimations;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
 import com.zigythebird.playeranimatorapi.azure.ModAzureUtilsClient;
 import com.zigythebird.playeranimatorapi.data.PlayerAnimationData;
 import com.zigythebird.playeranimatorapi.playeranims.ConditionalAnimations;
 import com.zigythebird.playeranimatorapi.playeranims.CustomModifierLayer;
+import com.zigythebird.playeranimatorapi.playeranims.PlayerAnimations;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 
 public class ClientPlayerTickEvent {
 

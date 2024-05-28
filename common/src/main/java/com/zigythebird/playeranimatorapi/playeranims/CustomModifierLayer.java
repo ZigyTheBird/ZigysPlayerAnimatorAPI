@@ -1,5 +1,7 @@
 package com.zigythebird.playeranimatorapi.playeranims;
 
+import com.zigythebird.playeranimatorapi.data.PlayerAnimationData;
+import com.zigythebird.playeranimatorapi.modifier.AbstractCameraModifier;
 import dev.kosmx.playerAnim.api.TransformType;
 import dev.kosmx.playerAnim.api.layered.IAnimation;
 import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
@@ -14,8 +16,6 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import com.zigythebird.playeranimatorapi.data.PlayerAnimationData;
-import com.zigythebird.playeranimatorapi.modifier.AbstractCameraModifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +30,7 @@ public class CustomModifierLayer<T extends IAnimation> extends ModifierLayer imp
     public int modifierCount = 0;
     public boolean hasModifier;
     public boolean cameraAnimEnabled;
-
-    public boolean important = false;
+    public final ResourceLocation ID;
     public PlayerAnimationData data;
     public ResourceLocation currentAnim;
     public KeyframeAnimationPlayer animPlayer;
@@ -40,7 +39,6 @@ public class CustomModifierLayer<T extends IAnimation> extends ModifierLayer imp
 
     public void setAnimationData(PlayerAnimationData data) {
         this.data = data;
-        this.important = data.important();
     }
 
     public void setAnimPlayer(KeyframeAnimationPlayer animPlayer) {
@@ -51,9 +49,10 @@ public class CustomModifierLayer<T extends IAnimation> extends ModifierLayer imp
         this.currentAnim = animation;
     }
 
-    public CustomModifierLayer(@Nullable T animation, AbstractClientPlayer player, AbstractModifier... modifiers) {
+    public CustomModifierLayer(@Nullable T animation, AbstractClientPlayer player, ResourceLocation ID, AbstractModifier... modifiers) {
         hasModifier = false;
         this.player = player;
+        this.ID = ID;
     }
 
     @Override
@@ -109,7 +108,7 @@ public class CustomModifierLayer<T extends IAnimation> extends ModifierLayer imp
         return speed;
     }
 
-    public CustomModifierLayer(AbstractClientPlayer player) {
-        this(null, player);
+    public CustomModifierLayer(AbstractClientPlayer player, ResourceLocation ID) {
+        this(null, player, ID);
     }
 }

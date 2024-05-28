@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 public record PlayerAnimationData(UUID playerUUID, ResourceLocation animationID, PlayerParts parts, List<CommonModifier> modifiers,
-                                  int fadeLength, int easeID, boolean firstPersonEnabled, boolean important) {
+                                  int fadeLength, int easeID, int priority, boolean firstPersonEnabled) {
 
     public static final Codec<UUID> UUID_CODEC = Codec.list(Codec.LONG).comapFlatMap(PlayerAnimationData::readUUID, PlayerAnimationData::writeUUID).stable();
     public static final Codec<ResourceLocation> RESOURCE_LOCATION_CODEC = Codec.STRING.comapFlatMap(ResourceLocation::read, PlayerAnimationData::resourceLocationToString).stable();
@@ -42,7 +42,7 @@ public record PlayerAnimationData(UUID playerUUID, ResourceLocation animationID,
             CommonModifier.LIST_CODEC.fieldOf("modifiers").forGetter(PlayerAnimationData::modifiers),
             Codec.INT.fieldOf("fadeLength").forGetter(PlayerAnimationData::fadeLength),
             Codec.INT.fieldOf("easeID").forGetter(PlayerAnimationData::easeID),
-            Codec.BOOL.fieldOf("firstPersonEnabled").forGetter(PlayerAnimationData::firstPersonEnabled),
-            Codec.BOOL.fieldOf("important").forGetter(PlayerAnimationData::important)
+            Codec.INT.fieldOf("priority").forGetter(PlayerAnimationData::priority),
+            Codec.BOOL.fieldOf("firstPersonEnabled").forGetter(PlayerAnimationData::firstPersonEnabled)
     ).apply(playerAnimationDataInstance, PlayerAnimationData::new));
 }

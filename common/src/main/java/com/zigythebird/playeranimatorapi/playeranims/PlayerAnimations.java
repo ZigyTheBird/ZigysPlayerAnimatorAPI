@@ -6,11 +6,22 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import com.zigythebird.multiloaderutils.utils.NetworkManager;
 import com.zigythebird.multiloaderutils.utils.Platform;
+import com.zigythebird.playeranimatorapi.ModInit;
+import com.zigythebird.playeranimatorapi.azure.ModAzureUtilsClient;
+import com.zigythebird.playeranimatorapi.data.PlayerAnimationData;
+import com.zigythebird.playeranimatorapi.data.PlayerParts;
+import com.zigythebird.playeranimatorapi.mixin.AnimationStackAccessor;
+import com.zigythebird.playeranimatorapi.modifier.CommonModifier;
+import com.zigythebird.playeranimatorapi.registry.AnimModifierRegistry;
 import dev.kosmx.playerAnim.api.firstPerson.FirstPersonMode;
+import dev.kosmx.playerAnim.api.layered.AnimationStack;
+import dev.kosmx.playerAnim.api.layered.IAnimation;
 import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import dev.kosmx.playerAnim.api.layered.modifier.AbstractFadeModifier;
 import dev.kosmx.playerAnim.core.data.KeyframeAnimation;
 import dev.kosmx.playerAnim.core.util.Ease;
+import dev.kosmx.playerAnim.core.util.Pair;
+import dev.kosmx.playerAnim.impl.IAnimatedPlayer;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationFactory;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
@@ -19,14 +30,9 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import com.zigythebird.playeranimatorapi.ModInit;
-import com.zigythebird.playeranimatorapi.azure.ModAzureUtilsClient;
-import com.zigythebird.playeranimatorapi.data.PlayerAnimationData;
-import com.zigythebird.playeranimatorapi.data.PlayerParts;
-import com.zigythebird.playeranimatorapi.modifier.CommonModifier;
-import com.zigythebird.playeranimatorapi.registry.AnimModifierRegistry;
 
 import java.util.List;
 import java.util.Map;
@@ -48,8 +54,8 @@ public class PlayerAnimations {
     public static void init() {
         PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(
                 animationLayerId,
-                42,
-                player -> new CustomModifierLayer(player)
+                1000,
+                player -> new CustomModifierLayer(player, animationLayerId)
         );
 
         NetworkManager.registerReceiver(NetworkManager.Side.S2C, playerAnimPacket, (buf, context) -> {
@@ -100,9 +106,11 @@ public class PlayerAnimations {
                 return;
             }
 
-            if (animationContainer.data != null && animationContainer.data.important() && animationContainer.isActive() && !data.important()) {
+            if (animationContainer.data != null && animationContainer.isActive() && animationContainer.data.priority() > animationContainer.data.priority()) {
                 return;
             }
+
+            setLayerPriorityForPlayer(data.priority(), player);
 
             animationContainer.setAnimationData(data);
 
@@ -234,6 +242,24 @@ public class PlayerAnimations {
             }
         } catch (NullPointerException e) {
             logger.warn("Player Animator API failed to play player animation: " + e);
+        }
+    }
+
+    private static void setLayerPriorityForPlayer(int priority, Player player) {
+        AnimationStack animationStack = ((IAnimatedPlayer)(player)).getAnimationStack();
+        IAnimation layer = null;
+        if (priority == -1) {
+            priority = 1000;
+        }
+        for (Pair<Integer, IAnimation> pair : ((AnimationStackAccessor)(animationStack)).getLayers()) {
+            if (pair.getRight() instanceof CustomModifierLayer<?> && ((CustomModifierLayer<?>) pair.getRight()).ID == animationLayerId) {
+                layer = pair.getRight();
+                break;
+            }
+        }
+        if (layer != null) {
+            animationStack.removeLayer(layer);
+            animationStack.addAnimLayer(priority, layer);
         }
     }
 

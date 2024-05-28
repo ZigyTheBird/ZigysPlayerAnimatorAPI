@@ -1,6 +1,8 @@
 package com.zigythebird.playeranimatorapi.mixin;
 
 
+import com.zigythebird.playeranimatorapi.azure.AnimatablePlayerLayer;
+import com.zigythebird.playeranimatorapi.azure.PlayerAnimationModel;
 import com.zigythebird.playeranimatorapi.playeranims.CustomModifierLayer;
 import com.zigythebird.playeranimatorapi.playeranims.PlayerAnimations;
 import mod.azure.azurelib.common.api.client.model.GeoModel;
@@ -16,8 +18,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import com.zigythebird.playeranimatorapi.azure.AnimatablePlayerLayer;
-import com.zigythebird.playeranimatorapi.azure.PlayerAnimationModel;
 
 @Mixin(GeoModel.class)
 public abstract class GeoModelMixin_azureOnly<T extends GeoAnimatable> {

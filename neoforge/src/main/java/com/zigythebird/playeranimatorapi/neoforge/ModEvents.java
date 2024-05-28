@@ -1,11 +1,11 @@
 package com.zigythebird.playeranimatorapi.neoforge;
 
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import com.zigythebird.playeranimatorapi.ModInit;
 import com.zigythebird.playeranimatorapi.commands.PlayPlayerAnimationCommand;
 import com.zigythebird.playeranimatorapi.commands.StopPlayerAnimationCommand;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 public class ModEvents {
 

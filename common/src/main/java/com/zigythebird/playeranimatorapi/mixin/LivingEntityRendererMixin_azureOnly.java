@@ -1,6 +1,9 @@
 package com.zigythebird.playeranimatorapi.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.zigythebird.playeranimatorapi.azure.ModAzureUtilsClient;
+import com.zigythebird.playeranimatorapi.azure.PlayerAnimationModel;
+import com.zigythebird.playeranimatorapi.azure.PlayerAnimationRenderer;
 import com.zigythebird.playeranimatorapi.data.PlayerParts;
 import com.zigythebird.playeranimatorapi.misc.PlayerModelInterface;
 import com.zigythebird.playeranimatorapi.playeranims.CustomModifierLayer;
@@ -21,9 +24,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import com.zigythebird.playeranimatorapi.azure.ModAzureUtilsClient;
-import com.zigythebird.playeranimatorapi.azure.PlayerAnimationModel;
-import com.zigythebird.playeranimatorapi.azure.PlayerAnimationRenderer;
 
 @Mixin(LivingEntityRenderer.class)
 public class LivingEntityRendererMixin_azureOnly<T extends LivingEntity, M extends EntityModel<T>> {

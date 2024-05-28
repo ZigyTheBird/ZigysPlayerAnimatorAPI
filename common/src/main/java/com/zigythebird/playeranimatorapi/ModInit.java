@@ -3,8 +3,8 @@ package com.zigythebird.playeranimatorapi;
 import com.mojang.logging.LogUtils;
 import com.zigythebird.multiloaderutils.MultiloaderUtils;
 import com.zigythebird.multiloaderutils.utils.Platform;
-import org.slf4j.Logger;
 import com.zigythebird.playeranimatorapi.azure.ModAzureUtils;
+import org.slf4j.Logger;
 public class ModInit {
     public static final String MOD_ID = "playeranimatorapi";
     public static final Logger LOGGER = LogUtils.getLogger();

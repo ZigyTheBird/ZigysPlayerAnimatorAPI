@@ -75,7 +75,7 @@ public class PlayerAnimationRenderer extends GeoObjectRenderer<AnimatablePlayerL
                 livingEntity.yBodyRot);
         float lerpHeadRot = livingEntity == null ? 0 : Mth.rotLerp(partialTick, livingEntity.yHeadRotO,
                 livingEntity.yHeadRot);
-        float netHeadYaw = lerpHeadRot - lerpBodyRot;
+        float netHeadYaw;
 
         if (shouldSit && animatable.getPlayer().getVehicle() instanceof LivingEntity livingentity) {
             lerpBodyRot = Mth.rotLerp(partialTick, livingentity.yBodyRotO, livingentity.yBodyRot);
@@ -84,8 +84,6 @@ public class PlayerAnimationRenderer extends GeoObjectRenderer<AnimatablePlayerL
             lerpBodyRot = lerpHeadRot - clampedHeadYaw;
 
             if (clampedHeadYaw * clampedHeadYaw > 2500f) lerpBodyRot += clampedHeadYaw * 0.2f;
-
-            netHeadYaw = lerpHeadRot - lerpBodyRot;
         }
 
         if (animatable.getPlayer().getPose() == Pose.SLEEPING && livingEntity != null) {
@@ -216,5 +214,10 @@ public class PlayerAnimationRenderer extends GeoObjectRenderer<AnimatablePlayerL
             }
         }
         return Vec3.ZERO;
+    }
+
+    @Override
+    public long getInstanceId(AnimatablePlayerLayer animatable) {
+        return animatable.getPlayer().getId();
     }
 }

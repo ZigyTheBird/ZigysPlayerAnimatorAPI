@@ -21,12 +21,12 @@ public class PlayerAnimAPIClient {
     /**For emotes.*/
     public static void playPlayerAnim(AbstractClientPlayer player, ResourceLocation animationID) {
         playPlayerAnim(player, animationID, PlayerParts.allEnabled, null,
-                -1, -1, false, false, true);
+                -1, -1, 1000, false, true);
     }
 
     /**For gameplay like player animations for items.*/
-    public static void playPlayerAnim(AbstractClientPlayer player, ResourceLocation animationID, PlayerParts parts, List<CommonModifier> modifiers, boolean important) {
-        playPlayerAnim(player, animationID, parts, modifiers, -1, -1, false, important, true);
+    public static void playPlayerAnim(AbstractClientPlayer player, ResourceLocation animationID, PlayerParts parts, List<CommonModifier> modifiers, int priority) {
+        playPlayerAnim(player, animationID, parts, modifiers, -1, -1, priority, false, true);
     }
 
     /**Play player animations with the PlayerAnimationData class.*/
@@ -36,10 +36,10 @@ public class PlayerAnimAPIClient {
 
     /**Play player animations with full customizability.*/
     public static void playPlayerAnim(AbstractClientPlayer player, ResourceLocation animationID, PlayerParts parts, List<CommonModifier> modifiers,
-                                      int fadeLength, int easeID, boolean firstPersonEnabled, boolean important, boolean replaceTick) {
+                                      int fadeLength, int easeID, int priority, boolean firstPersonEnabled, boolean replaceTick) {
 
         PlayerAnimations.playAnimation(player, new PlayerAnimationData(player.getUUID(), animationID, parts, modifiers,
-                fadeLength, easeID, firstPersonEnabled, important), replaceTick);
+                fadeLength, easeID, priority, firstPersonEnabled), replaceTick);
     }
 
     /**Stop a player animation*/

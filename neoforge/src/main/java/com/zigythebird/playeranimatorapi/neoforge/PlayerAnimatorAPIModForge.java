@@ -1,10 +1,10 @@
 package com.zigythebird.playeranimatorapi.neoforge;
 
+import com.zigythebird.playeranimatorapi.ModInit;
 import com.zigythebird.playeranimatorapi.ModInitClient;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import com.zigythebird.playeranimatorapi.ModInit;
 
 @Mod(ModInit.MOD_ID)
 public class PlayerAnimatorAPIModForge {

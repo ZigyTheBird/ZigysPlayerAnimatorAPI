@@ -1,13 +1,13 @@
 package com.zigythebird.playeranimatorapi.azure;
 
+import com.zigythebird.playeranimatorapi.ModInit;
 import com.zigythebird.playeranimatorapi.data.PlayerAnimationData;
+import com.zigythebird.playeranimatorapi.playeranims.ConditionalAnimations;
 import com.zigythebird.playeranimatorapi.playeranims.CustomModifierLayer;
 import com.zigythebird.playeranimatorapi.playeranims.PlayerAnimations;
 import mod.azure.azurelib.common.internal.common.core.animation.*;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.entity.player.Player;
-import com.zigythebird.playeranimatorapi.ModInit;
-import com.zigythebird.playeranimatorapi.playeranims.ConditionalAnimations;
 
 public class ModAzureUtilsClient {
 

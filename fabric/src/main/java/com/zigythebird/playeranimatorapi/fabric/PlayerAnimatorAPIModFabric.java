@@ -1,12 +1,12 @@
 package com.zigythebird.playeranimatorapi.fabric;
 
+import com.zigythebird.playeranimatorapi.ModInit;
+import com.zigythebird.playeranimatorapi.commands.PlayPlayerAnimationCommand;
+import com.zigythebird.playeranimatorapi.commands.StopPlayerAnimationCommand;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.server.packs.PackType;
-import com.zigythebird.playeranimatorapi.ModInit;
-import com.zigythebird.playeranimatorapi.commands.PlayPlayerAnimationCommand;
-import com.zigythebird.playeranimatorapi.commands.StopPlayerAnimationCommand;
 
 public class PlayerAnimatorAPIModFabric implements ModInitializer {
     @Override

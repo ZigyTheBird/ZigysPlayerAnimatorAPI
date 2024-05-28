@@ -18,6 +18,7 @@ import com.zigythebird.playeranimatorapi.playeranims.CustomModifierLayer;
 
 @Mixin(ClientInit.class)
 public abstract class EmoteCraftClientInitMixinFabric {
+    @Unique
     private static final ResourceLocation animationLayerId = new ResourceLocation(ModInit.MOD_ID, "factory");
 
     @Unique
@@ -27,7 +28,8 @@ public abstract class EmoteCraftClientInitMixinFabric {
 
     @Redirect(method = "lambda$initKeyBinding$1", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;setScreen(Lnet/minecraft/client/gui/screens/Screen;)V"))
     private static void initKeybinding(Minecraft instance, @Nullable Screen guiScreen) {
-        if (instance.player != null && PlayerAnimations.getModifierLayer(instance.player).isActive() && PlayerAnimations.getModifierLayer(instance.player).important) {
+        CustomModifierLayer layer = PlayerAnimations.getModifierLayer(instance.player);
+        if (instance.player != null && layer.isActive() && (layer.data.priority() >= 1000 || layer.data.priority() == -1)) {
             instance.player.displayClientMessage(Component.translatable("warn.playeranimatorapi.cannotEmote"), true);
         }
     }
