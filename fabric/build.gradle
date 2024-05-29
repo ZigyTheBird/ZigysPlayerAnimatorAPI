@@ -28,8 +28,8 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
 
-    modImplementation "zigy.zigysmultiloaderutils:zigysmultiloaderutils-fabric-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
-    include "zigy.zigysmultiloaderutils:zigysmultiloaderutils-fabric-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
+    modImplementation "com.zigythebird.multiloaderutils:zigysmultiloaderutils-fabric-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
+    include "com.zigythebird.multiloaderutils:zigysmultiloaderutils-fabric-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
 
     modApi("com.github.Virtuoel:Pehkui:${pehkui_version}", {
         exclude group: "net.fabricmc.fabric-api"
@@ -88,4 +88,25 @@ components.java {
 
 repositories {
     maven { url "https://maven.terraformersmc.com" }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "zigythebirdmods"
+            url = "https://maven.zigythebird.com/mods"
+            credentials(PasswordCredentials)
+            authentication {
+                basic(BasicAuthentication)
+            }
+        }
+    }
+    publications {
+        maven(MavenPublication) {
+            groupId = "com.zigythebird.playeranimatorapi"
+            artifactId = "$mod_id-fabric-$minecraft_version"
+            version = rootProject.mod_version
+            from components.java
+        }
+    }
 }

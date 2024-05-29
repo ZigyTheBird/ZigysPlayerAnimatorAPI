@@ -25,8 +25,8 @@ configurations {
 dependencies {
     forge "net.minecraftforge:forge:$rootProject.minecraft_version-$rootProject.forge_version"
 
-    modImplementation "zigy.zigysmultiloaderutils:zigysmultiloaderutils-forge-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
-    include "zigy.zigysmultiloaderutils:zigysmultiloaderutils-forge-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
+    modImplementation "com.zigythebird.multiloaderutils:zigysmultiloaderutils-forge-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
+    include "com.zigythebird.multiloaderutils:zigysmultiloaderutils-forge-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
 
     modApi("com.github.Virtuoel:Pehkui:${pehkui_version}-$rootProject.minecraft_version-forge")
 
@@ -38,10 +38,6 @@ dependencies {
 
     modImplementation "mod.azure.azurelib:azurelib-neo-$rootProject.minecraft_version:$rootProject.azurelib_version"
     modImplementation "dev.kosmx.player-anim:player-animation-lib-forge:${rootProject.player_anim_version}"
-
-    include 'org.javassist:javassist:3.30.2-GA'
-    implementation 'org.javassist:javassist:3.30.2-GA'
-    forgeRuntimeLibrary 'org.javassist:javassist:3.30.2-GA'
 
     modImplementation "curse.maven:emotecraft-forge-403422:4632460"
 }
@@ -78,5 +74,26 @@ sourcesJar {
 components.java {
     withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
         skip()
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "zigythebirdmods"
+            url = "https://maven.zigythebird.com/mods"
+            credentials(PasswordCredentials)
+            authentication {
+                basic(BasicAuthentication)
+            }
+        }
+    }
+    publications {
+        maven(MavenPublication) {
+            groupId = "com.zigythebird.playeranimatorapi"
+            artifactId = "$mod_id-forge-$minecraft_version"
+            version = rootProject.mod_version
+            from components.java
+        }
     }
 }

@@ -1,0 +1,21 @@
+package com.zigythebird.playeranimatorapi;
+
+import com.mojang.logging.LogUtils;
+import com.zigythebird.multiloaderutils.MultiloaderUtils;
+import com.zigythebird.multiloaderutils.utils.Platform;
+import com.zigythebird.playeranimatorapi.azure.ModAzureUtils;
+import com.zigythebird.playeranimatorapi.misc.ModEntityDataSerializers;
+import org.slf4j.Logger;
+public class ModInit {
+    public static final String MOD_ID = "playeranimatorapi";
+    public static final Logger LOGGER = LogUtils.getLogger();
+
+    public static void init() {
+        ModEntityDataSerializers.init();
+        MultiloaderUtils.forceClientToHaveMod(MOD_ID, Platform.getModVersion(MOD_ID));
+
+        if (Platform.isModLoaded("azurelib", "mod.azure.azurelib.AzureLib")) {
+            ModAzureUtils.init();
+        }
+    }
+}

@@ -1,10 +1,13 @@
 {
   "required": true,
-  "package": "zigy.playeranimatorapi.mixin",
+  "package": "com.zigythebird.playeranimatorapi.mixin",
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
-  "plugin": "zigy.playeranimatorapi.ModMixinPlugin",
+  "plugin": "com.zigythebird.playeranimatorapi.ModMixinPlugin",
   "client": [
+    "AbstractClientPlayerMixin_azureOnly",
+    "CameraMixin",
+    "GameRendererMixin",
     "LivingEntityRendererMixin",
     "LivingEntityRendererMixin_azureOnly",
     "ModelPartMixin",
@@ -14,11 +17,11 @@
     "AnimatableManagerAccessor_azureOnly",
     "AnimationControllerAccessor_azureOnly",
     "AnimationProcessorMixin_azureOnly",
+    "AnimationStackAccessor",
     "CameraAccessor",
     "GeoModelMixin_azureOnly",
     "KeyframeAnimationPlayerAccessor",
-    "PlayerMixin",
-    "PlayerMixin_azureOnly"
+    "PlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
