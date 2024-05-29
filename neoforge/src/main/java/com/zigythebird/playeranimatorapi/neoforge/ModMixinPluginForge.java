@@ -1,10 +1,10 @@
 package com.zigythebird.playeranimatorapi.neoforge;
 
 import com.google.common.collect.ImmutableMap;
+import com.zigythebird.multiloaderutils.utils.Platform;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
-import zigy.zigysmultiloaderutils.utils.Platform;
 
 import java.util.List;
 import java.util.Map;

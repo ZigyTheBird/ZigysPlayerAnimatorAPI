@@ -2,13 +2,10 @@ package com.zigythebird.playeranimatorapi.neoforge;
 
 import com.zigythebird.playeranimatorapi.ModInit;
 import com.zigythebird.playeranimatorapi.ResourceReloadListener;
-import com.zigythebird.playeranimatorapi.utils.CameraUtils;
-import dev.kosmx.playerAnim.core.util.Vec3f;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
-import net.neoforged.neoforge.client.event.ViewportEvent;
 
 public class ClientEvents {
 
@@ -20,17 +17,17 @@ public class ClientEvents {
         }
     }
 
-    @Mod.EventBusSubscriber(modid = ModInit.MOD_ID, value = Dist.CLIENT)
-    public static class ForgeEvents {
-        @SubscribeEvent
-        public static void computeCameraAngles(ViewportEvent.ComputeCameraAngles event) {
-            CameraUtils.computeCameraLocation(event.getRenderer(), event.getCamera(), event.getPartialTick());
-            Vec3f vec = CameraUtils.computeCameraAngles(event.getRenderer(), event.getCamera(), event.getPartialTick());
-            if (vec != null) {
-                event.setYaw(vec.getX());
-                event.setPitch(vec.getY());
-                event.setRoll(vec.getZ());
-            }
-        }
-    }
+//    @Mod.EventBusSubscriber(modid = ModInit.MOD_ID, value = Dist.CLIENT)
+//    public static class ForgeEvents {
+//        @SubscribeEvent
+//        public static void computeCameraAngles(ViewportEvent.ComputeCameraAngles event) {
+//            CameraUtils.computeCameraLocation(event.getRenderer(), event.getCamera(), event.getPartialTick());
+//            Vec3f vec = CameraUtils.computeCameraAngles(event.getRenderer(), event.getCamera(), event.getPartialTick());
+//            if (vec != null) {
+//                event.setYaw(vec.getX());
+//                event.setPitch(vec.getY());
+//                event.setRoll(vec.getZ());
+//            }
+//        }
+//    }
 }

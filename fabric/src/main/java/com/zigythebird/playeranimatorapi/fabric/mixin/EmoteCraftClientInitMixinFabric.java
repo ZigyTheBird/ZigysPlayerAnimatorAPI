@@ -1,20 +1,15 @@
 package com.zigythebird.playeranimatorapi.fabric.mixin;
 
+import com.zigythebird.playeranimatorapi.playeranims.CustomModifierLayer;
 import com.zigythebird.playeranimatorapi.playeranims.PlayerAnimations;
-import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import io.github.kosmx.emotes.fabric.ClientInit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import com.zigythebird.playeranimatorapi.ModInit;
-import com.zigythebird.playeranimatorapi.playeranims.CustomModifierLayer;
 
 @Mixin(ClientInit.class)
 public abstract class EmoteCraftClientInitMixinFabric {

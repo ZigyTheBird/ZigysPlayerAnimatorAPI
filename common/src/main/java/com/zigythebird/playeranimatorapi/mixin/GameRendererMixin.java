@@ -1,8 +1,9 @@
-package com.zigythebird.playeranimatorapi.fabric.mixin;
+package com.zigythebird.playeranimatorapi.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.zigythebird.playeranimatorapi.fabric.interfaces.CameraInterface;
+import com.zigythebird.playeranimatorapi.misc.CameraInterface;
+import com.zigythebird.playeranimatorapi.utils.CameraUtils;
 import dev.kosmx.playerAnim.core.util.Vec3f;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.GameRenderer;
@@ -12,7 +13,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import com.zigythebird.playeranimatorapi.utils.CameraUtils;
 
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {
