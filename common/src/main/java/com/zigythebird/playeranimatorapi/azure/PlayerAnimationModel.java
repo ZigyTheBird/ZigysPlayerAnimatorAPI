@@ -1,7 +1,8 @@
 package com.zigythebird.playeranimatorapi.azure;
 
 import com.zigythebird.playeranimatorapi.playeranims.PlayerAnimations;
-import mod.azure.azurelib.common.api.client.model.GeoModel;
+import mod.azure.azurelib.core.animatable.GeoAnimatable;
+import mod.azure.azurelib.model.GeoModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -9,7 +10,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PlayerAnimationModel extends GeoModel<AnimatablePlayerLayer> {
+public class PlayerAnimationModel<T extends AnimatablePlayerLayer> extends GeoModel<T> {
 
     public static Map<String, ResourceLocation> resourceLocations = new HashMap<>();
 

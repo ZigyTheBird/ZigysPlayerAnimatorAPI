@@ -1,19 +1,15 @@
 package com.zigythebird.playeranimatorapi.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.zigythebird.playeranimatorapi.azure.ModAzureUtilsClient;
 import com.zigythebird.playeranimatorapi.azure.PlayerAnimationModel;
 import com.zigythebird.playeranimatorapi.azure.PlayerAnimationRenderer;
 import com.zigythebird.playeranimatorapi.data.PlayerParts;
-import com.zigythebird.playeranimatorapi.misc.PlayerModelInterface;
 import com.zigythebird.playeranimatorapi.playeranims.CustomModifierLayer;
 import com.zigythebird.playeranimatorapi.playeranims.PlayerAnimations;
-import com.zigythebird.playeranimatorapi.registry.PlayerEffectsRendererRegistry;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class LivingEntityRendererMixin_azureOnly<T extends LivingEntity, M extends EntityModel<T>> {
 
     @Unique
-    private PlayerAnimationRenderer animationRenderer;
+    private PlayerAnimationRenderer zigysPlayerAnimatorAPI$animationRenderer;
 
     @Shadow
     protected M model;
@@ -37,16 +33,11 @@ public class LivingEntityRendererMixin_azureOnly<T extends LivingEntity, M exten
     @Inject(method = "<init>", at = @At("TAIL"))
     private void constructor(EntityRendererProvider.Context context, EntityModel model, float shadowRadius, CallbackInfo ci) {
         if (model instanceof PlayerModel<?>) {
-            animationRenderer = new PlayerAnimationRenderer();
+            zigysPlayerAnimatorAPI$animationRenderer = new PlayerAnimationRenderer();
         }
     }
 
-    @Inject(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At("HEAD"))
-    private void render2(T entity, float entityYaw, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int packedLight, CallbackInfo ci) {
-        ModAzureUtilsClient.currentPlayerRenderer = animationRenderer;
-    }
-
-    @Inject(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At("TAIL"), cancellable = true)
+    @Inject(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;setupRotations(Lnet/minecraft/world/entity/LivingEntity;Lcom/mojang/blaze3d/vertex/PoseStack;FFF)V"), cancellable = true)
     private void render(T entity, float entityYaw, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int packedLight, CallbackInfo ci) {
         if (entity instanceof Player) {
             CustomModifierLayer animationContainer = PlayerAnimations.getModifierLayer((AbstractClientPlayer) entity);
@@ -54,22 +45,15 @@ public class LivingEntityRendererMixin_azureOnly<T extends LivingEntity, M exten
 
             if (animationContainer != null && animationContainer.isActive()) {
                 PlayerParts parts = animationContainer.data.parts();
-                Player player = ((Player)(Object)entity);
 
                 if (!parts.body.isVisible) {
                     ci.cancel();
                     return;
                 }
 
-                if (((PlayerAnimationModel)(animationRenderer.getGeoModel())).allResourcesExist(((AbstractClientPlayer) entity).playeranimatorapi$getAnimatablePlayerLayer())) {
-                    animationRenderer.setPlayerModel(playerModel);
-                    animationRenderer.render(matrixStack, ((AbstractClientPlayer) entity).playeranimatorapi$getAnimatablePlayerLayer(), buffer, null, null, packedLight);
-//                    AnimatableManager<AbstractClientPlayer> manager = player.getAnimatableInstanceCache().getManagerForId(player.getId());
-//                    AnimationController<AbstractClientPlayer> controller = manager.getAnimationControllers().get(ModInit.MOD_ID);
-//                    if (controller.getCurrentRawAnimation() == null || !controller.getCurrentAnimation().animation().name().equals(ConditionalAnimations.getAnimationForCurrentConditions(animationContainer.data).getNamespace())) {
-//                        controller.triggerableAnim(ConditionalAnimations.getAnimationForCurrentConditions(animationContainer.data).getPath(), RawAnimation.begin().then(ConditionalAnimations.getAnimationForCurrentConditions(animationContainer.data).getPath(), Animation.LoopType.DEFAULT));
-//                        controller.tryTriggerAnimation(ConditionalAnimations.getAnimationForCurrentConditions(animationContainer.data).getPath());
-//                    }
+                if (((PlayerAnimationModel)(zigysPlayerAnimatorAPI$animationRenderer.getGeoModel())).allResourcesExist(((AbstractClientPlayer) entity).playeranimatorapi$getAnimatablePlayerLayer())) {
+                    zigysPlayerAnimatorAPI$animationRenderer.setPlayerModel(playerModel);
+                    zigysPlayerAnimatorAPI$animationRenderer.render(matrixStack, ((AbstractClientPlayer) entity).playeranimatorapi$getAnimatablePlayerLayer(), buffer, null, null, packedLight);
                 }
 
                 playerModel.head.zigysPlayerAnimatorAPI$setIsVisible(parts.head.isVisible);
@@ -97,13 +81,6 @@ public class LivingEntityRendererMixin_azureOnly<T extends LivingEntity, M exten
                 playerModel.leftSleeve.zigysPlayerAnimatorAPI$setIsVisible(true);
                 playerModel.rightPants.zigysPlayerAnimatorAPI$setIsVisible(true);
                 playerModel.leftPants.zigysPlayerAnimatorAPI$setIsVisible(true);
-            }
-
-            for (EntityRenderer renderer : PlayerEffectsRendererRegistry.getRenderers()) {
-                if (renderer instanceof PlayerModelInterface) {
-                    ((PlayerModelInterface)renderer).setPlayerModel(playerModel);
-                    renderer.render(entity, entityYaw, partialTicks, matrixStack, buffer, packedLight);
-                }
             }
         }
     }

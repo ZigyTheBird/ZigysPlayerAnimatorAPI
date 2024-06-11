@@ -5,13 +5,15 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.zigythebird.multiloaderutils.utils.Platform;
 import com.zigythebird.playeranimatorapi.compatibility.PehkuiCompat;
+import com.zigythebird.playeranimatorapi.misc.GetModelRendererInterface;
 import com.zigythebird.playeranimatorapi.misc.PlayerModelInterface;
-import mod.azure.azurelib.common.api.client.renderer.GeoObjectRenderer;
-import mod.azure.azurelib.common.internal.client.util.RenderUtils;
-import mod.azure.azurelib.common.internal.common.cache.object.BakedGeoModel;
-import mod.azure.azurelib.common.internal.common.cache.object.GeoBone;
-import mod.azure.azurelib.common.internal.common.constant.DataTickets;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimationState;
+import mod.azure.azurelib.cache.object.BakedGeoModel;
+import mod.azure.azurelib.cache.object.GeoBone;
+import mod.azure.azurelib.constant.DataTickets;
+import mod.azure.azurelib.core.animation.AnimationState;
+import mod.azure.azurelib.model.GeoModel;
+import mod.azure.azurelib.renderer.GeoObjectRenderer;
+import mod.azure.azurelib.util.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -28,7 +30,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
-public class PlayerAnimationRenderer extends GeoObjectRenderer<AnimatablePlayerLayer> implements PlayerModelInterface {
+public class PlayerAnimationRenderer<T extends AnimatablePlayerLayer> extends GeoObjectRenderer<T> implements PlayerModelInterface {
 
     public PlayerModel playerModel;
 
@@ -42,8 +44,12 @@ public class PlayerAnimationRenderer extends GeoObjectRenderer<AnimatablePlayerL
         super(new PlayerAnimationModel());
     }
 
+    public PlayerAnimationRenderer(GeoModel<T> model) {
+        super(model);
+    }
+
     @Override
-    public void preRender(PoseStack poseStack, AnimatablePlayerLayer animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void preRender(PoseStack poseStack, T animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         this.objectRenderTranslations = new Matrix4f(poseStack.last().pose());
 
         scaleModelForRender(this.scaleWidth, this.scaleHeight, poseStack, animatable, model, isReRender, partialTick, packedLight, packedOverlay);
@@ -57,7 +63,10 @@ public class PlayerAnimationRenderer extends GeoObjectRenderer<AnimatablePlayerL
     }
 
     @Override
-    public void render(PoseStack poseStack, AnimatablePlayerLayer animatable, @Nullable MultiBufferSource bufferSource, @Nullable RenderType renderType, @Nullable VertexConsumer buffer, int packedLight) {
+    public void render(PoseStack poseStack, T animatable, @Nullable MultiBufferSource bufferSource, @Nullable RenderType renderType, @Nullable VertexConsumer buffer, int packedLight) {
+        if (playerModel != null) {
+            ((GetModelRendererInterface)playerModel).playeranimatorapi$setRenderer(this);
+        }
         if (renderType == null) {
             renderType = RenderType.entityTranslucent(model.getTextureResource(animatable));
         }
@@ -65,7 +74,7 @@ public class PlayerAnimationRenderer extends GeoObjectRenderer<AnimatablePlayerL
     }
 
     @Override
-    public void actuallyRender(PoseStack poseStack, AnimatablePlayerLayer animatable, BakedGeoModel model, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void actuallyRender(PoseStack poseStack, T animatable, BakedGeoModel model, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         poseStack.pushPose();
 
         LivingEntity livingEntity = animatable.getPlayer();
@@ -102,7 +111,7 @@ public class PlayerAnimationRenderer extends GeoObjectRenderer<AnimatablePlayerL
         applyRotations(animatable, poseStack, ageInTicks, lerpBodyRot, partialTick);
 
         if (!isReRender) {
-            AnimationState<AnimatablePlayerLayer> animationState = new AnimationState<>(animatable, 0, 0, partialTick, false);
+            AnimationState<T> animationState = new AnimationState<>(animatable, 0, 0, partialTick, false);
             long instanceId = getInstanceId(animatable);
             animationState.setData(DataTickets.TICK, animatable.getTick(animatable));
 
@@ -124,40 +133,40 @@ public class PlayerAnimationRenderer extends GeoObjectRenderer<AnimatablePlayerL
     }
 
     protected void applyRotations(AnimatablePlayerLayer animatable, PoseStack poseStack, float ageInTicks, float rotationYaw, float partialTick) {
-        Pose pose = animatable.getPlayer().getPose();
-        LivingEntity livingEntity = animatable.getPlayer();
-
-        if (this.isShaking(animatable.getPlayer())) {
-            rotationYaw += (float) (Math.cos((double) animatable.getPlayer().tickCount * 3.25) * Math.PI * 0.4000000059604645);
-        }
-
-        if (pose != Pose.SLEEPING) poseStack.mulPose(Axis.YP.rotationDegrees(180f - rotationYaw));
-
-        if (livingEntity != null && livingEntity.deathTime > 0) {
-            float deathRotation = (livingEntity.deathTime + partialTick - 1f) / 20f * 1.6f;
-
-            poseStack.mulPose(
-                    Axis.ZP.rotationDegrees(Math.min(Mth.sqrt(deathRotation), 1) * getDeathMaxRotation(animatable.getPlayer())));
-        } else if (livingEntity != null && livingEntity.isAutoSpinAttack()) {
-            poseStack.mulPose(Axis.XP.rotationDegrees(-90f - livingEntity.getXRot()));
-            poseStack.mulPose(Axis.YP.rotationDegrees((livingEntity.tickCount + partialTick) * -75f));
-        } else if (livingEntity != null && pose == Pose.SLEEPING) {
-            Direction bedOrientation = livingEntity.getBedOrientation();
-
-            poseStack.mulPose(Axis.YP.rotationDegrees(
-                    bedOrientation != null ? RenderUtils.getDirectionAngle(bedOrientation) : rotationYaw));
-            poseStack.mulPose(Axis.ZP.rotationDegrees(getDeathMaxRotation(animatable.getPlayer())));
-            poseStack.mulPose(Axis.YP.rotationDegrees(270f));
-        } else {
-            String name = animatable.getPlayer().getName().getString();
-
-            if (!animatable.getPlayer().isModelPartShown(PlayerModelPart.CAPE)) return;
-
-            if (name.equals("Dinnerbone") || name.equalsIgnoreCase("Grumm")) {
-                poseStack.translate(0, animatable.getPlayer().getBbHeight() + 0.1f, 0);
-                poseStack.mulPose(Axis.ZP.rotationDegrees(180f));
-            }
-        }
+//        Pose pose = animatable.getPlayer().getPose();
+//        LivingEntity livingEntity = animatable.getPlayer();
+//
+//        if (this.isShaking(animatable.getPlayer())) {
+//            rotationYaw += (float) (Math.cos((double) animatable.getPlayer().tickCount * 3.25) * Math.PI * 0.4000000059604645);
+//        }
+//
+//        if (pose != Pose.SLEEPING) poseStack.mulPose(Axis.YP.rotationDegrees(180f - rotationYaw));
+//
+//        if (livingEntity != null && livingEntity.deathTime > 0) {
+//            float deathRotation = (livingEntity.deathTime + partialTick - 1f) / 20f * 1.6f;
+//
+//            poseStack.mulPose(
+//                    Axis.ZP.rotationDegrees(Math.min(Mth.sqrt(deathRotation), 1) * getDeathMaxRotation(animatable.getPlayer())));
+//        } else if (livingEntity != null && livingEntity.isAutoSpinAttack()) {
+//            poseStack.mulPose(Axis.XP.rotationDegrees(-90f - livingEntity.getXRot()));
+//            poseStack.mulPose(Axis.YP.rotationDegrees((livingEntity.tickCount + partialTick) * -75f));
+//        } else if (livingEntity != null && pose == Pose.SLEEPING) {
+//            Direction bedOrientation = livingEntity.getBedOrientation();
+//
+//            poseStack.mulPose(Axis.YP.rotationDegrees(
+//                    bedOrientation != null ? RenderUtils.getDirectionAngle(bedOrientation) : rotationYaw));
+//            poseStack.mulPose(Axis.ZP.rotationDegrees(getDeathMaxRotation(animatable.getPlayer())));
+//            poseStack.mulPose(Axis.YP.rotationDegrees(270f));
+//        } else {
+//            String name = animatable.getPlayer().getName().getString();
+//
+//            if (!animatable.getPlayer().isModelPartShown(PlayerModelPart.CAPE)) return;
+//
+//            if (name.equals("Dinnerbone") || name.equalsIgnoreCase("Grumm")) {
+//                poseStack.translate(0, animatable.getPlayer().getBbHeight() + 0.1f, 0);
+//                poseStack.mulPose(Axis.ZP.rotationDegrees(180f));
+//            }
+//        }
     }
 
     public boolean isShaking(AbstractClientPlayer entity) {
