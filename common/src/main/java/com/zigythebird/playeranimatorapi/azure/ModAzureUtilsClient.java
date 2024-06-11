@@ -11,8 +11,6 @@ import net.minecraft.world.entity.player.Player;
 
 public class ModAzureUtilsClient {
 
-    public static PlayerAnimationRenderer currentPlayerRenderer;
-
     public static void playGeckoAnimation(AbstractClientPlayer player, PlayerAnimationData data, float speed) {
         AnimatableManager<AnimatablePlayerLayer> manager = player.playeranimatorapi$getAnimatablePlayerLayer().getAnimatableInstanceCache().getManagerForId(player.getId());
         AnimationController<AnimatablePlayerLayer> controller = manager.getAnimationControllers().get(ModInit.MOD_ID);

@@ -5,7 +5,6 @@ import com.zigythebird.playeranimatorapi.data.PlayerParts;
 import com.zigythebird.playeranimatorapi.misc.PlayerModelInterface;
 import com.zigythebird.playeranimatorapi.playeranims.CustomModifierLayer;
 import com.zigythebird.playeranimatorapi.playeranims.PlayerAnimations;
-import com.zigythebird.playeranimatorapi.registry.PlayerEffectsRendererRegistry;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -65,13 +64,6 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
                 playerModel.leftSleeve.zigysPlayerAnimatorAPI$setIsVisible(true);
                 playerModel.rightPants.zigysPlayerAnimatorAPI$setIsVisible(true);
                 playerModel.leftPants.zigysPlayerAnimatorAPI$setIsVisible(true);
-            }
-
-            for (EntityRenderer renderer : PlayerEffectsRendererRegistry.getRenderers()) {
-                if (renderer instanceof PlayerModelInterface) {
-                    ((PlayerModelInterface)renderer).setPlayerModel(playerModel);
-                    renderer.render(entity, entityYaw, partialTicks, matrixStack, buffer, packedLight);
-                }
             }
         }
     }
