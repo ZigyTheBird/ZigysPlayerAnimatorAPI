@@ -52,7 +52,7 @@ public class LivingEntityRendererMixin_azureOnly<T extends LivingEntity, M exten
                     return;
                 }
 
-                if ((!entity.equals(Minecraft.getInstance().player) || Minecraft.getInstance().options.getCameraType().isFirstPerson()) && ((PlayerAnimationModel)(zigysPlayerAnimatorAPI$animationRenderer.getGeoModel())).allResourcesExist(((AbstractClientPlayer) entity).playeranimatorapi$getAnimatablePlayerLayer())) {
+                if ((!entity.equals(Minecraft.getInstance().player) || !Minecraft.getInstance().options.getCameraType().isFirstPerson()) && ((PlayerAnimationModel)(zigysPlayerAnimatorAPI$animationRenderer.getGeoModel())).allResourcesExist(((AbstractClientPlayer) entity).playeranimatorapi$getAnimatablePlayerLayer())) {
                     zigysPlayerAnimatorAPI$animationRenderer.setPlayerModel(playerModel);
                     zigysPlayerAnimatorAPI$animationRenderer.render(matrixStack, ((AbstractClientPlayer) entity).playeranimatorapi$getAnimatablePlayerLayer(), buffer, null, null, packedLight);
                 }
