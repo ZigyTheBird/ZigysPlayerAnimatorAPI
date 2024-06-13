@@ -6,6 +6,7 @@ import com.zigythebird.playeranimatorapi.azure.PlayerAnimationRenderer;
 import com.zigythebird.playeranimatorapi.data.PlayerParts;
 import com.zigythebird.playeranimatorapi.playeranims.CustomModifierLayer;
 import com.zigythebird.playeranimatorapi.playeranims.PlayerAnimations;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -51,7 +52,7 @@ public class LivingEntityRendererMixin_azureOnly<T extends LivingEntity, M exten
                     return;
                 }
 
-                if (((PlayerAnimationModel)(zigysPlayerAnimatorAPI$animationRenderer.getGeoModel())).allResourcesExist(((AbstractClientPlayer) entity).playeranimatorapi$getAnimatablePlayerLayer())) {
+                if ((!entity.equals(Minecraft.getInstance().player) || Minecraft.getInstance().options.getCameraType().isFirstPerson()) && ((PlayerAnimationModel)(zigysPlayerAnimatorAPI$animationRenderer.getGeoModel())).allResourcesExist(((AbstractClientPlayer) entity).playeranimatorapi$getAnimatablePlayerLayer())) {
                     zigysPlayerAnimatorAPI$animationRenderer.setPlayerModel(playerModel);
                     zigysPlayerAnimatorAPI$animationRenderer.render(matrixStack, ((AbstractClientPlayer) entity).playeranimatorapi$getAnimatablePlayerLayer(), buffer, null, null, packedLight);
                 }
