@@ -86,7 +86,7 @@ public class CustomModifierLayer<T extends IAnimation> extends ModifierLayer imp
 
     public void replaceAnimationWithFade(AbstractFadeModifier fadeModifier, KeyframeAnimationPlayer newAnimation) {
         setAnimPlayer(newAnimation);
-        replaceAnimationWithFade(fadeModifier, newAnimation, false);
+        replaceAnimationWithFade(fadeModifier, newAnimation, true);
     }
 
     public void replaceAnimation(KeyframeAnimationPlayer newAnimation) {

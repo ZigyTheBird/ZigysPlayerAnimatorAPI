@@ -5,15 +5,17 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import dev.kosmx.playerAnim.api.layered.modifier.AbstractModifier;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommonModifier {
+public class CommonModifier<T extends AbstractModifier> {
 
-    public ResourceLocation ID;
-    public JsonObject data;
+    public final T modifier;
+    public final ResourceLocation ID;
+    public final JsonObject data;
 
     public static Gson gson = new Gson();
     public static final Codec<CommonModifier> CODEC = Codec.list(Codec.STRING).comapFlatMap(CommonModifier::decode, CommonModifier::encode);
@@ -58,5 +60,12 @@ public class CommonModifier {
     public CommonModifier(ResourceLocation ID, JsonObject json) {
         this.ID = ID;
         this.data = json;
+        this.modifier = null;
+    }
+
+    public CommonModifier(T modifier) {
+        this.modifier = modifier;
+        this.ID = null;
+        this.data = null;
     }
 }

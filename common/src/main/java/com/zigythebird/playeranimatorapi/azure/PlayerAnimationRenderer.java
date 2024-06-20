@@ -34,12 +34,6 @@ public class PlayerAnimationRenderer<T extends AnimatablePlayerLayer> extends Ge
 
     public PlayerModel playerModel;
 
-    private static final Vec3 head_offset = new Vec3(0, 2, 0);
-    private static final Vec3 right_arm_offset = new Vec3(5, -1, 0);
-    private static final Vec3 left_arm_offset = new Vec3(-5, -1, 0);
-    private static final Vec3 right_leg_offset = new Vec3(1.9, -12, 0);
-    private static final Vec3 left_leg_offset = new Vec3(-1.9, -12, 0);
-
     public PlayerAnimationRenderer() {
         super(new PlayerAnimationModel());
     }
@@ -59,6 +53,7 @@ public class PlayerAnimationRenderer<T extends AnimatablePlayerLayer> extends Ge
             Vec2 scale = PehkuiCompat.getScale(animatable.getPlayer(), partialTick);
             poseStack.scale(scale.x, scale.y, scale.x);
         }
+        setupAnim(this.getGeoModel().getBakedModel(this.getGeoModel().getModelResource(animatable)));
         poseStack.popPose();
     }
 
@@ -193,36 +188,14 @@ public class PlayerAnimationRenderer<T extends AnimatablePlayerLayer> extends Ge
     public void matchPlayerModel(BakedGeoModel model, ModelPart part, String name) {
         if (model.getBone(name).isPresent()) {
             GeoBone bone = model.getBone(name).get();
-            Vec3 offset = getPositionOffsetForPart(name);
 
-            bone.setPosX(-(part.x + (float) offset.x));
-            bone.setPosY(-(part.y + (float) offset.y));
-            bone.setPosZ(part.z + (float) offset.z);
+            bone.setPosX(-part.x);
+            bone.setPosY(-part.y);
+            bone.setPosZ(part.z);
             bone.setRotX(-part.xRot);
             bone.setRotY(-part.yRot);
             bone.setRotZ(part.zRot);
         }
-    }
-
-    public Vec3 getPositionOffsetForPart(String part) {
-        switch (part) {
-            case "head" -> {
-                return head_offset;
-            }
-            case "right_arm" -> {
-                return right_arm_offset;
-            }
-            case "left_arm" -> {
-                return left_arm_offset;
-            }
-            case "right_leg" -> {
-                return right_leg_offset;
-            }
-            case "left_leg" -> {
-                return left_leg_offset;
-            }
-        }
-        return Vec3.ZERO;
     }
 
     @Override
