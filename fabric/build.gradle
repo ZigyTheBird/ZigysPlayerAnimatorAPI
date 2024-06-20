@@ -40,14 +40,11 @@ dependencies {
 
     modApi "com.terraformersmc:modmenu:$rootProject.modmenu_version"
 
-    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:$rootProject.rei_version"
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:$rootProject.rei_version"
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:$rootProject.rei_version"
-
     modImplementation "mod.azure.azurelib:azurelib-fabric-$rootProject.minecraft_version:$rootProject.azurelib_version"
     modImplementation "dev.kosmx.player-anim:player-animation-lib-fabric:${rootProject.player_anim_version}"
 
-    modImplementation "curse.maven:emotecraft-397809:4632459"
+    modImplementation "maven.modrinth:emotecraft:NFPdxMt9"
+    modImplementation "maven.modrinth:replaymod:MEAiQjrL"
 }
 
 processResources {

@@ -1,5 +1,6 @@
 package com.zigythebird.playeranimatorapi.mixin;
 
+import com.zigythebird.playeranimatorapi.azure.AnimatablePlayerLayer;
 import mod.azure.azurelib.core.animatable.GeoAnimatable;
 import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
 import mod.azure.azurelib.core.animatable.model.CoreGeoModel;
@@ -34,7 +35,7 @@ public abstract class AnimationProcessorMixin_azureOnly<T extends GeoAnimatable>
 
     @Inject(method = "tickAnimation", at = @At("HEAD"), cancellable = true, remap = false)
     private void inject(T animatable, CoreGeoModel<T> model, AnimatableManager<T> animatableManager, double animTime, AnimationState<T> event, boolean crashWhenCantFindBone, CallbackInfo ci) {
-        if (animatable instanceof AbstractClientPlayer) {
+        if (animatable instanceof AnimatablePlayerLayer) {
             List<CoreGeoBone> disabledBones = new ArrayList<>();
             Map<String, BoneSnapshot> boneSnapshots = this.updateBoneSnapshots(animatableManager.getBoneSnapshotCollection());
             Iterator var9 = animatableManager.getAnimationControllers().values().iterator();
