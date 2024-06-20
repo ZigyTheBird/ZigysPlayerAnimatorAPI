@@ -18,6 +18,7 @@ import dev.kosmx.playerAnim.api.layered.AnimationStack;
 import dev.kosmx.playerAnim.api.layered.IAnimation;
 import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import dev.kosmx.playerAnim.api.layered.modifier.AbstractFadeModifier;
+import dev.kosmx.playerAnim.api.layered.modifier.AbstractModifier;
 import dev.kosmx.playerAnim.core.data.KeyframeAnimation;
 import dev.kosmx.playerAnim.core.util.Ease;
 import dev.kosmx.playerAnim.core.util.Pair;
@@ -123,7 +124,10 @@ public class PlayerAnimations {
                 animationContainer.removeAllModifiers();
                 if (modifiers != null) {
                     for (CommonModifier commonModifier : modifiers) {
-                        if (AnimModifierRegistry.getModifiers().containsKey(commonModifier.ID)) {
+                        if (commonModifier.modifier != null) {
+                            animationContainer.addModifier(commonModifier.modifier);
+                        }
+                        else if (AnimModifierRegistry.getModifiers().containsKey(commonModifier.ID)) {
                             try {
                                 animationContainer.addModifier(AnimModifierRegistry.getModifiers().get(commonModifier.ID).apply(animationContainer, commonModifier.data));
                             } catch (NullPointerException | UnsupportedOperationException e) {

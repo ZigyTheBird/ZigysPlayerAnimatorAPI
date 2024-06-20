@@ -1,5 +1,8 @@
 package com.zigythebird.playeranimatorapi.API;
 
+import com.zigythebird.multiloaderutils.misc.ModLoader;
+import com.zigythebird.multiloaderutils.utils.Platform;
+import com.zigythebird.playeranimatorapi.compatibility.ReplayModCompat;
 import com.zigythebird.playeranimatorapi.data.PlayerAnimationData;
 import com.zigythebird.playeranimatorapi.data.PlayerParts;
 import com.zigythebird.playeranimatorapi.modifier.CommonModifier;
@@ -38,12 +41,19 @@ public class PlayerAnimAPIClient {
     public static void playPlayerAnim(AbstractClientPlayer player, ResourceLocation animationID, PlayerParts parts, List<CommonModifier> modifiers,
                                       int fadeLength, int easeID, int priority, boolean firstPersonEnabled, boolean replaceTick) {
 
+        if (Platform.isModLoaded("replaymod") && Platform.getLoader().equals(ModLoader.Fabric)) {
+            ReplayModCompat.playPlayerAnim(player, animationID, parts, modifiers, fadeLength, easeID, priority, firstPersonEnabled, replaceTick);
+        }
+
         PlayerAnimations.playAnimation(player, new PlayerAnimationData(player.getUUID(), animationID, parts, modifiers,
                 fadeLength, easeID, priority, firstPersonEnabled), replaceTick);
     }
 
     /**Stop a player animation*/
     public static void stopPlayerAnim(AbstractClientPlayer player, ResourceLocation animationID) {
+        if (Platform.isModLoaded("replaymod") && Platform.getLoader().equals(ModLoader.Fabric)) {
+            ReplayModCompat.stopPlayerAnim(player, animationID);
+        }
         PlayerAnimations.stopAnimation(player, animationID);
     }
 }

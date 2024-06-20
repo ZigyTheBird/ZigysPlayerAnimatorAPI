@@ -1,5 +1,6 @@
 package com.zigythebird.playeranimatorapi.mixin;
 
+import com.zigythebird.playeranimatorapi.azure.AnimatablePlayerLayer;
 import mod.azure.azurelib.common.internal.common.core.animatable.GeoAnimatable;
 import mod.azure.azurelib.common.internal.common.core.animatable.model.CoreGeoBone;
 import mod.azure.azurelib.common.internal.common.core.animatable.model.CoreGeoModel;
@@ -8,7 +9,6 @@ import mod.azure.azurelib.common.internal.common.core.keyframe.AnimationPoint;
 import mod.azure.azurelib.common.internal.common.core.keyframe.BoneAnimationQueue;
 import mod.azure.azurelib.common.internal.common.core.state.BoneSnapshot;
 import mod.azure.azurelib.common.internal.common.core.utils.Interpolations;
-import net.minecraft.client.player.AbstractClientPlayer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -34,7 +34,7 @@ public abstract class AnimationProcessorMixin_azureOnly<T extends GeoAnimatable>
 
     @Inject(method = "tickAnimation", at = @At("HEAD"), cancellable = true, remap = false)
     private void inject(T animatable, CoreGeoModel<T> model, AnimatableManager<T> animatableManager, double animTime, AnimationState<T> event, boolean crashWhenCantFindBone, CallbackInfo ci) {
-        if (animatable instanceof AbstractClientPlayer) {
+        if (animatable instanceof AnimatablePlayerLayer) {
             List<CoreGeoBone> disabledBones = new ArrayList<>();
             Map<String, BoneSnapshot> boneSnapshots = this.updateBoneSnapshots(animatableManager.getBoneSnapshotCollection());
             Iterator var9 = animatableManager.getAnimationControllers().values().iterator();
@@ -44,8 +44,6 @@ public abstract class AnimationProcessorMixin_azureOnly<T extends GeoAnimatable>
             addDisabled(disabledBones, "torso", model);
             addDisabled(disabledBones, "right_arm", model);
             addDisabled(disabledBones, "left_arm", model);
-            addDisabled(disabledBones, "rightItem", model);
-            addDisabled(disabledBones, "leftItem", model);
             addDisabled(disabledBones, "right_leg", model);
             addDisabled(disabledBones, "left_leg", model);
 

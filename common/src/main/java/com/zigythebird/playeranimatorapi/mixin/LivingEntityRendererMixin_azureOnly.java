@@ -1,6 +1,7 @@
 package com.zigythebird.playeranimatorapi.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.zigythebird.playeranimatorapi.ModInitClient;
 import com.zigythebird.playeranimatorapi.azure.PlayerAnimationModel;
 import com.zigythebird.playeranimatorapi.azure.PlayerAnimationRenderer;
 import com.zigythebird.playeranimatorapi.data.PlayerParts;
@@ -38,7 +39,7 @@ public class LivingEntityRendererMixin_azureOnly<T extends LivingEntity, M exten
         }
     }
 
-    @Inject(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;setupRotations(Lnet/minecraft/world/entity/LivingEntity;Lcom/mojang/blaze3d/vertex/PoseStack;FFF)V"), cancellable = true)
+    @Inject(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/client/model/EntityModel;setupAnim(Lnet/minecraft/world/entity/Entity;FFFFF)V"), cancellable = true)
     private void render(T entity, float entityYaw, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int packedLight, CallbackInfo ci) {
         if (entity instanceof Player) {
             CustomModifierLayer animationContainer = PlayerAnimations.getModifierLayer((AbstractClientPlayer) entity);
@@ -48,13 +49,19 @@ public class LivingEntityRendererMixin_azureOnly<T extends LivingEntity, M exten
                 PlayerParts parts = animationContainer.data.parts();
 
                 if (!parts.body.isVisible) {
+                    ModInitClient.renderingGUI = false;
                     ci.cancel();
                     return;
                 }
 
-                if ((!entity.equals(Minecraft.getInstance().player) || !Minecraft.getInstance().options.getCameraType().isFirstPerson()) && ((PlayerAnimationModel)(zigysPlayerAnimatorAPI$animationRenderer.getGeoModel())).allResourcesExist(((AbstractClientPlayer) entity).playeranimatorapi$getAnimatablePlayerLayer())) {
+                if ((!entity.equals(Minecraft.getInstance().player) || !Minecraft.getInstance().options.getCameraType().isFirstPerson() || ModInitClient.renderingGUI) && ((PlayerAnimationModel)(zigysPlayerAnimatorAPI$animationRenderer.getGeoModel())).allResourcesExist(((AbstractClientPlayer) entity).playeranimatorapi$getAnimatablePlayerLayer())) {
+                    matrixStack.pushPose();
+                    matrixStack.scale(-1.0F, -1.0F, 1.0F);
+                    matrixStack.scale(1/0.9375F, 1/0.9375F, 1/0.9375F);
+                    matrixStack.translate(0.0F, -1.501F, 0.0F);
                     zigysPlayerAnimatorAPI$animationRenderer.setPlayerModel(playerModel);
                     zigysPlayerAnimatorAPI$animationRenderer.render(matrixStack, ((AbstractClientPlayer) entity).playeranimatorapi$getAnimatablePlayerLayer(), buffer, null, null, packedLight);
+                    matrixStack.popPose();
                 }
 
                 playerModel.head.zigysPlayerAnimatorAPI$setIsVisible(parts.head.isVisible);
@@ -83,6 +90,8 @@ public class LivingEntityRendererMixin_azureOnly<T extends LivingEntity, M exten
                 playerModel.rightPants.zigysPlayerAnimatorAPI$setIsVisible(true);
                 playerModel.leftPants.zigysPlayerAnimatorAPI$setIsVisible(true);
             }
+
+            ModInitClient.renderingGUI = false;
         }
     }
 }
