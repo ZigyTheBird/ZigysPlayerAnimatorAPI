@@ -28,7 +28,7 @@ dependencies {
     modImplementation "com.zigythebird.multiloaderutils:zigysmultiloaderutils-forge-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
     include "com.zigythebird.multiloaderutils:zigysmultiloaderutils-forge-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
 
-    modImplementation "com.github.Virtuoel:Pehkui:${pehkui_version}-$rootProject.minecraft_version-forge"
+//    modImplementation "com.github.Virtuoel:Pehkui:${pehkui_version}-$rootProject.minecraft_version-forge"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
