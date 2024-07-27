@@ -85,7 +85,7 @@ public class PlayPlayerAnimationCommand {
     public static List<CommonModifier> modifierList(String input) {
         List<CommonModifier> list = new ArrayList<>();
         for (String str : input.split(";")) {
-            list.add(new CommonModifier(new ResourceLocation(str), null));
+            list.add(new CommonModifier(ResourceLocation.parse(str), null));
         }
         return list;
     }

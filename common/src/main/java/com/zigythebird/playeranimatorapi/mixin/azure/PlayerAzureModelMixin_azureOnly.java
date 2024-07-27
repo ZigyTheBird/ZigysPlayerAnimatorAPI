@@ -1,8 +1,9 @@
-package com.zigythebird.playeranimatorapi.mixin;
+package com.zigythebird.playeranimatorapi.mixin.azure;
 
 import com.zigythebird.playeranimatorapi.azure.PlayerAnimationModel;
 import com.zigythebird.playeranimatorapi.azure.PlayerAnimationRenderer;
-import com.zigythebird.playeranimatorapi.misc.GetModelRendererInterface;
+import com.zigythebird.playeranimatorapi.misc.AzurePlayerInterface;
+import com.zigythebird.playeranimatorapi.misc.GetAzureModelRendererInterface;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -15,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerModel.class)
-public class PlayerModelMixin_azureOnly<T extends LivingEntity> implements GetModelRendererInterface {
+public class PlayerAzureModelMixin_azureOnly<T extends LivingEntity> implements GetAzureModelRendererInterface {
 
     @Unique
     private PlayerAnimationRenderer zigysPlayerAnimatorAPI$renderer = null;
@@ -23,8 +24,8 @@ public class PlayerModelMixin_azureOnly<T extends LivingEntity> implements GetMo
     @Inject(method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V", at = @At("TAIL"))
     private void inject(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci) {
         PlayerAnimationRenderer renderer = playeranimatorapi$getRenderer();
-        if (renderer != null && entity instanceof Player && entity.equals(Minecraft.getInstance().player) && ((PlayerAnimationModel)renderer.getGeoModel()).allResourcesExist(((AbstractClientPlayer) entity).playeranimatorapi$getAnimatablePlayerLayer())) {
-            renderer.setupAnim(renderer.getGeoModel().getBakedModel(renderer.getGeoModel().getModelResource(((AbstractClientPlayer) entity).playeranimatorapi$getAnimatablePlayerLayer())));
+        if (renderer != null && entity instanceof Player && entity.equals(Minecraft.getInstance().player) && ((PlayerAnimationModel)renderer.getGeoModel()).allResourcesExist(((AzurePlayerInterface) entity).playeranimatorapi$getAnimatablePlayerLayer())) {
+            renderer.setupAnim(renderer.getGeoModel().getBakedModel(renderer.getGeoModel().getModelResource(((AzurePlayerInterface) entity).playeranimatorapi$getAnimatablePlayerLayer())));
         }
     }
 

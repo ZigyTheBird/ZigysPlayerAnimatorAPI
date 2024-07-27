@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 import java.util.ArrayList;
 
-@Mixin(AnimationStack.class)
+@Mixin(value = AnimationStack.class, remap = false)
 public interface AnimationStackAccessor {
     @Accessor
     ArrayList<Pair<Integer, IAnimation>> getLayers();

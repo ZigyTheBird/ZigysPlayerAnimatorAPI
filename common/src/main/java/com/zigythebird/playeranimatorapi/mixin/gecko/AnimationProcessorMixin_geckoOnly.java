@@ -1,14 +1,7 @@
-package com.zigythebird.playeranimatorapi.mixin;
+package com.zigythebird.playeranimatorapi.mixin.gecko;
 
-import com.zigythebird.playeranimatorapi.azure.AnimatablePlayerLayer;
-import mod.azure.azurelib.common.internal.common.core.animatable.GeoAnimatable;
-import mod.azure.azurelib.common.internal.common.core.animatable.model.CoreGeoBone;
-import mod.azure.azurelib.common.internal.common.core.animatable.model.CoreGeoModel;
-import mod.azure.azurelib.common.internal.common.core.animation.*;
-import mod.azure.azurelib.common.internal.common.core.keyframe.AnimationPoint;
-import mod.azure.azurelib.common.internal.common.core.keyframe.BoneAnimationQueue;
-import mod.azure.azurelib.common.internal.common.core.state.BoneSnapshot;
-import mod.azure.azurelib.common.internal.common.core.utils.Interpolations;
+import com.eliotlash.mclib.utils.Interpolations;
+import com.zigythebird.playeranimatorapi.gecko.AnimatablePlayerLayer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -16,26 +9,33 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animation.*;
+import software.bernie.geckolib.animation.keyframe.AnimationPoint;
+import software.bernie.geckolib.animation.keyframe.BoneAnimationQueue;
+import software.bernie.geckolib.animation.state.BoneSnapshot;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.model.GeoModel;
 
 import java.util.*;
 
 @Mixin(AnimationProcessor.class)
-public abstract class AnimationProcessorMixin_azureOnly<T extends GeoAnimatable> {
+public abstract class AnimationProcessorMixin_geckoOnly<T extends GeoAnimatable> {
 
     @Shadow(remap = false) protected abstract Map<String, BoneSnapshot> updateBoneSnapshots(Map<String, BoneSnapshot> snapshots);
 
     @Shadow(remap = false) public boolean reloadAnimations;
 
-    @Shadow(remap = false) @Final private Map<String, CoreGeoBone> bones;
-
     @Shadow(remap = false) protected abstract void resetBoneTransformationMarkers();
 
-    @Shadow(remap = false) public abstract Collection<CoreGeoBone> getRegisteredBones();
+    @Shadow(remap = false) @Final private Map<String, GeoBone> bones;
+
+    @Shadow(remap = false) public abstract Collection<GeoBone> getRegisteredBones();
 
     @Inject(method = "tickAnimation", at = @At("HEAD"), cancellable = true, remap = false)
-    private void inject(T animatable, CoreGeoModel<T> model, AnimatableManager<T> animatableManager, double animTime, AnimationState<T> event, boolean crashWhenCantFindBone, CallbackInfo ci) {
+    private void inject(T animatable, GeoModel<T> model, AnimatableManager<T> animatableManager, double animTime, AnimationState<T> state, boolean crashWhenCantFindBone, CallbackInfo ci) {
         if (animatable instanceof AnimatablePlayerLayer) {
-            List<CoreGeoBone> disabledBones = new ArrayList<>();
+            List<GeoBone> disabledBones = new ArrayList<>();
             Map<String, BoneSnapshot> boneSnapshots = this.updateBoneSnapshots(animatableManager.getBoneSnapshotCollection());
             Iterator var9 = animatableManager.getAnimationControllers().values().iterator();
 
@@ -56,14 +56,14 @@ public abstract class AnimationProcessorMixin_azureOnly<T extends GeoAnimatable>
                     controller.getBoneAnimationQueues().clear();
                 }
 
-                ((AnimationControllerAccessor_azureOnly)controller).setIsJustStarting(animatableManager.isFirstTick());
-                event.withController(controller);
-                controller.process(model, event, this.bones, boneSnapshots, animTime, crashWhenCantFindBone);
+                ((AnimationControllerAccessor_geckoOnly)controller).setIsJustStarting(animatableManager.isFirstTick());
+                state.withController(controller);
+                controller.process(model, state, this.bones, boneSnapshots, animTime, crashWhenCantFindBone);
                 var11 = controller.getBoneAnimationQueues().values().iterator();
 
                 while (var11.hasNext()) {
                     BoneAnimationQueue boneAnimation = (BoneAnimationQueue) var11.next();
-                    CoreGeoBone bone = boneAnimation.bone();
+                    GeoBone bone = boneAnimation.bone();
                     if (disabledBones.contains(bone)) {
                         continue;
                     }
@@ -78,7 +78,7 @@ public abstract class AnimationProcessorMixin_azureOnly<T extends GeoAnimatable>
                     AnimationPoint scaleXPoint = (AnimationPoint) boneAnimation.scaleXQueue().poll();
                     AnimationPoint scaleYPoint = (AnimationPoint) boneAnimation.scaleYQueue().poll();
                     AnimationPoint scaleZPoint = (AnimationPoint) boneAnimation.scaleZQueue().poll();
-                    EasingType easingType = (EasingType) ((AnimationControllerAccessor_azureOnly)controller).getOverrideEasingTypeFunction().apply(animatable);
+                    EasingType easingType = (EasingType) ((AnimationControllerAccessor_geckoOnly)controller).getOverrideEasingTypeFunction().apply(animatable);
                     if (rotXPoint != null && rotYPoint != null && rotZPoint != null) {
                         bone.setRotX((float) EasingType.lerpWithOverride(rotXPoint, easingType) + initialSnapshot.getRotX());
                         bone.setRotY((float) EasingType.lerpWithOverride(rotYPoint, easingType) + initialSnapshot.getRotY());
@@ -113,7 +113,7 @@ public abstract class AnimationProcessorMixin_azureOnly<T extends GeoAnimatable>
             var11 = this.getRegisteredBones().iterator();
 
             while(var11.hasNext()) {
-                CoreGeoBone bone = (CoreGeoBone)var11.next();
+                GeoBone bone = (GeoBone)var11.next();
                 BoneSnapshot initialSnapshot;
                 double percentageReset;
                 if (disabledBones.contains(bone)) {
@@ -159,7 +159,7 @@ public abstract class AnimationProcessorMixin_azureOnly<T extends GeoAnimatable>
                     }
 
                     percentageReset = Math.min((animTime - saveSnapshot.getLastResetScaleTick()) / resetTickLength, 1.0);
-                    bone.setScaleX((float)Interpolations.lerp((double)saveSnapshot.getScaleX(), (double)initialSnapshot.getScaleX(), percentageReset));
+                    bone.setScaleX((float) Interpolations.lerp((double)saveSnapshot.getScaleX(), (double)initialSnapshot.getScaleX(), percentageReset));
                     bone.setScaleY((float)Interpolations.lerp((double)saveSnapshot.getScaleY(), (double)initialSnapshot.getScaleY(), percentageReset));
                     bone.setScaleZ((float)Interpolations.lerp((double)saveSnapshot.getScaleZ(), (double)initialSnapshot.getScaleZ(), percentageReset));
                     if (percentageReset >= 1.0) {
@@ -169,15 +169,15 @@ public abstract class AnimationProcessorMixin_azureOnly<T extends GeoAnimatable>
             }
 
             this.resetBoneTransformationMarkers();
-            ((AnimatableManagerAccessor_azureOnly)animatableManager).callFinishFirstTick();
+            ((AnimatableManagerAccessor_geckoOnly)animatableManager).callFinishFirstTick();
             ci.cancel();
         }
     }
 
     @Unique
-    private static void addDisabled(List<CoreGeoBone> list, String bone, CoreGeoModel model) {
+    private static void addDisabled(List<GeoBone> list, String bone, GeoModel model) {
         if (model.getBone(bone).isPresent()) {
-            list.add((CoreGeoBone) model.getBone(bone).get());
+            list.add((GeoBone) model.getBone(bone).get());
         }
     }
 }

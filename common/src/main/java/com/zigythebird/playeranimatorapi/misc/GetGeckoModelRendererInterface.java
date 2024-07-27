@@ -1,8 +1,8 @@
 package com.zigythebird.playeranimatorapi.misc;
 
-import com.zigythebird.playeranimatorapi.azure.PlayerAnimationRenderer;
+import com.zigythebird.playeranimatorapi.gecko.PlayerAnimationRenderer;
 
-public interface GetModelRendererInterface {
+public interface GetGeckoModelRendererInterface {
     PlayerAnimationRenderer playeranimatorapi$getRenderer();
     void playeranimatorapi$setRenderer(PlayerAnimationRenderer renderer);
 }

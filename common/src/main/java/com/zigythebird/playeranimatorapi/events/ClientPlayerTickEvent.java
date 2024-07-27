@@ -3,6 +3,7 @@ package com.zigythebird.playeranimatorapi.events;
 import com.zigythebird.multiloaderutils.utils.Platform;
 import com.zigythebird.playeranimatorapi.azure.ModAzureUtilsClient;
 import com.zigythebird.playeranimatorapi.data.PlayerAnimationData;
+import com.zigythebird.playeranimatorapi.gecko.ModGeckoUtilsClient;
 import com.zigythebird.playeranimatorapi.playeranims.ConditionalAnimations;
 import com.zigythebird.playeranimatorapi.playeranims.CustomModifierLayer;
 import com.zigythebird.playeranimatorapi.playeranims.PlayerAnimations;
@@ -27,6 +28,9 @@ public class ClientPlayerTickEvent {
 
                 if (Platform.isModLoaded("azurelib")) {
                     ModAzureUtilsClient.tick((AbstractClientPlayer) player, animationContainer);
+                }
+                else if (Platform.isModLoaded("geckolib")) {
+                    ModGeckoUtilsClient.tick((AbstractClientPlayer) player, animationContainer);
                 }
             }
         }

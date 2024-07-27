@@ -4,12 +4,12 @@ import com.zigythebird.playeranimatorapi.ModInit;
 import com.zigythebird.playeranimatorapi.commands.PlayPlayerAnimationCommand;
 import com.zigythebird.playeranimatorapi.commands.StopPlayerAnimationCommand;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 public class ModEvents {
 
-    @Mod.EventBusSubscriber(modid = ModInit.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+    @EventBusSubscriber(modid = ModInit.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
     public class ModEventListener {
 
         @SubscribeEvent

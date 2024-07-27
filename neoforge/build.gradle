@@ -21,12 +21,15 @@ dependencies {
     modImplementation "com.zigythebird.multiloaderutils:zigysmultiloaderutils-neoforge-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
     include "com.zigythebird.multiloaderutils:zigysmultiloaderutils-neoforge-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
 
-    modApi("com.github.Virtuoel:Pehkui:$rootProject.pehkui_version-1.20.4-neoforge")
+    modApi("com.github.Virtuoel:Pehkui:$rootProject.pehkui_version-$rootProject.minecraft_version-neoforge")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive false }
 
+    modImplementation("software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}")
+    implementation("com.eliotlash.mclib:mclib:20")
     modImplementation "mod.azure.azurelib:azurelib-neo-$rootProject.minecraft_version:$rootProject.azurelib_version"
+
     modImplementation "dev.kosmx.player-anim:player-animation-lib-forge:${rootProject.player_anim_version}"
 
 //    modImplementation "curse.maven:emotecraft-forge-403422:4632460"

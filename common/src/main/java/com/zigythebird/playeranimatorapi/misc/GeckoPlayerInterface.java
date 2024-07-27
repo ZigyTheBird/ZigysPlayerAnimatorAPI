@@ -1,7 +1,7 @@
 package com.zigythebird.playeranimatorapi.misc;
 
-import com.zigythebird.playeranimatorapi.azure.AnimatablePlayerLayer;
+import com.zigythebird.playeranimatorapi.gecko.AnimatablePlayerLayer;
 
-public interface PlayerInterface {
+public interface GeckoPlayerInterface {
     AnimatablePlayerLayer playeranimatorapi$getAnimatablePlayerLayer();
 }

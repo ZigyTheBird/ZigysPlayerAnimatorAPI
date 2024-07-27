@@ -1,10 +1,10 @@
-package com.zigythebird.playeranimatorapi.azure;
+package com.zigythebird.playeranimatorapi.gecko;
 
 import com.zigythebird.playeranimatorapi.playeranims.PlayerAnimations;
-import mod.azure.azurelib.common.api.client.model.GeoModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
+import software.bernie.geckolib.model.GeoModel;
 
 import java.util.HashMap;
 import java.util.Map;

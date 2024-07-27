@@ -2,10 +2,6 @@
   "injected_interfaces": {
     "net/minecraft/class_630": [
       "com/zigythebird/playeranimatorapi/misc/IsVisibleAccessor"
-    ],
-    "net/minecraft/class_742": [
-      "com/zigythebird/playeranimatorapi/misc/PlayerInterface"
-    ],
-    "net/minecraft/class_4184": ["com/zigythebird/playeranimatorapi/misc/CameraInterface"]
+    ]
   }
 }

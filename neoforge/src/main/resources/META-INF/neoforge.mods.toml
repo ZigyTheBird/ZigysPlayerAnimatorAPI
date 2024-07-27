@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[2,)"
+loaderVersion = "[4,)"
 issueTrackerURL = "https://github.com/ZigyTheBird/ZigysPlayerAnimatorAPI/issues"
 license = "MIT License"
 
@@ -10,7 +10,7 @@ config = "playeranimatorapi.mixins.json"
 
 [[mods]]
 modId = "playeranimatorapi"
-version = "${version}"
+version = "2.0.5"
 displayName = "Zigy's Player Animator API"
 authors = "Zigy"
 description = '''
@@ -22,20 +22,20 @@ logoFile = "icon.png"
 [[dependencies.playeranimatorapi]]
 modId = "neoforge"
 type="required"
-versionRange = "[20.4.225,)"
+versionRange = "[21.0.000-beta,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.playeranimatorapi]]
 modId = "minecraft"
 type="required"
-versionRange = "[1.20.2,)"
+versionRange = "[1.21,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.playeranimatorapi]]
 modId = "playeranimator"
 type="required"
-versionRange = "[${player_anim_version},)"
+versionRange = "[1.0.2-rc1+1.21,)"
 ordering = "AFTER"
 side = "CLIENT"

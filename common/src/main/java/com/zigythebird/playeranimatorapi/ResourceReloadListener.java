@@ -29,10 +29,10 @@ public class ResourceReloadListener implements ResourceManagerReloadListener {
                 JsonObject jsonObject = GsonHelper.convertToJsonObject(JsonParser.parseReader(resource.getValue().openAsReader()), "resource");
                 if (jsonObject.has("animations")) {
                     for (var object : jsonObject.get("animations").getAsJsonObject().asMap().entrySet()) {
-                        ResourceLocation resourceLocation = new ResourceLocation(resource.getKey().getNamespace(), object.getKey().toLowerCase(Locale.ROOT));
+                        ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(resource.getKey().getNamespace(), object.getKey().toLowerCase(Locale.ROOT));
                         PlayerAnimations.animLengthsMap.put(resourceLocation, object.getValue().getAsJsonObject().get("animation_length").getAsFloat());
                         if (object.getValue().getAsJsonObject().has("geckoResource")) {
-                            PlayerAnimations.geckoMap.put(resourceLocation, new ResourceLocation(object.getValue().getAsJsonObject().get("geckoResource").getAsString()));
+                            PlayerAnimations.geckoMap.put(resourceLocation, ResourceLocation.parse(object.getValue().getAsJsonObject().get("geckoResource").getAsString()));
                         }
                     }
                 } else {
@@ -40,9 +40,9 @@ public class ResourceReloadListener implements ResourceManagerReloadListener {
 
                         for (var animation : AnimationSerializing.deserializeAnimation(input)) {
 
-                            PlayerAnimations.animLengthsMap.put(new ResourceLocation(resource.getKey().getNamespace(), PlayerAnimationRegistry.serializeTextToString((String) animation.extraData.get("name")).toLowerCase(Locale.ROOT)), (float) (animation.endTick / 20));
+                            PlayerAnimations.animLengthsMap.put(ResourceLocation.fromNamespaceAndPath(resource.getKey().getNamespace(), PlayerAnimationRegistry.serializeTextToString((String) animation.extraData.get("name")).toLowerCase(Locale.ROOT)), (float) (animation.endTick / 20));
                             if (jsonObject.has("geckoResource")) {
-                                PlayerAnimations.geckoMap.put(new ResourceLocation(resource.getKey().getNamespace(), PlayerAnimationRegistry.serializeTextToString((String) animation.extraData.get("name")).toLowerCase(Locale.ROOT)), new ResourceLocation(jsonObject.get("geckoResource").getAsString()));
+                                PlayerAnimations.geckoMap.put(ResourceLocation.fromNamespaceAndPath(resource.getKey().getNamespace(), PlayerAnimationRegistry.serializeTextToString((String) animation.extraData.get("name")).toLowerCase(Locale.ROOT)), ResourceLocation.parse(jsonObject.get("geckoResource").getAsString()));
                             }
                         }
                     }

@@ -5,24 +5,29 @@
   "minVersion": "0.8",
   "plugin": "com.zigythebird.playeranimatorapi.ModMixinPlugin",
   "client": [
-    "AbstractClientPlayerMixin_azureOnly",
     "CameraMixin",
-    "GameRendererMixin",
     "InventoryScreenMixin",
     "LivingEntityRendererMixin",
-    "LivingEntityRendererMixin_azureOnly",
     "ModelPartMixin",
-    "PlayerModelMixin_azureOnly"
+    "azure.AbstractClientAzurePlayerMixin_azureOnly",
+    "azure.LivingEntityRendererMixin_azureOnly",
+    "azure.PlayerAzureModelMixin_azureOnly",
+    "gecko.AbstractClientAzurePlayerMixin_geckoOnly",
+    "gecko.LivingEntityRendererMixin_geckoOnly",
+    "gecko.PlayerAzureModelMixin_geckoOnly"
   ],
   "mixins": [
-    "AnimatableManagerAccessor_azureOnly",
-    "AnimationControllerAccessor_azureOnly",
-    "AnimationProcessorMixin_azureOnly",
     "AnimationStackAccessor",
-    "CameraAccessor",
-    "GeoModelMixin_azureOnly",
     "KeyframeAnimationPlayerAccessor",
-    "PlayerMixin"
+    "PlayerMixin",
+    "azure.AnimatableManagerAccessor_azureOnly",
+    "azure.AnimationControllerAccessor_azureOnly",
+    "azure.AnimationProcessorMixin_azureOnly",
+    "azure.GeoModelMixin_azureOnly",
+    "gecko.AnimatableManagerAccessor_geckoOnly",
+    "gecko.AnimationControllerAccessor_geckoOnly",
+    "gecko.AnimationProcessorMixin_geckoOnly",
+    "gecko.GeoModelMixin_geckoOnly"
   ],
   "injectors": {
     "defaultRequire": 1

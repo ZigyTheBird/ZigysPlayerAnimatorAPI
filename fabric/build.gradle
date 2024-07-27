@@ -38,11 +38,14 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
+    modImplementation("software.bernie.geckolib:geckolib-fabric-${minecraft_version}:${geckolib_version}")
+    implementation("com.eliotlash.mclib:mclib:20")
     modImplementation "mod.azure.azurelib:azurelib-fabric-$rootProject.minecraft_version:$rootProject.azurelib_version"
+
     modImplementation "dev.kosmx.player-anim:player-animation-lib-fabric:${rootProject.player_anim_version}"
 
-    modImplementation "maven.modrinth:emotecraft:CUDCdgav"
-    modImplementation "maven.modrinth:replaymod:TGJXKoTQ"
+//    modImplementation "maven.modrinth:emotecraft:CUDCdgav"
+    modImplementation "maven.modrinth:replaymod:yn3njhcI"
 }
 
 processResources {

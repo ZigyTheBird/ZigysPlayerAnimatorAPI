@@ -1,17 +1,11 @@
-package com.zigythebird.playeranimatorapi.azure;
+package com.zigythebird.playeranimatorapi.gecko;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.zigythebird.multiloaderutils.utils.Platform;
 import com.zigythebird.playeranimatorapi.compatibility.PehkuiCompat;
-import com.zigythebird.playeranimatorapi.misc.GetAzureModelRendererInterface;
+import com.zigythebird.playeranimatorapi.misc.GetGeckoModelRendererInterface;
 import com.zigythebird.playeranimatorapi.misc.PlayerModelInterface;
-import mod.azure.azurelib.common.api.client.model.GeoModel;
-import mod.azure.azurelib.common.api.client.renderer.GeoObjectRenderer;
-import mod.azure.azurelib.common.internal.common.cache.object.BakedGeoModel;
-import mod.azure.azurelib.common.internal.common.cache.object.GeoBone;
-import mod.azure.azurelib.common.internal.common.constant.DataTickets;
-import mod.azure.azurelib.core.animation.AnimationState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -25,6 +19,12 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.GeoObjectRenderer;
 
 public class PlayerAnimationRenderer<T extends AnimatablePlayerLayer> extends GeoObjectRenderer<T> implements PlayerModelInterface {
 
@@ -39,7 +39,8 @@ public class PlayerAnimationRenderer<T extends AnimatablePlayerLayer> extends Ge
     }
 
     @Override
-    public void preRender(PoseStack poseStack, T animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void preRender(PoseStack poseStack, T animatable, BakedGeoModel model, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight,
+                          int packedOverlay, int colour) {
         this.objectRenderTranslations = new Matrix4f(poseStack.last().pose());
 
         scaleModelForRender(this.scaleWidth, this.scaleHeight, poseStack, animatable, model, isReRender, partialTick, packedLight, packedOverlay);
@@ -54,18 +55,21 @@ public class PlayerAnimationRenderer<T extends AnimatablePlayerLayer> extends Ge
     }
 
     @Override
-    public void render(PoseStack poseStack, T animatable, @Nullable MultiBufferSource bufferSource, @Nullable RenderType renderType, @Nullable VertexConsumer buffer, int packedLight) {
+    public void render(PoseStack poseStack, T animatable, @Nullable MultiBufferSource bufferSource, @Nullable RenderType renderType,
+                       @Nullable VertexConsumer buffer, int packedLight, float partialTick) {
         if (playerModel != null) {
-            ((GetAzureModelRendererInterface)playerModel).playeranimatorapi$setRenderer(this);
+            ((GetGeckoModelRendererInterface)playerModel).playeranimatorapi$setRenderer(this);
         }
         if (renderType == null) {
             renderType = RenderType.entityTranslucent(model.getTextureResource(animatable));
         }
-        super.render(poseStack, animatable, bufferSource, renderType, buffer, packedLight);
+        super.render(poseStack, animatable, bufferSource, renderType, buffer, packedLight, partialTick);
     }
 
     @Override
-    public void actuallyRender(PoseStack poseStack, T animatable, BakedGeoModel model, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void actuallyRender(PoseStack poseStack, T animatable, BakedGeoModel model, @Nullable RenderType renderType,
+                               MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float partialTick,
+                               int packedLight, int packedOverlay, int colour) {
         poseStack.pushPose();
 
         LivingEntity livingEntity = animatable.getPlayer();
@@ -107,7 +111,7 @@ public class PlayerAnimationRenderer<T extends AnimatablePlayerLayer> extends Ge
             animationState.setData(DataTickets.TICK, animatable.getTick(animatable));
 
             this.model.addAdditionalStateData(animatable, instanceId, animationState::setData);
-            this.model.handleAnimations(animatable, instanceId, animationState);
+            this.model.handleAnimations(animatable, instanceId, animationState, partialTick);
         }
 
         poseStack.translate(0, 0.01f, 0);
@@ -116,8 +120,8 @@ public class PlayerAnimationRenderer<T extends AnimatablePlayerLayer> extends Ge
 
         if (!animatable.getPlayer().isInvisibleTo(Minecraft.getInstance().player)) {
             updateAnimatedTextureFrame(animatable);
-            for (GeoBone group : model.topLevelBones) {
-                renderRecursively(poseStack, animatable, group, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+            for (GeoBone group : model.topLevelBones()) {
+                renderRecursively(poseStack, animatable, group, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
             }
         }
         poseStack.popPose();

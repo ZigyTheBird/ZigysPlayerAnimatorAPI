@@ -2,6 +2,7 @@ package com.zigythebird.playeranimatorapi.compatibility.fabric;
 
 import com.mojang.serialization.JsonOps;
 import com.replaymod.recording.ReplayModRecording;
+import com.zigythebird.multiloaderutils.network.MultiloaderPacket;
 import com.zigythebird.playeranimatorapi.API.PlayerAnimAPI;
 import com.zigythebird.playeranimatorapi.ModInit;
 import com.zigythebird.playeranimatorapi.data.PlayerAnimationData;
@@ -22,9 +23,9 @@ public class ReplayModCompatImpl {
             FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
             PlayerAnimationData data = new PlayerAnimationData(player.getUUID(), animationID,
                     parts, modifiers, fadeLength, easeID, priority, firstPersonEnabled);
-            buf.writeUtf(PlayerAnimAPI.gson.toJson(PlayerAnimationData.CODEC.encodeStart(JsonOps.INSTANCE, data).getOrThrow(true, ModInit.LOGGER::warn)));
+            buf.writeUtf(PlayerAnimAPI.gson.toJson(PlayerAnimationData.CODEC.encodeStart(JsonOps.INSTANCE, data).getOrThrow()));
             buf.writeBoolean(replaceTick);
-            ReplayModRecording.instance.getConnectionEventHandler().getPacketListener().save(ServerPlayNetworking.createS2CPacket(PlayerAnimatorAPIClientFabric.altPlayPlayerAnimationPacket, buf));
+            ReplayModRecording.instance.getConnectionEventHandler().getPacketListener().save(ServerPlayNetworking.createS2CPacket(new MultiloaderPacket(buf, PlayerAnimatorAPIClientFabric.altPlayPlayerAnimationPacket)));
         }
     }
 
@@ -33,7 +34,7 @@ public class ReplayModCompatImpl {
             FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
             buf.writeUUID(player.getUUID());
             buf.writeResourceLocation(animationID);
-            ReplayModRecording.instance.getConnectionEventHandler().getPacketListener().save(ServerPlayNetworking.createS2CPacket(PlayerAnimatorAPIClientFabric.altStopPlayerAnimationPacket, buf));
+            ReplayModRecording.instance.getConnectionEventHandler().getPacketListener().save(ServerPlayNetworking.createS2CPacket(new MultiloaderPacket(buf, PlayerAnimatorAPIClientFabric.altStopPlayerAnimationPacket)));
         }
     }
 }

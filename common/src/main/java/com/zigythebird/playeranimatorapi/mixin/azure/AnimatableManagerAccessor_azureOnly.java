@@ -1,6 +1,6 @@
-package com.zigythebird.playeranimatorapi.mixin;
+package com.zigythebird.playeranimatorapi.mixin.azure;
 
-import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
+import mod.azure.azurelib.core.animation.AnimatableManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 

@@ -37,9 +37,9 @@ public class CommonModifier<T extends AbstractModifier> {
 
     public static DataResult<CommonModifier> decode(List<String> data) {
         if (data.size() == 2) {
-            return DataResult.success(new CommonModifier(new ResourceLocation(data.get(0)), gson.fromJson(data.get(1), TypeToken.get(JsonObject.class))));
+            return DataResult.success(new CommonModifier(ResourceLocation.parse(data.get(0)), gson.fromJson(data.get(1), TypeToken.get(JsonObject.class))));
         } else if (data.size() == 1) {
-            return DataResult.success(new CommonModifier(new ResourceLocation(data.get(0)), null));
+            return DataResult.success(new CommonModifier(ResourceLocation.parse(data.get(0)), null));
         }
         return DataResult.success(nullModifer);
     }

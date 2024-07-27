@@ -7,7 +7,10 @@ dependencies {
 
     modImplementation "com.zigythebird.multiloaderutils:zigysmultiloaderutils-common-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
 
+    modImplementation("software.bernie.geckolib:geckolib-fabric-${minecraft_version}:${geckolib_version}")
+    implementation("com.eliotlash.mclib:mclib:20")
     modImplementation "mod.azure.azurelib:azurelib-fabric-$rootProject.minecraft_version:$rootProject.azurelib_version"
+
     modImplementation "dev.kosmx.player-anim:player-animation-lib-fabric:${rootProject.player_anim_version}"
 
     modApi("com.github.Virtuoel:Pehkui:${pehkui_version}", {

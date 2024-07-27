@@ -14,6 +14,9 @@ public class ModMixinPlugin implements IMixinConfigPlugin {
         if (mixinClassName.endsWith("_azureOnly") && !Platform.isModLoaded("azurelib", "mod.azure.azurelib.common.internal.common.AzureLib")) {
             return false;
         }
+        if (mixinClassName.endsWith("_geckoOnly") && (Platform.isModLoaded("azurelib", "mod.azure.azurelib.common.internal.common.AzureLib") || !Platform.isModLoaded("geckolib", "software.bernie.geckolib.GeckoLib"))) {
+            return false;
+        }
         if (mixinClassName.equals("zigy.playeranimatorapi.mixin.LivingEntityRendererMixin") && Platform.isModLoaded("azurelib", "mod.azure.azurelib.common.internal.common.AzureLib")) {
             return false;
         }

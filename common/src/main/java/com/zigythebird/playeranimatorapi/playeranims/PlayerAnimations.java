@@ -10,6 +10,7 @@ import com.zigythebird.playeranimatorapi.ModInit;
 import com.zigythebird.playeranimatorapi.azure.ModAzureUtilsClient;
 import com.zigythebird.playeranimatorapi.data.PlayerAnimationData;
 import com.zigythebird.playeranimatorapi.data.PlayerParts;
+import com.zigythebird.playeranimatorapi.gecko.ModGeckoUtilsClient;
 import com.zigythebird.playeranimatorapi.mixin.AnimationStackAccessor;
 import com.zigythebird.playeranimatorapi.modifier.CommonModifier;
 import com.zigythebird.playeranimatorapi.registry.AnimModifierRegistry;
@@ -48,9 +49,9 @@ public class PlayerAnimations {
     public static Map<ResourceLocation, Float> animLengthsMap;
     public static Map<ResourceLocation, ResourceLocation> geckoMap;
 
-    public static final ResourceLocation playerAnimPacket = new ResourceLocation(ModInit.MOD_ID, "player_anim");
-    public static final ResourceLocation playerAnimStopPacket = new ResourceLocation(ModInit.MOD_ID, "player_anim_stop");
-    public static final ResourceLocation animationLayerId = new ResourceLocation(ModInit.MOD_ID, "factory");
+    public static final ResourceLocation playerAnimPacket = ResourceLocation.fromNamespaceAndPath(ModInit.MOD_ID, "player_anim");
+    public static final ResourceLocation playerAnimStopPacket = ResourceLocation.fromNamespaceAndPath(ModInit.MOD_ID, "player_anim_stop");
+    public static final ResourceLocation animationLayerId = ResourceLocation.fromNamespaceAndPath(ModInit.MOD_ID, "factory");
 
     public static void init() {
         PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(
@@ -79,11 +80,14 @@ public class PlayerAnimations {
             if (Platform.isModLoaded("azurelib")) {
                 ModAzureUtilsClient.stopGeckoAnimation(player);
             }
+            else if (Platform.isModLoaded("geckolib")) {
+                ModGeckoUtilsClient.stopGeckoAnimation(player);
+            }
         }
     }
 
     public static void receivePacket(String jsonData) {
-        PlayerAnimationData data = PlayerAnimationData.CODEC.parse(JsonOps.INSTANCE, gson.fromJson(jsonData, JsonElement.class)).getOrThrow(true, logger::warn);
+        PlayerAnimationData data = PlayerAnimationData.CODEC.parse(JsonOps.INSTANCE, gson.fromJson(jsonData, JsonElement.class)).getOrThrow();
         AbstractClientPlayer player = (AbstractClientPlayer) Minecraft.getInstance().level.getPlayerByUUID(data.playerUUID());
         playAnimation(player, data);
     }
@@ -243,6 +247,9 @@ public class PlayerAnimations {
 
             if (Platform.isModLoaded("azurelib")) {
                 ModAzureUtilsClient.playGeckoAnimation(player, data, animationContainer.getSpeed());
+            }
+            else if (Platform.isModLoaded("geckolib")) {
+                ModGeckoUtilsClient.playGeckoAnimation(player, data, animationContainer.getSpeed());
             }
         } catch (NullPointerException e) {
             logger.warn("Player Animator API failed to play player animation: " + e);

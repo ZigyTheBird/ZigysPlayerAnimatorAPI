@@ -26,10 +26,10 @@ import java.util.List;
  */
 public class PlayerAnimAPI {
 
-    public static final ResourceLocation playerAnimPacket = new ResourceLocation(ModInit.MOD_ID, "player_anim");
-    public static final ResourceLocation playerAnimStopPacket = new ResourceLocation(ModInit.MOD_ID, "player_anim_stop");
+    public static final ResourceLocation playerAnimPacket = ResourceLocation.fromNamespaceAndPath(ModInit.MOD_ID, "player_anim");
+    public static final ResourceLocation playerAnimStopPacket = ResourceLocation.fromNamespaceAndPath(ModInit.MOD_ID, "player_anim_stop");
 
-    public static final ResourceLocation MIRROR_ON_ALT_HAND = new ResourceLocation("playeranimatorapi", "mirroronalthand");
+    public static final ResourceLocation MIRROR_ON_ALT_HAND = ResourceLocation.fromNamespaceAndPath("playeranimatorapi", "mirroronalthand");
 
     /**Use this if you are using an animation for an item.*/
     public static final List<CommonModifier> gameplayModifiers = new ArrayList<>(){
@@ -57,7 +57,7 @@ public class PlayerAnimAPI {
     public static void playPlayerAnim(ServerLevel level, Player player, PlayerAnimationData data) {
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
 
-        buf.writeUtf(gson.toJson(PlayerAnimationData.CODEC.encodeStart(JsonOps.INSTANCE, data).getOrThrow(true, logger::warn)));
+        buf.writeUtf(gson.toJson(PlayerAnimationData.CODEC.encodeStart(JsonOps.INSTANCE, data).getOrThrow()));
         NetworkManager.sendToPlayers(CommonPlayerLookup.tracking(level, player.chunkPosition()), playerAnimPacket, buf);
     }
 
@@ -69,7 +69,7 @@ public class PlayerAnimAPI {
         PlayerAnimationData data = new PlayerAnimationData(player.getUUID(), animationID,
                 parts, modifiers, fadeLength, easeID, priority, firstPersonEnabled);
 
-        buf.writeUtf(gson.toJson(PlayerAnimationData.CODEC.encodeStart(JsonOps.INSTANCE, data).getOrThrow(true, logger::warn)));
+        buf.writeUtf(gson.toJson(PlayerAnimationData.CODEC.encodeStart(JsonOps.INSTANCE, data).getOrThrow()));
         NetworkManager.sendToPlayers(CommonPlayerLookup.tracking(level, player.chunkPosition()), playerAnimPacket, buf);
     }
 

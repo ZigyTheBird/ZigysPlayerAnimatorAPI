@@ -1,39 +1,39 @@
-package com.zigythebird.playeranimatorapi.azure;
+package com.zigythebird.playeranimatorapi.gecko;
 
 import com.zigythebird.playeranimatorapi.ModInit;
 import com.zigythebird.playeranimatorapi.data.PlayerAnimationData;
-import com.zigythebird.playeranimatorapi.misc.AzurePlayerInterface;
+import com.zigythebird.playeranimatorapi.misc.GeckoPlayerInterface;
 import com.zigythebird.playeranimatorapi.playeranims.ConditionalAnimations;
 import com.zigythebird.playeranimatorapi.playeranims.CustomModifierLayer;
 import com.zigythebird.playeranimatorapi.playeranims.PlayerAnimations;
-import mod.azure.azurelib.core.animation.*;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.entity.player.Player;
+import software.bernie.geckolib.animation.*;
 
-public class ModAzureUtilsClient {
+public class ModGeckoUtilsClient {
 
     public static void playGeckoAnimation(AbstractClientPlayer player, PlayerAnimationData data, float speed) {
-        AnimatableManager<AnimatablePlayerLayer> manager = ((AzurePlayerInterface)player).playeranimatorapi$getAnimatablePlayerLayer().getAnimatableInstanceCache().getManagerForId(player.getId());
+        AnimatableManager<AnimatablePlayerLayer> manager = ((GeckoPlayerInterface)player).playeranimatorapi$getAnimatablePlayerLayer().getAnimatableInstanceCache().getManagerForId(player.getId());
         AnimationController<AnimatablePlayerLayer> controller = manager.getAnimationControllers().get(ModInit.MOD_ID);
         controller.triggerableAnim(ConditionalAnimations.getAnimationForCurrentConditions(data).getPath(), RawAnimation.begin().then(ConditionalAnimations.getAnimationForCurrentConditions(data).getPath(), Animation.LoopType.DEFAULT));
         controller.setAnimationSpeed(speed);
 
-        controller.setTransitionLength(data.fadeLength() > -1 ? data.fadeLength() : 0);
+        controller.transitionLength(data.fadeLength() > -1 ? data.fadeLength() : 0);
         controller.tryTriggerAnimation(ConditionalAnimations.getAnimationForCurrentConditions(data).getPath());
     }
 
     public static void stopGeckoAnimation(AbstractClientPlayer player) {
-        AnimatableManager<AnimatablePlayerLayer> manager = ((AzurePlayerInterface)player).playeranimatorapi$getAnimatablePlayerLayer().getAnimatableInstanceCache().getManagerForId(player.getId());
+        AnimatableManager<AnimatablePlayerLayer> manager = ((GeckoPlayerInterface)player).playeranimatorapi$getAnimatablePlayerLayer().getAnimatableInstanceCache().getManagerForId(player.getId());
         AnimationController<AnimatablePlayerLayer> controller = manager.getAnimationControllers().get(ModInit.MOD_ID);
         controller.stop();
     }
 
     public static void tick(AbstractClientPlayer player, CustomModifierLayer animationContainer) {
-        AnimatableManager<AnimatablePlayerLayer> manager = ((AzurePlayerInterface)player).playeranimatorapi$getAnimatablePlayerLayer().getAnimatableInstanceCache().getManagerForId(player.getId());
+        AnimatableManager<AnimatablePlayerLayer> manager = ((GeckoPlayerInterface)player).playeranimatorapi$getAnimatablePlayerLayer().getAnimatableInstanceCache().getManagerForId(player.getId());
         AnimationController<AnimatablePlayerLayer> controller = manager.getAnimationControllers().get(ModInit.MOD_ID);
 
         if (!controller.isPlayingTriggeredAnimation()) {
-            ModAzureUtilsClient.playGeckoAnimation(player, animationContainer.data, animationContainer.getSpeed());
+            ModGeckoUtilsClient.playGeckoAnimation(player, animationContainer.data, animationContainer.getSpeed());
         }
     }
 

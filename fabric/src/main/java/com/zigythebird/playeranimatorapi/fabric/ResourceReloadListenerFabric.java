@@ -8,6 +8,6 @@ import net.minecraft.resources.ResourceLocation;
 public class ResourceReloadListenerFabric extends ResourceReloadListener implements IdentifiableResourceReloadListener {
     @Override
     public ResourceLocation getFabricId() {
-        return new ResourceLocation(ModInit.MOD_ID, "my_resources");
+        return ResourceLocation.fromNamespaceAndPath(ModInit.MOD_ID, "my_resources");
     }
 }

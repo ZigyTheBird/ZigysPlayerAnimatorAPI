@@ -1,10 +1,11 @@
-package com.zigythebird.playeranimatorapi.mixin;
+package com.zigythebird.playeranimatorapi.mixin.azure;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.zigythebird.playeranimatorapi.ModInitClient;
 import com.zigythebird.playeranimatorapi.azure.PlayerAnimationModel;
 import com.zigythebird.playeranimatorapi.azure.PlayerAnimationRenderer;
 import com.zigythebird.playeranimatorapi.data.PlayerParts;
+import com.zigythebird.playeranimatorapi.misc.AzurePlayerInterface;
 import com.zigythebird.playeranimatorapi.playeranims.CustomModifierLayer;
 import com.zigythebird.playeranimatorapi.playeranims.PlayerAnimations;
 import net.minecraft.client.Minecraft;
@@ -54,13 +55,13 @@ public class LivingEntityRendererMixin_azureOnly<T extends LivingEntity, M exten
                     return;
                 }
 
-                if ((!entity.equals(Minecraft.getInstance().player) || !Minecraft.getInstance().options.getCameraType().isFirstPerson() || ModInitClient.renderingGUI) && ((PlayerAnimationModel)(zigysPlayerAnimatorAPI$animationRenderer.getGeoModel())).allResourcesExist(((AbstractClientPlayer) entity).playeranimatorapi$getAnimatablePlayerLayer())) {
+                if ((!entity.equals(Minecraft.getInstance().player) || !Minecraft.getInstance().options.getCameraType().isFirstPerson() || ModInitClient.renderingGUI) && ((PlayerAnimationModel)(zigysPlayerAnimatorAPI$animationRenderer.getGeoModel())).allResourcesExist(((AzurePlayerInterface) entity).playeranimatorapi$getAnimatablePlayerLayer())) {
                     matrixStack.pushPose();
                     matrixStack.scale(-1.0F, -1.0F, 1.0F);
                     matrixStack.scale(1/0.9375F, 1/0.9375F, 1/0.9375F);
                     matrixStack.translate(0.0F, -1.501F, 0.0F);
                     zigysPlayerAnimatorAPI$animationRenderer.setPlayerModel(playerModel);
-                    zigysPlayerAnimatorAPI$animationRenderer.render(matrixStack, ((AbstractClientPlayer) entity).playeranimatorapi$getAnimatablePlayerLayer(), buffer, null, null, packedLight);
+                    zigysPlayerAnimatorAPI$animationRenderer.render(matrixStack, ((AzurePlayerInterface) entity).playeranimatorapi$getAnimatablePlayerLayer(), buffer, null, null, packedLight);
                     matrixStack.popPose();
                 }
 

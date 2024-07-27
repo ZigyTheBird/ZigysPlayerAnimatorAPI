@@ -12,7 +12,7 @@ public abstract class AbstractCameraModifier extends AbstractModifier {
         super();
     }
 
-    public @NotNull Vec3f get3DCameraTransform(GameRenderer renderer, Camera camera, TransformType type, float tickDelta, @NotNull Vec3f value0) {
+    public @NotNull Vec3f get3DCameraTransform(Camera camera, TransformType type, float tickDelta, @NotNull Vec3f value0) {
         return value0;
     }
 }
