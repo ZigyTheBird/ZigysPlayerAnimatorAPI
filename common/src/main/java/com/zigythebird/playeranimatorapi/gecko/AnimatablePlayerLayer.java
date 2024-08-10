@@ -1,6 +1,9 @@
 package com.zigythebird.playeranimatorapi.gecko;
 
 import com.zigythebird.playeranimatorapi.ModInit;
+import com.zigythebird.playeranimatorapi.playeranims.CustomModifierLayer;
+import com.zigythebird.playeranimatorapi.playeranims.PlayerAnimations;
+import com.zigythebird.playeranimatorapi.registry.GeckoControllerRegistry;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
@@ -24,7 +27,13 @@ public class AnimatablePlayerLayer implements GeoAnimatable {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, ModInit.MOD_ID, state -> PlayState.STOP).setOverrideEasingTypeFunction((azurePlayer) -> ModGeckoUtilsClient.getEasingTypeForID(player)));
+        CustomModifierLayer<?> layer = PlayerAnimations.getModifierLayer(player);
+        controllers.add(new AnimationController<>(this, ModInit.MOD_ID, state -> PlayState.CONTINUE).setOverrideEasingTypeFunction((azurePlayer) -> ModGeckoUtilsClient.getEasingTypeForID(player)));
+        controllers.add(new AnimationController<>(this, ModInit.MOD_ID, GeckoControllerRegistry.getControllerForMod(0, layer)));
+        controllers.add(new AnimationController<>(this, ModInit.MOD_ID, GeckoControllerRegistry.getControllerForMod(1, layer)));
+        controllers.add(new AnimationController<>(this, ModInit.MOD_ID, GeckoControllerRegistry.getControllerForMod(2, layer)));
+        controllers.add(new AnimationController<>(this, ModInit.MOD_ID, GeckoControllerRegistry.getControllerForMod(3, layer)));
+        controllers.add(new AnimationController<>(this, ModInit.MOD_ID, GeckoControllerRegistry.getControllerForMod(4, layer)));
     }
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);

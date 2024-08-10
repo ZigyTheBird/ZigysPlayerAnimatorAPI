@@ -1,6 +1,9 @@
 package com.zigythebird.playeranimatorapi.azure;
 
 import com.zigythebird.playeranimatorapi.ModInit;
+import com.zigythebird.playeranimatorapi.playeranims.CustomModifierLayer;
+import com.zigythebird.playeranimatorapi.playeranims.PlayerAnimations;
+import com.zigythebird.playeranimatorapi.registry.AzureControllerRegistry;
 import mod.azure.azurelib.common.internal.client.util.RenderUtils;
 import mod.azure.azurelib.common.internal.common.network.SerializableDataTicket;
 import mod.azure.azurelib.common.internal.common.network.packet.AnimDataSyncPacket;
@@ -26,7 +29,13 @@ public class AnimatablePlayerLayer implements GeoAnimatable {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, ModInit.MOD_ID, state -> PlayState.STOP).setOverrideEasingTypeFunction((azurePlayer) -> ModAzureUtilsClient.getEasingTypeForID(player)));
+        CustomModifierLayer<?> layer = PlayerAnimations.getModifierLayer(player);
+        controllers.add(new AnimationController<>(this, ModInit.MOD_ID, state -> PlayState.CONTINUE).setOverrideEasingTypeFunction((azurePlayer) -> ModAzureUtilsClient.getEasingTypeForID(player)));
+        controllers.add(new AnimationController<>(this, ModInit.MOD_ID, AzureControllerRegistry.getControllerForMod(0, layer)));
+        controllers.add(new AnimationController<>(this, ModInit.MOD_ID, AzureControllerRegistry.getControllerForMod(1, layer)));
+        controllers.add(new AnimationController<>(this, ModInit.MOD_ID, AzureControllerRegistry.getControllerForMod(2, layer)));
+        controllers.add(new AnimationController<>(this, ModInit.MOD_ID, AzureControllerRegistry.getControllerForMod(3, layer)));
+        controllers.add(new AnimationController<>(this, ModInit.MOD_ID, AzureControllerRegistry.getControllerForMod(4, layer)));
     }
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
