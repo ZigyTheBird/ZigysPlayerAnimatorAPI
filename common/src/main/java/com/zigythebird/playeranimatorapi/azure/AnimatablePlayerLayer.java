@@ -1,17 +1,20 @@
 package com.zigythebird.playeranimatorapi.azure;
 
 import com.zigythebird.playeranimatorapi.ModInit;
+import com.zigythebird.playeranimatorapi.playeranims.CustomModifierLayer;
+import com.zigythebird.playeranimatorapi.playeranims.PlayerAnimations;
+import com.zigythebird.playeranimatorapi.registry.AzureControllerRegistry;
+import mod.azure.azurelib.common.internal.client.util.RenderUtils;
+import mod.azure.azurelib.common.internal.common.network.SerializableDataTicket;
+import mod.azure.azurelib.common.internal.common.network.packet.AnimDataSyncPacket;
+import mod.azure.azurelib.common.internal.common.network.packet.AnimTriggerPacket;
+import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
+import mod.azure.azurelib.common.platform.Services;
 import mod.azure.azurelib.core.animatable.GeoAnimatable;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.object.PlayState;
-import mod.azure.azurelib.network.SerializableDataTicket;
-import mod.azure.azurelib.network.packet.EntityAnimDataSyncPacket;
-import mod.azure.azurelib.network.packet.EntityAnimTriggerPacket;
-import mod.azure.azurelib.platform.Services;
-import mod.azure.azurelib.util.AzureLibUtil;
-import mod.azure.azurelib.util.RenderUtils;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
@@ -26,7 +29,13 @@ public class AnimatablePlayerLayer implements GeoAnimatable {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, ModInit.MOD_ID, state -> PlayState.STOP).setOverrideEasingTypeFunction((azurePlayer) -> ModAzureUtilsClient.getEasingTypeForID(player)));
+        CustomModifierLayer<?> layer = PlayerAnimations.getModifierLayer(player);
+        controllers.add(new AnimationController<>(this, ModInit.MOD_ID, state -> PlayState.CONTINUE).setOverrideEasingTypeFunction((azurePlayer) -> ModAzureUtilsClient.getEasingTypeForID(player)));
+        controllers.add(new AnimationController<>(this, ModInit.MOD_ID, AzureControllerRegistry.getControllerForMod(0, layer)));
+        controllers.add(new AnimationController<>(this, ModInit.MOD_ID, AzureControllerRegistry.getControllerForMod(1, layer)));
+        controllers.add(new AnimationController<>(this, ModInit.MOD_ID, AzureControllerRegistry.getControllerForMod(2, layer)));
+        controllers.add(new AnimationController<>(this, ModInit.MOD_ID, AzureControllerRegistry.getControllerForMod(3, layer)));
+        controllers.add(new AnimationController<>(this, ModInit.MOD_ID, AzureControllerRegistry.getControllerForMod(4, layer)));
     }
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
@@ -41,25 +50,30 @@ public class AnimatablePlayerLayer implements GeoAnimatable {
         return getAnimatableInstanceCache().getManagerForId(player.getId()).getData(dataTicket);
     }
 
-    public  <D> void setAnimData(SerializableDataTicket<D> dataTicket, D data) {
-        Entity entity = player;
-
-        if (entity.level().isClientSide()) {
-            getAnimatableInstanceCache().getManagerForId(entity.getId()).setData(dataTicket, data);
-        } else {
-            EntityAnimDataSyncPacket<D> entityAnimDataSyncPacket = new EntityAnimDataSyncPacket<>(entity.getId(), dataTicket, data);
-            Services.NETWORK.sendToTrackingEntityAndSelf(entityAnimDataSyncPacket, entity);
+    public <D> void setAnimData(Entity relatedEntity, long instanceId, SerializableDataTicket<D> dataTicket, D data) {
+        if (relatedEntity.level().isClientSide()) {
+            getAnimatableInstanceCache().getManagerForId(instanceId).setData(dataTicket, data);
+        }
+        else {
+            syncAnimData(instanceId, dataTicket, data, relatedEntity);
         }
     }
 
-    public void triggerAnim(@Nullable String controllerName, String animName) {
-        Entity entity = player;
+    public  <D> void syncAnimData(long instanceId, SerializableDataTicket<D> dataTicket, D data, Entity entityToTrack) {
+        Services.NETWORK.sendToTrackingEntityAndSelf(
+                new AnimDataSyncPacket<>(getClass().toString(), instanceId, dataTicket, data),
+                entityToTrack
+        );
+    }
 
-        if (entity.level().isClientSide()) {
-            getAnimatableInstanceCache().getManagerForId(entity.getId()).tryTriggerAnimation(controllerName, animName);
+    public void triggerAnim(Entity relatedEntity, long instanceId, @Nullable String controllerName, String animName) {
+        if (relatedEntity.level().isClientSide()) {
+            getAnimatableInstanceCache().getManagerForId(instanceId).tryTriggerAnimation(controllerName, animName);
         } else {
-            EntityAnimTriggerPacket entityAnimTriggerPacket = new EntityAnimTriggerPacket(entity.getId(), controllerName, animName);
-            Services.NETWORK.sendToTrackingEntityAndSelf(entityAnimTriggerPacket, entity);
+            Services.NETWORK.sendToTrackingEntityAndSelf(
+                    new AnimTriggerPacket(getClass().toString(), instanceId, controllerName, animName),
+                    relatedEntity
+            );
         }
     }
 
