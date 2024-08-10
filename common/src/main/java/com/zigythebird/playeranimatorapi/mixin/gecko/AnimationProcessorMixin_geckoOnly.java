@@ -1,7 +1,7 @@
 package com.zigythebird.playeranimatorapi.mixin.gecko;
 
-import com.eliotlash.mclib.utils.Interpolations;
 import com.zigythebird.playeranimatorapi.gecko.AnimatablePlayerLayer;
+import net.minecraft.util.Mth;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -36,8 +36,6 @@ public abstract class AnimationProcessorMixin_geckoOnly<T extends GeoAnimatable>
     private void inject(T animatable, GeoModel<T> model, AnimatableManager<T> animatableManager, double animTime, AnimationState<T> state, boolean crashWhenCantFindBone, CallbackInfo ci) {
         if (animatable instanceof AnimatablePlayerLayer) {
             List<GeoBone> disabledBones = new ArrayList<>();
-            Map<String, BoneSnapshot> boneSnapshots = this.updateBoneSnapshots(animatableManager.getBoneSnapshotCollection());
-            Iterator var9 = animatableManager.getAnimationControllers().values().iterator();
 
             addDisabled(disabledBones, "body", model);
             addDisabled(disabledBones, "head", model);
@@ -47,62 +45,62 @@ public abstract class AnimationProcessorMixin_geckoOnly<T extends GeoAnimatable>
             addDisabled(disabledBones, "right_leg", model);
             addDisabled(disabledBones, "left_leg", model);
 
-            Iterator var11;
-            BoneSnapshot saveSnapshot;
-            while(var9.hasNext()) {
-                AnimationController<T> controller = (AnimationController) var9.next();
+            Map<String, BoneSnapshot> boneSnapshots = updateBoneSnapshots(animatableManager.getBoneSnapshotCollection());
+
+            for (AnimationController<T> controller : animatableManager.getAnimationControllers().values()) {
                 if (this.reloadAnimations) {
                     controller.forceAnimationReset();
                     controller.getBoneAnimationQueues().clear();
                 }
 
                 ((AnimationControllerAccessor_geckoOnly)controller).setIsJustStarting(animatableManager.isFirstTick());
+
                 state.withController(controller);
                 controller.process(model, state, this.bones, boneSnapshots, animTime, crashWhenCantFindBone);
-                var11 = controller.getBoneAnimationQueues().values().iterator();
 
-                while (var11.hasNext()) {
-                    BoneAnimationQueue boneAnimation = (BoneAnimationQueue) var11.next();
+                for (BoneAnimationQueue boneAnimation : controller.getBoneAnimationQueues().values()) {
                     GeoBone bone = boneAnimation.bone();
                     if (disabledBones.contains(bone)) {
                         continue;
                     }
-                    saveSnapshot = (BoneSnapshot) boneSnapshots.get(bone.getName());
+                    BoneSnapshot snapshot = boneSnapshots.get(bone.getName());
                     BoneSnapshot initialSnapshot = bone.getInitialSnapshot();
-                    AnimationPoint rotXPoint = (AnimationPoint) boneAnimation.rotationXQueue().poll();
-                    AnimationPoint rotYPoint = (AnimationPoint) boneAnimation.rotationYQueue().poll();
-                    AnimationPoint rotZPoint = (AnimationPoint) boneAnimation.rotationZQueue().poll();
-                    AnimationPoint posXPoint = (AnimationPoint) boneAnimation.positionXQueue().poll();
-                    AnimationPoint posYPoint = (AnimationPoint) boneAnimation.positionYQueue().poll();
-                    AnimationPoint posZPoint = (AnimationPoint) boneAnimation.positionZQueue().poll();
-                    AnimationPoint scaleXPoint = (AnimationPoint) boneAnimation.scaleXQueue().poll();
-                    AnimationPoint scaleYPoint = (AnimationPoint) boneAnimation.scaleYQueue().poll();
-                    AnimationPoint scaleZPoint = (AnimationPoint) boneAnimation.scaleZQueue().poll();
+
+                    AnimationPoint rotXPoint = boneAnimation.rotationXQueue().poll();
+                    AnimationPoint rotYPoint = boneAnimation.rotationYQueue().poll();
+                    AnimationPoint rotZPoint = boneAnimation.rotationZQueue().poll();
+                    AnimationPoint posXPoint = boneAnimation.positionXQueue().poll();
+                    AnimationPoint posYPoint = boneAnimation.positionYQueue().poll();
+                    AnimationPoint posZPoint = boneAnimation.positionZQueue().poll();
+                    AnimationPoint scaleXPoint = boneAnimation.scaleXQueue().poll();
+                    AnimationPoint scaleYPoint = boneAnimation.scaleYQueue().poll();
+                    AnimationPoint scaleZPoint = boneAnimation.scaleZQueue().poll();
                     EasingType easingType = (EasingType) ((AnimationControllerAccessor_geckoOnly)controller).getOverrideEasingTypeFunction().apply(animatable);
+
                     if (rotXPoint != null && rotYPoint != null && rotZPoint != null) {
-                        bone.setRotX((float) EasingType.lerpWithOverride(rotXPoint, easingType) + initialSnapshot.getRotX());
-                        bone.setRotY((float) EasingType.lerpWithOverride(rotYPoint, easingType) + initialSnapshot.getRotY());
-                        bone.setRotZ((float) EasingType.lerpWithOverride(rotZPoint, easingType) + initialSnapshot.getRotZ());
-                        saveSnapshot.updateRotation(bone.getRotX(), bone.getRotY(), bone.getRotZ());
-                        saveSnapshot.startRotAnim();
+                        bone.setRotX((float)EasingType.lerpWithOverride(rotXPoint, easingType) + initialSnapshot.getRotX());
+                        bone.setRotY((float)EasingType.lerpWithOverride(rotYPoint, easingType) + initialSnapshot.getRotY());
+                        bone.setRotZ((float)EasingType.lerpWithOverride(rotZPoint, easingType) + initialSnapshot.getRotZ());
+                        snapshot.updateRotation(bone.getRotX(), bone.getRotY(), bone.getRotZ());
+                        snapshot.startRotAnim();
                         bone.markRotationAsChanged();
                     }
 
                     if (posXPoint != null && posYPoint != null && posZPoint != null) {
-                        bone.setPosX((float) EasingType.lerpWithOverride(posXPoint, easingType));
-                        bone.setPosY((float) EasingType.lerpWithOverride(posYPoint, easingType));
-                        bone.setPosZ((float) EasingType.lerpWithOverride(posZPoint, easingType));
-                        saveSnapshot.updateOffset(bone.getPosX(), bone.getPosY(), bone.getPosZ());
-                        saveSnapshot.startPosAnim();
+                        bone.setPosX((float)EasingType.lerpWithOverride(posXPoint, easingType));
+                        bone.setPosY((float)EasingType.lerpWithOverride(posYPoint, easingType));
+                        bone.setPosZ((float)EasingType.lerpWithOverride(posZPoint, easingType));
+                        snapshot.updateOffset(bone.getPosX(), bone.getPosY(), bone.getPosZ());
+                        snapshot.startPosAnim();
                         bone.markPositionAsChanged();
                     }
 
                     if (scaleXPoint != null && scaleYPoint != null && scaleZPoint != null) {
-                        bone.setScaleX((float) EasingType.lerpWithOverride(scaleXPoint, easingType));
-                        bone.setScaleY((float) EasingType.lerpWithOverride(scaleYPoint, easingType));
-                        bone.setScaleZ((float) EasingType.lerpWithOverride(scaleZPoint, easingType));
-                        saveSnapshot.updateScale(bone.getScaleX(), bone.getScaleY(), bone.getScaleZ());
-                        saveSnapshot.startScaleAnim();
+                        bone.setScaleX((float)EasingType.lerpWithOverride(scaleXPoint, easingType));
+                        bone.setScaleY((float)EasingType.lerpWithOverride(scaleYPoint, easingType));
+                        bone.setScaleZ((float)EasingType.lerpWithOverride(scaleZPoint, easingType));
+                        snapshot.updateScale(bone.getScaleX(), bone.getScaleY(), bone.getScaleZ());
+                        snapshot.startScaleAnim();
                         bone.markScaleAsChanged();
                     }
                 }
@@ -110,65 +108,61 @@ public abstract class AnimationProcessorMixin_geckoOnly<T extends GeoAnimatable>
 
             this.reloadAnimations = false;
             double resetTickLength = animatable.getBoneResetTime();
-            var11 = this.getRegisteredBones().iterator();
 
-            while(var11.hasNext()) {
-                GeoBone bone = (GeoBone)var11.next();
-                BoneSnapshot initialSnapshot;
-                double percentageReset;
-                if (disabledBones.contains(bone)) {
-                    continue;
-                }
+            for (GeoBone bone : getRegisteredBones()) {
                 if (!bone.hasRotationChanged()) {
-                    initialSnapshot = bone.getInitialSnapshot();
-                    saveSnapshot = (BoneSnapshot)boneSnapshots.get(bone.getName());
-                    if (saveSnapshot.isRotAnimInProgress()) {
-                        saveSnapshot.stopRotAnim(animTime);
-                    }
+                    BoneSnapshot initialSnapshot = bone.getInitialSnapshot();
+                    BoneSnapshot saveSnapshot = boneSnapshots.get(bone.getName());
 
-                    percentageReset = Math.min((animTime - saveSnapshot.getLastResetRotationTick()) / resetTickLength, 1.0);
-                    bone.setRotX((float) Interpolations.lerp((double)saveSnapshot.getRotX(), (double)initialSnapshot.getRotX(), percentageReset));
-                    bone.setRotY((float) Interpolations.lerp((double)saveSnapshot.getRotY(), (double)initialSnapshot.getRotY(), percentageReset));
-                    bone.setRotZ((float) Interpolations.lerp((double)saveSnapshot.getRotZ(), (double)initialSnapshot.getRotZ(), percentageReset));
-                    if (percentageReset >= 1.0) {
+                    if (saveSnapshot.isRotAnimInProgress())
+                        saveSnapshot.stopRotAnim(animTime);
+
+                    double percentageReset = Math.min((animTime - saveSnapshot.getLastResetRotationTick()) / resetTickLength, 1);
+
+                    bone.setRotX((float)Mth.lerp(percentageReset, saveSnapshot.getRotX(), initialSnapshot.getRotX()));
+                    bone.setRotY((float)Mth.lerp(percentageReset, saveSnapshot.getRotY(), initialSnapshot.getRotY()));
+                    bone.setRotZ((float)Mth.lerp(percentageReset, saveSnapshot.getRotZ(), initialSnapshot.getRotZ()));
+
+                    if (percentageReset >= 1)
                         saveSnapshot.updateRotation(bone.getRotX(), bone.getRotY(), bone.getRotZ());
-                    }
                 }
 
                 if (!bone.hasPositionChanged()) {
-                    initialSnapshot = bone.getInitialSnapshot();
-                    saveSnapshot = (BoneSnapshot)boneSnapshots.get(bone.getName());
-                    if (saveSnapshot.isPosAnimInProgress()) {
-                        saveSnapshot.stopPosAnim(animTime);
-                    }
+                    BoneSnapshot initialSnapshot = bone.getInitialSnapshot();
+                    BoneSnapshot saveSnapshot = boneSnapshots.get(bone.getName());
 
-                    percentageReset = Math.min((animTime - saveSnapshot.getLastResetPositionTick()) / resetTickLength, 1.0);
-                    bone.setPosX((float)Interpolations.lerp((double)saveSnapshot.getOffsetX(), (double)initialSnapshot.getOffsetX(), percentageReset));
-                    bone.setPosY((float)Interpolations.lerp((double)saveSnapshot.getOffsetY(), (double)initialSnapshot.getOffsetY(), percentageReset));
-                    bone.setPosZ((float)Interpolations.lerp((double)saveSnapshot.getOffsetZ(), (double)initialSnapshot.getOffsetZ(), percentageReset));
-                    if (percentageReset >= 1.0) {
+                    if (saveSnapshot.isPosAnimInProgress())
+                        saveSnapshot.stopPosAnim(animTime);
+
+                    double percentageReset = Math.min((animTime - saveSnapshot.getLastResetPositionTick()) / resetTickLength, 1);
+
+                    bone.setPosX((float)Mth.lerp(percentageReset, saveSnapshot.getOffsetX(), initialSnapshot.getOffsetX()));
+                    bone.setPosY((float)Mth.lerp(percentageReset, saveSnapshot.getOffsetY(), initialSnapshot.getOffsetY()));
+                    bone.setPosZ((float)Mth.lerp(percentageReset, saveSnapshot.getOffsetZ(), initialSnapshot.getOffsetZ()));
+
+                    if (percentageReset >= 1)
                         saveSnapshot.updateOffset(bone.getPosX(), bone.getPosY(), bone.getPosZ());
-                    }
                 }
 
                 if (!bone.hasScaleChanged()) {
-                    initialSnapshot = bone.getInitialSnapshot();
-                    saveSnapshot = (BoneSnapshot)boneSnapshots.get(bone.getName());
-                    if (saveSnapshot.isScaleAnimInProgress()) {
-                        saveSnapshot.stopScaleAnim(animTime);
-                    }
+                    BoneSnapshot initialSnapshot = bone.getInitialSnapshot();
+                    BoneSnapshot saveSnapshot = boneSnapshots.get(bone.getName());
 
-                    percentageReset = Math.min((animTime - saveSnapshot.getLastResetScaleTick()) / resetTickLength, 1.0);
-                    bone.setScaleX((float) Interpolations.lerp((double)saveSnapshot.getScaleX(), (double)initialSnapshot.getScaleX(), percentageReset));
-                    bone.setScaleY((float)Interpolations.lerp((double)saveSnapshot.getScaleY(), (double)initialSnapshot.getScaleY(), percentageReset));
-                    bone.setScaleZ((float)Interpolations.lerp((double)saveSnapshot.getScaleZ(), (double)initialSnapshot.getScaleZ(), percentageReset));
-                    if (percentageReset >= 1.0) {
+                    if (saveSnapshot.isScaleAnimInProgress())
+                        saveSnapshot.stopScaleAnim(animTime);
+
+                    double percentageReset = Math.min((animTime - saveSnapshot.getLastResetScaleTick()) / resetTickLength, 1);
+
+                    bone.setScaleX((float)Mth.lerp(percentageReset, saveSnapshot.getScaleX(), initialSnapshot.getScaleX()));
+                    bone.setScaleY((float)Mth.lerp(percentageReset, saveSnapshot.getScaleY(), initialSnapshot.getScaleY()));
+                    bone.setScaleZ((float)Mth.lerp(percentageReset, saveSnapshot.getScaleZ(), initialSnapshot.getScaleZ()));
+
+                    if (percentageReset >= 1)
                         saveSnapshot.updateScale(bone.getScaleX(), bone.getScaleY(), bone.getScaleZ());
-                    }
                 }
             }
 
-            this.resetBoneTransformationMarkers();
+            resetBoneTransformationMarkers();
             ((AnimatableManagerAccessor_geckoOnly)animatableManager).callFinishFirstTick();
             ci.cancel();
         }
