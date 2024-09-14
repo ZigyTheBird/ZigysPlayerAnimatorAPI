@@ -59,6 +59,8 @@ jobs:
           name: ${{ steps.artifact_id.outputs.result }}
           path: |
             ./dist/**/*
+            ./fabric/build/libs
+            ./${{ inputs.forge }}/build/libs
             ./gradle.properties
 
   deploy:
