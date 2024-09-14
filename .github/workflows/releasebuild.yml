@@ -54,7 +54,7 @@ jobs:
           ./gradlew build
 
       - name: Upload To Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.artifact_id.outputs.result }}
           path: |
