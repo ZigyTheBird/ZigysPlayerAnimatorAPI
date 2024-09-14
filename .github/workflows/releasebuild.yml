@@ -96,7 +96,7 @@ jobs:
           result-encoding: string
           script: |
             const fs = require("fs")
-            return fs.readdirSync("./dist/").filter(e => e.contains("fabric"))[0] || false;
+            return fs.readdirSync("./fabric/build/libs")[0] || false;
 
       - name: Check For Forge Jar
         uses: actions/github-script@v5
@@ -105,7 +105,7 @@ jobs:
           result-encoding: string
           script: |
             const fs = require("fs")
-            return fs.readdirSync("./dist/").filter(e => contains("forge"))[0] || false;
+            return fs.readdirSync("./${{ inputs.forge }}/build/libs")[0] || false;
 
       - name: Zip TS
         uses: vimtor/action-zip@v1
@@ -147,7 +147,9 @@ jobs:
           name: ${{ steps.fabric_release.outputs.result }}
           version: ${{ steps.version_num.outputs.result }}
 
-          files: ./dist/${{ steps.fabric_release.outputs.result }}
+          files: |
+            ./fabric/build/libs/!(*-@(dev|sources|javadoc)).jar
+            ./fabric/build/libs/*-@(dev|sources|javadoc).jar
           version-type: release
 
           loaders: fabric
@@ -175,7 +177,9 @@ jobs:
           name: ${{ steps.forge_release.outputs.result }}
           version: ${{ steps.version_num.outputs.result }}
 
-          files: ./dist/${{ steps.forge_release.outputs.result }}
+          files: |
+            ./${{ inputs.forge }}/build/libs/!(*-@(dev|sources|javadoc)).jar
+            ./${{ inputs.forge }}/build/libs/*-@(dev|sources|javadoc).jar
           version-type: release
 
           loaders: ${{ inputs.forge }}
