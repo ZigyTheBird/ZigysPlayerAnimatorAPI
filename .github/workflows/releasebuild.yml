@@ -14,11 +14,9 @@ on:
         required: true
         type: string
     secrets:
-      CURSEFORGE_KEY:
+      CURSEFORGE_TOKEN:
         required: true
       MODRINTH_TOKEN:
-        required: true
-      PYPI_API_TOKEN:
         required: true
 
 
@@ -142,7 +140,7 @@ jobs:
           modrinth-unfeature-mode: any
 
           curseforge-id: 403185
-          curseforge-token: ${{ secrets.CURSEFORGE_KEY }}
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -170,7 +168,7 @@ jobs:
           modrinth-unfeature-mode: any
 
           curseforge-id: 403185
-          curseforge-token: ${{ secrets.CURSEFORGE_KEY }}
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
