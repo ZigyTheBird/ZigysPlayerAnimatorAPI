@@ -109,19 +109,6 @@ jobs:
             const fs = require("fs")
             return fs.readdirSync("./${{ inputs.forge }}/build/libs")[0] || false;
 
-      - name: Zip TS
-        uses: vimtor/action-zip@v1
-        with:
-          files: dist/typescript/
-          dest: dist/typescript-${{ steps.artifact_id.outputs.result }}.zip
-
-      - name: Upload TS to Git Release
-        uses: JasonEtco/upload-to-release@master
-        with:
-          args: ./dist/typescript-${{ steps.artifact_id.outputs.result }}.zip application/jar
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Extract Version Number
         uses: actions/github-script@v5
         id: version_num
