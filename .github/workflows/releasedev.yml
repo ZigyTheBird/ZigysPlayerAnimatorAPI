@@ -1,13 +1,19 @@
-name: Publish Dev Branch
+name: Publish on Modrinth & CurseForge
 
-on: [ workflow_dispatch ]
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'The branch to publish.'
+        type: environment
+        required: true
 
 jobs:
 
   build_dev:
-    uses: zigythebird/zigysplayeranimatorapi/.github/workflows/releasebuild.yml@main
+    uses: zigythebird/zigysplayeranimatorapi/.github/workflows/releasebuild.yml@dev
     with:
-      branch: dev
+      branch: ${{ inputs.branch }}
       GITHUB_REF: ${{ github.ref }}
       upload_docs: true
       forge: neoforge
