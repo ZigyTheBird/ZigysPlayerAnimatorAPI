@@ -14,6 +14,7 @@ import com.zigythebird.playeranimatorapi.gecko.ModGeckoUtilsClient;
 import com.zigythebird.playeranimatorapi.mixin.AnimationStackAccessor;
 import com.zigythebird.playeranimatorapi.modifier.CommonModifier;
 import com.zigythebird.playeranimatorapi.registry.AnimModifierRegistry;
+import dev.kosmx.playerAnim.api.IPlayable;
 import dev.kosmx.playerAnim.api.firstPerson.FirstPersonMode;
 import dev.kosmx.playerAnim.api.layered.AnimationStack;
 import dev.kosmx.playerAnim.api.layered.IAnimation;
@@ -115,14 +116,20 @@ public class PlayerAnimations {
                 return;
             }
 
+            ResourceLocation animationID = ConditionalAnimations.getAnimationForCurrentConditions(data);
+
+            IPlayable playable = PlayerAnimationRegistry.getAnimation(animationID);
+            KeyframeAnimation anim = playable instanceof KeyframeAnimation ? (KeyframeAnimation) playable : null;
+
+            if (anim == null) {
+                ModInit.LOGGER.error("Could not play animation with an id of " + animationID + ". It's either non-existent or not an instance of KeyframeAnimation.");
+            }
+
             setLayerPriorityForPlayer(data.priority(), player);
 
             animationContainer.setAnimationData(data);
 
-            ResourceLocation animationID = ConditionalAnimations.getAnimationForCurrentConditions(data);
             animationContainer.setCurrentAnimationLocation(animationID);
-
-            KeyframeAnimation anim = PlayerAnimationRegistry.getAnimation(animationID);
 
             if (replaceTick) {
                 animationContainer.removeAllModifiers();

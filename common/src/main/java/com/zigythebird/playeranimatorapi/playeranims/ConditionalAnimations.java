@@ -1,7 +1,7 @@
 package com.zigythebird.playeranimatorapi.playeranims;
 
 import com.zigythebird.playeranimatorapi.data.PlayerAnimationData;
-import dev.kosmx.playerAnim.core.data.KeyframeAnimation;
+import dev.kosmx.playerAnim.api.IPlayable;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
 import net.fabricmc.api.EnvType;
@@ -39,7 +39,7 @@ public class ConditionalAnimations {
         ResourceLocation crawlingAnim = data.animationID().withPath(data.animationID().getPath() + "_crawl");
         ResourceLocation swimmingAnim = data.animationID().withPath(data.animationID().getPath() + "_swim");
 
-        Map<ResourceLocation, KeyframeAnimation> animations = PlayerAnimationRegistry.getAnimations();
+        Map<ResourceLocation, IPlayable> animations = PlayerAnimationRegistry.getAnimations();
 
         if (player.isCrouching() && currentAnim != crawlingAnim && animations.containsKey(crouchedAnim)) {
             return crouchedAnim;

@@ -3,8 +3,9 @@ package com.zigythebird.playeranimatorapi;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.zigythebird.playeranimatorapi.playeranims.PlayerAnimations;
-import dev.kosmx.playerAnim.core.data.gson.AnimationSerializing;
+import dev.kosmx.playerAnim.core.data.KeyframeAnimation;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
+import dev.kosmx.playerAnim.minecraftApi.codec.AnimationCodecs;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
@@ -36,13 +37,17 @@ public class ResourceReloadListener implements ResourceManagerReloadListener {
                         }
                     }
                 } else {
-                    try (var input = resource.getValue().open()) {
+                    for (var animation : AnimationCodecs.deserialize(AnimationCodecs.getExtension(resource.getKey().getPath()),  () -> {
+                        try {
+                            return resource.getValue().open();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }})) {
 
-                        for (var animation : AnimationSerializing.deserializeAnimation(input)) {
-
-                            PlayerAnimations.animLengthsMap.put(ResourceLocation.fromNamespaceAndPath(resource.getKey().getNamespace(), PlayerAnimationRegistry.serializeTextToString((String) animation.extraData.get("name")).toLowerCase(Locale.ROOT)), (float) (animation.endTick / 20));
+                        if (animation instanceof KeyframeAnimation) {
+                            PlayerAnimations.animLengthsMap.put(ResourceLocation.fromNamespaceAndPath(resource.getKey().getNamespace(), PlayerAnimationRegistry.serializeTextToString((String) ((KeyframeAnimation)animation).extraData.get("name")).toLowerCase(Locale.ROOT)), (float) (((KeyframeAnimation)animation).endTick / 20));
                             if (jsonObject.has("geckoResource")) {
-                                PlayerAnimations.geckoMap.put(ResourceLocation.fromNamespaceAndPath(resource.getKey().getNamespace(), PlayerAnimationRegistry.serializeTextToString((String) animation.extraData.get("name")).toLowerCase(Locale.ROOT)), ResourceLocation.parse(jsonObject.get("geckoResource").getAsString()));
+                                PlayerAnimations.geckoMap.put(ResourceLocation.fromNamespaceAndPath(resource.getKey().getNamespace(), PlayerAnimationRegistry.serializeTextToString((String) ((KeyframeAnimation)animation).extraData.get("name")).toLowerCase(Locale.ROOT)), ResourceLocation.parse(jsonObject.get("geckoResource").getAsString()));
                             }
                         }
                     }
