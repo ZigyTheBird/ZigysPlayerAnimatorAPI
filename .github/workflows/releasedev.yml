@@ -5,8 +5,7 @@ on: [ workflow_dispatch ]
 jobs:
 
   build_dev:
-    needs: [build_backports, build_backports_neo]
-    uses: jsmacros/jsmacros/.github/workflows/releasebuild.yml@main
+    uses: zigythebird/zigysplayeranimatorapi/.github/workflows/releasebuild.yml@main
     with:
       branch: dev
       GITHUB_REF: ${{ github.ref }}
