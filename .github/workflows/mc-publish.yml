@@ -23,4 +23,4 @@ jobs:
           curseforge-id: 958083
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
           
-          files: neoforge/build/libs/!(*-@(dev|sources|javadoc)).jar neoforge/build/libs/*-@(dev|sources|javadoc).jar fabric/build/libs/!(*-@(dev|sources|javadoc)).jar fabric/build/libs/*-@(dev|sources|javadoc).jar
+          files: [neoforge/build/libs/!(*-@(dev|sources|javadoc)).jar, neoforge/build/libs/*-@(dev|sources|javadoc).jar, fabric/build/libs/!(*-@(dev|sources|javadoc)).jar, fabric/build/libs/*-@(dev|sources|javadoc).jar]
