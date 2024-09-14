@@ -132,6 +132,12 @@ jobs:
           loaders: fabric
           game-versions: ${{ steps.gradle_properties.outputs.minecraft_version }}
 
+          changelog: CHANGELOG.md
+
+          dependencies: |
+            player-animator(required){modrinth:gedNE4y2}{curseforge:658587}#(ignore:github)
+            fabric(required){modrinth:P7dR8mSH}{curseforge:306612}#(ignore:github)
+
           java: ${{ steps.gradle_properties.outputs.java_version }}
           retry-attempts: 5
           retry-delay: 60000
@@ -159,6 +165,11 @@ jobs:
 
           loaders: ${{ inputs.forge }}
           game-versions: ${{ steps.gradle_properties.outputs.minecraft_version }}
+
+          changelog: CHANGELOG.md
+
+          dependencies: |
+            player-animator(required){modrinth:gedNE4y2}{curseforge:658587}#(ignore:github)
 
           java: ${{ steps.gradle_properties.outputs.java_version }}
           retry-attempts: 5
