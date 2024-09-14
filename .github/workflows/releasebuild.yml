@@ -121,7 +121,7 @@ jobs:
           curseforge-id: 958083
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
-          name: ${{ steps.fabric_release.outputs.result }}
+          name: ${{ steps.gradle_properties.outputs.mod_version }} + "+" + ${{ steps.gradle_properties.outputs.minecraft_version }} + "-Fabric"
           version: ${{ steps.gradle_properties.outputs.mod_version }}
 
           files: |
@@ -149,7 +149,7 @@ jobs:
           curseforge-id: 958083
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
-          name: ${{ steps.forge_release.outputs.result }}
+          name: ${{ steps.gradle_properties.outputs.mod_version }} + "+" + ${{ steps.gradle_properties.outputs.minecraft_version }} + "-" + ${{ inputs.forge }}
           version: ${{ steps.gradle_properties.outputs.mod_version }}
 
           files: |
