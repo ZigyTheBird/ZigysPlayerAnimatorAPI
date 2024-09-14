@@ -6,7 +6,6 @@ import com.zigythebird.playeranimatorapi.playeranims.CustomModifierLayer;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimationState;
 import mod.azure.azurelib.common.internal.common.core.object.PlayState;
-import mod.azure.azurelib.core.object.PlayState;
 import net.minecraft.core.NonNullList;
 
 import java.util.HashMap;
