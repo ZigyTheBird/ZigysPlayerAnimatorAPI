@@ -19,7 +19,14 @@ public class AzureControllerRegistry {
         try {
             if (layer.isActive()) {
                 String modID = layer.data.animationID().getNamespace();
-                return (state) -> CONTROLLERS.get(modID).get(i).apply(state, layer);
+                return (state) -> {
+                    try {
+                        return CONTROLLERS.get(modID).get(i).apply(state, layer);
+                    }
+                    catch (Exception e) {
+                        return PlayState.CONTINUE;
+                    }
+                };
             }
             else {
                 return (state) -> PlayState.CONTINUE;
