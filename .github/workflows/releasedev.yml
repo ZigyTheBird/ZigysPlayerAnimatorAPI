@@ -2,14 +2,11 @@ name: Publish on Modrinth & CurseForge
 
 on: [ workflow_dispatch ]
 
-env:
- BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
-
 jobs:
   build_dev:
     uses: zigythebird/zigysplayeranimatorapi/.github/workflows/releasebuild.yml@dev
     with:
-      branch: ${{ env.BRANCH_NAME }}
+      branch: ${{ github.head_ref || github.ref_name }} 
       GITHUB_REF: ${{ github.ref }}
       upload_docs: true
       forge: neoforge
