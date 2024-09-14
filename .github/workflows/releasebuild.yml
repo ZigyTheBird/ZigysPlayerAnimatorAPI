@@ -113,12 +113,12 @@ jobs:
         if: ${{ steps.fabric_release.outputs.result != 'false' }}
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          modrinth-id: 3wGWhm8A
+          modrinth-id: IkQufrWh
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           modrinth-featured: false
           modrinth-unfeature-mode: any
 
-          curseforge-id: 403185
+          curseforge-id: 958083
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           name: ${{ steps.fabric_release.outputs.result }}
@@ -141,12 +141,12 @@ jobs:
         if: ${{ steps.forge_release.outputs.result != 'false' }}
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          modrinth-id: 3wGWhm8A
+          modrinth-id: IkQufrWh
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           modrinth-featured: false
           modrinth-unfeature-mode: any
 
-          curseforge-id: 403185
+          curseforge-id: 958083
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           name: ${{ steps.forge_release.outputs.result }}
