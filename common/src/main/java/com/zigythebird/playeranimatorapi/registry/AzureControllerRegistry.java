@@ -6,6 +6,7 @@ import com.zigythebird.playeranimatorapi.playeranims.CustomModifierLayer;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimationState;
 import mod.azure.azurelib.common.internal.common.core.object.PlayState;
+import mod.azure.azurelib.core.object.PlayState;
 import net.minecraft.core.NonNullList;
 
 import java.util.HashMap;
@@ -19,7 +20,14 @@ public class AzureControllerRegistry {
         try {
             if (layer.isActive()) {
                 String modID = layer.data.animationID().getNamespace();
-                return (state) -> CONTROLLERS.get(modID).get(i).apply(state, layer);
+                return (state) -> {
+                    try {
+                        return CONTROLLERS.get(modID).get(i).apply(state, layer);
+                    }
+                    catch (Exception e) {
+                        return PlayState.CONTINUE;
+                    }
+                };
             }
             else {
                 return (state) -> PlayState.CONTINUE;
