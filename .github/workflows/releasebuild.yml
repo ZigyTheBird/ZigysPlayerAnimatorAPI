@@ -125,8 +125,8 @@ jobs:
           version: ${{ steps.gradle_properties.outputs.mod_version }}
 
           files: |
-            ./fabric/build/libs/!(*-@(dev|sources|javadoc)).jar
-            ./fabric/build/libs/*-@(dev|sources|javadoc).jar
+            ./fabric/build/libs/!(*-@(dev|sources|javadoc|all)).jar
+            ./fabric/build/libs/*-@(dev|sources|javadoc|all).jar
           version-type: release
 
           loaders: fabric
@@ -153,8 +153,8 @@ jobs:
           version: ${{ steps.gradle_properties.outputs.mod_version }}
 
           files: |
-            ./${{ inputs.forge }}/build/libs/!(*-@(dev|sources|javadoc)).jar
-            ./${{ inputs.forge }}/build/libs/*-@(dev|sources|javadoc).jar
+            ./${{ inputs.forge }}/build/libs/!(*-@(dev|sources|javadoc|all)).jar
+            ./${{ inputs.forge }}/build/libs/*-@(dev|sources|javadoc|all).jar
           version-type: release
 
           loaders: ${{ inputs.forge }}
