@@ -1,6 +1,14 @@
 name: Publish on Modrinth & CurseForge
 
-on: [ workflow_dispatch ]
+on:
+  workflow_dispatch:
+    inputs:
+      forge:
+        type: choice
+        description: NeoForge or Forge?
+        options:
+        - neoforge
+        - forge
 
 jobs:
   build_dev:
@@ -9,7 +17,7 @@ jobs:
       branch: ${{ github.head_ref || github.ref_name }} 
       GITHUB_REF: ${{ github.ref }}
       upload_docs: true
-      forge: neoforge
+      forge: ${{ inputs.forge }}
     secrets:
       CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
       MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}

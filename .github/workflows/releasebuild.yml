@@ -96,7 +96,7 @@ jobs:
           result-encoding: string
           script: |
             const fs = require("fs")
-            return fs.readdirSync("./dist/").filter(e => e.endsWith("fabric.jar"))[0] || false;
+            return fs.readdirSync("./dist/").filter(e => e.contains("fabric"))[0] || false;
 
       - name: Check For Forge Jar
         uses: actions/github-script@v5
@@ -105,7 +105,7 @@ jobs:
           result-encoding: string
           script: |
             const fs = require("fs")
-            return fs.readdirSync("./dist/").filter(e => e.endsWith("forge.jar"))[0] || false;
+            return fs.readdirSync("./dist/").filter(e => contains("forge"))[0] || false;
 
       - name: Zip TS
         uses: vimtor/action-zip@v1
