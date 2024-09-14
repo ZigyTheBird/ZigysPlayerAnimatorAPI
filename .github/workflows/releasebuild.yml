@@ -1,6 +1,26 @@
-name: Publish on CURSEFORGE & Modrinth
+on:
+  workflow_call:
+    inputs:
+      branch:
+        required: true
+        type: string
+      GITHUB_REF:
+        required: true
+        type: string
+      upload_docs:
+        required: true
+        type: boolean
+      forge:
+        required: true
+        type: string
+    secrets:
+      CURSEFORGE_KEY:
+        required: true
+      MODRINTH_TOKEN:
+        required: true
+      PYPI_API_TOKEN:
+        required: true
 
-on: [workflow_call ]
 
 jobs:
   build:
@@ -80,14 +100,14 @@ jobs:
             const fs = require("fs")
             return fs.readdirSync("./dist/").filter(e => e.endsWith("fabric.jar"))[0] || false;
 
-      - name: Check For neoforge Jar
+      - name: Check For Forge Jar
         uses: actions/github-script@v5
-        id: neoforge_release
+        id: forge_release
         with:
           result-encoding: string
           script: |
             const fs = require("fs")
-            return fs.readdirSync("./dist/").filter(e => e.endsWith("neoforge.jar"))[0] || false;
+            return fs.readdirSync("./dist/").filter(e => e.endsWith("forge.jar"))[0] || false;
 
       - name: Zip TS
         uses: vimtor/action-zip@v1
@@ -106,7 +126,7 @@ jobs:
         uses: actions/github-script@v5
         id: version_num
         env:
-          REF: '${{ inputs.${{ github.ref }} }}'
+          REF: '${{ inputs.GITHUB_REF }}'
         with:
           result-encoding: string
           script: |
@@ -121,8 +141,8 @@ jobs:
           modrinth-featured: false
           modrinth-unfeature-mode: any
 
-          CURSEFORGE-id: 403185
-          CURSEFORGE-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          curseforge-id: 403185
+          curseforge-token: ${{ secrets.CURSEFORGE_KEY }}
 
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -140,8 +160,8 @@ jobs:
           retry-delay: 60000
           fail-mode: skip
 
-      - name: Run Publish neoforge
-        if: ${{ steps.neoforge_release.outputs.result != 'false' }}
+      - name: Run Publish Forge
+        if: ${{ steps.forge_release.outputs.result != 'false' }}
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           modrinth-id: 3wGWhm8A
@@ -149,18 +169,18 @@ jobs:
           modrinth-featured: false
           modrinth-unfeature-mode: any
 
-          CURSEFORGE-id: 403185
-          CURSEFORGE-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          curseforge-id: 403185
+          curseforge-token: ${{ secrets.CURSEFORGE_KEY }}
 
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-          name: ${{ steps.neoforge_release.outputs.result }}
+          name: ${{ steps.forge_release.outputs.result }}
           version: ${{ steps.version_num.outputs.result }}
 
-          files: ./dist/${{ steps.neoforge_release.outputs.result }}
+          files: ./dist/${{ steps.forge_release.outputs.result }}
           version-type: release
 
-          loaders: ${{ inputs.neoforge }}
+          loaders: ${{ inputs.forge }}
           game-versions: ${{ steps.gradle_properties.outputs.minecraft_version }}
 
           java: ${{ steps.gradle_properties.outputs.java_version }}
