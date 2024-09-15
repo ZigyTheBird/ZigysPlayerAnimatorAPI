@@ -132,7 +132,7 @@ jobs:
           loaders: fabric
           game-versions: ${{ steps.gradle_properties.outputs.minecraft_version }}
 
-          changelog: CHANGELOG.md
+          changelog-file: CHANGELOG.md
 
           dependencies: |
             player-animator(required){modrinth:gedNE4y2}{curseforge:658587}#(ignore:github)
@@ -166,7 +166,7 @@ jobs:
           loaders: ${{ inputs.forge }}
           game-versions: ${{ steps.gradle_properties.outputs.minecraft_version }}
 
-          changelog: CHANGELOG.md
+          changelog-file: CHANGELOG.md
 
           dependencies: |
             player-animator(required){modrinth:gedNE4y2}{curseforge:658587}#(ignore:github)
