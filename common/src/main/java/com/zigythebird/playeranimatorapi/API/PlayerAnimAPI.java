@@ -38,6 +38,7 @@ public class PlayerAnimAPI {
         }
     };
 
+    private static final Logger logger = LogManager.getLogger(ModInit.class);
     public static Gson gson = new GsonBuilder().setLenient().serializeNulls().create();
 
     /**For emotes.*/
