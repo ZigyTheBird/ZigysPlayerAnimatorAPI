@@ -68,6 +68,11 @@ jobs:
     needs:
       - build
     steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch }}
+          
       - name: Get Artifact Id
         uses: actions/github-script@v5
         id: artifact_id
@@ -132,7 +137,7 @@ jobs:
           loaders: fabric
           game-versions: ${{ steps.gradle_properties.outputs.minecraft_version }}
 
-          changelog-file: CHANGELOG.*
+          changelog-file: CHANGELOG.md
 
           dependencies: |
             player-animator(required){modrinth:gedNE4y2}{curseforge:658587}#(ignore:github)
@@ -166,7 +171,7 @@ jobs:
           loaders: ${{ inputs.forge }}
           game-versions: ${{ steps.gradle_properties.outputs.minecraft_version }}
 
-          changelog-file: CHANGELOG.*
+          changelog-file: CHANGELOG.md
 
           dependencies: |
             player-animator(required){modrinth:gedNE4y2}{curseforge:658587}#(ignore:github)
