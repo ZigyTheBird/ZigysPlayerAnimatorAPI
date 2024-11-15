@@ -39,6 +39,7 @@ public class PlayerAnimAPI {
     };
 
     public static Gson gson = new GsonBuilder().setLenient().serializeNulls().create();
+    private static final Logger logger = LogManager.getLogger(ModInit.class);
 
     /**For emotes.*/
     public static void playPlayerAnim(ServerLevel level, Player player, ResourceLocation animationID) {

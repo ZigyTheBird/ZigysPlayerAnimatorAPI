@@ -10,6 +10,6 @@ import java.util.ArrayList;
 
 @Mixin(AnimationStack.class)
 public interface AnimationStackAccessor {
-    @Accessor
+    @Accessor(remap = false)
     ArrayList<Pair<Integer, IAnimation>> getLayers();
 }
