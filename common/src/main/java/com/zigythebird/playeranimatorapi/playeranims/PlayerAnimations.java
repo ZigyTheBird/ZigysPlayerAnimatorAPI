@@ -138,90 +138,92 @@ public class PlayerAnimations {
                 }
             }
 
-            var builder = anim.mutableCopy();
+            if (parts != null) {
+                var builder = anim.mutableCopy();
 
-            var body = builder.getPart("body");
-            body.x.setEnabled(parts.body.x);
-            body.y.setEnabled(parts.body.y);
-            body.z.setEnabled(parts.body.z);
-            body.pitch.setEnabled(parts.body.pitch);
-            body.yaw.setEnabled(parts.body.yaw);
-            body.roll.setEnabled(parts.body.roll);
+                var body = builder.getPart("body");
+                body.x.setEnabled(parts.body.x);
+                body.y.setEnabled(parts.body.y);
+                body.z.setEnabled(parts.body.z);
+                body.pitch.setEnabled(parts.body.pitch);
+                body.yaw.setEnabled(parts.body.yaw);
+                body.roll.setEnabled(parts.body.roll);
 
-            var head = builder.getPart("head");
-            head.x.setEnabled(parts.head.x);
-            head.y.setEnabled(parts.head.y);
-            head.z.setEnabled(parts.head.z);
-            head.pitch.setEnabled(parts.head.pitch);
-            head.yaw.setEnabled(parts.head.yaw);
-            head.roll.setEnabled(parts.head.roll);
+                var head = builder.getPart("head");
+                head.x.setEnabled(parts.head.x);
+                head.y.setEnabled(parts.head.y);
+                head.z.setEnabled(parts.head.z);
+                head.pitch.setEnabled(parts.head.pitch);
+                head.yaw.setEnabled(parts.head.yaw);
+                head.roll.setEnabled(parts.head.roll);
 
-            var torso = builder.getPart("torso");
-            torso.x.setEnabled(parts.torso.x);
-            torso.y.setEnabled(parts.torso.y);
-            torso.z.setEnabled(parts.torso.z);
-            torso.pitch.setEnabled(parts.torso.pitch);
-            torso.yaw.setEnabled(parts.torso.yaw);
-            torso.roll.setEnabled(parts.torso.roll);
+                var torso = builder.getPart("torso");
+                torso.x.setEnabled(parts.torso.x);
+                torso.y.setEnabled(parts.torso.y);
+                torso.z.setEnabled(parts.torso.z);
+                torso.pitch.setEnabled(parts.torso.pitch);
+                torso.yaw.setEnabled(parts.torso.yaw);
+                torso.roll.setEnabled(parts.torso.roll);
 
-            var rightArm = builder.getPart("rightArm");
-            rightArm.x.setEnabled(parts.rightArm.x);
-            rightArm.y.setEnabled(parts.rightArm.y);
-            rightArm.z.setEnabled(parts.rightArm.z);
-            rightArm.pitch.setEnabled(parts.rightArm.pitch);
-            rightArm.yaw.setEnabled(parts.rightArm.yaw);
-            rightArm.roll.setEnabled(parts.rightArm.roll);
-            rightArm.bend.setEnabled(parts.rightArm.bend);
-            rightArm.bendDirection.setEnabled(parts.rightArm.bendDirection);
+                var rightArm = builder.getPart("rightArm");
+                rightArm.x.setEnabled(parts.rightArm.x);
+                rightArm.y.setEnabled(parts.rightArm.y);
+                rightArm.z.setEnabled(parts.rightArm.z);
+                rightArm.pitch.setEnabled(parts.rightArm.pitch);
+                rightArm.yaw.setEnabled(parts.rightArm.yaw);
+                rightArm.roll.setEnabled(parts.rightArm.roll);
+                rightArm.bend.setEnabled(parts.rightArm.bend);
+                rightArm.bendDirection.setEnabled(parts.rightArm.bendDirection);
 
-            var leftArm = builder.getPart("leftArm");
-            leftArm.x.setEnabled(parts.leftArm.x);
-            leftArm.y.setEnabled(parts.leftArm.y);
-            leftArm.z.setEnabled(parts.leftArm.z);
-            leftArm.pitch.setEnabled(parts.leftArm.pitch);
-            leftArm.yaw.setEnabled(parts.leftArm.yaw);
-            leftArm.roll.setEnabled(parts.leftArm.roll);
-            leftArm.bend.setEnabled(parts.leftArm.bend);
-            leftArm.bendDirection.setEnabled(parts.leftArm.bendDirection);
+                var leftArm = builder.getPart("leftArm");
+                leftArm.x.setEnabled(parts.leftArm.x);
+                leftArm.y.setEnabled(parts.leftArm.y);
+                leftArm.z.setEnabled(parts.leftArm.z);
+                leftArm.pitch.setEnabled(parts.leftArm.pitch);
+                leftArm.yaw.setEnabled(parts.leftArm.yaw);
+                leftArm.roll.setEnabled(parts.leftArm.roll);
+                leftArm.bend.setEnabled(parts.leftArm.bend);
+                leftArm.bendDirection.setEnabled(parts.leftArm.bendDirection);
 
-            var rightLeg = builder.getPart("rightLeg");
-            rightLeg.x.setEnabled(parts.rightLeg.x);
-            rightLeg.y.setEnabled(parts.rightLeg.y);
-            rightLeg.z.setEnabled(parts.rightLeg.z);
-            rightLeg.pitch.setEnabled(parts.rightLeg.pitch);
-            rightLeg.yaw.setEnabled(parts.rightLeg.yaw);
-            rightLeg.roll.setEnabled(parts.rightLeg.roll);
-            rightLeg.bend.setEnabled(parts.rightLeg.bend);
-            rightLeg.bendDirection.setEnabled(parts.rightLeg.bendDirection);
+                var rightLeg = builder.getPart("rightLeg");
+                rightLeg.x.setEnabled(parts.rightLeg.x);
+                rightLeg.y.setEnabled(parts.rightLeg.y);
+                rightLeg.z.setEnabled(parts.rightLeg.z);
+                rightLeg.pitch.setEnabled(parts.rightLeg.pitch);
+                rightLeg.yaw.setEnabled(parts.rightLeg.yaw);
+                rightLeg.roll.setEnabled(parts.rightLeg.roll);
+                rightLeg.bend.setEnabled(parts.rightLeg.bend);
+                rightLeg.bendDirection.setEnabled(parts.rightLeg.bendDirection);
 
-            var leftLeg = builder.getPart("leftLeg");
-            leftLeg.x.setEnabled(parts.leftLeg.x);
-            leftLeg.y.setEnabled(parts.leftLeg.y);
-            leftLeg.z.setEnabled(parts.leftLeg.z);
-            leftLeg.pitch.setEnabled(parts.leftLeg.pitch);
-            leftLeg.yaw.setEnabled(parts.leftLeg.yaw);
-            leftLeg.roll.setEnabled(parts.leftLeg.roll);
-            leftLeg.bend.setEnabled(parts.leftLeg.bend);
-            leftLeg.bendDirection.setEnabled(parts.leftLeg.bendDirection);
+                var leftLeg = builder.getPart("leftLeg");
+                leftLeg.x.setEnabled(parts.leftLeg.x);
+                leftLeg.y.setEnabled(parts.leftLeg.y);
+                leftLeg.z.setEnabled(parts.leftLeg.z);
+                leftLeg.pitch.setEnabled(parts.leftLeg.pitch);
+                leftLeg.yaw.setEnabled(parts.leftLeg.yaw);
+                leftLeg.roll.setEnabled(parts.leftLeg.roll);
+                leftLeg.bend.setEnabled(parts.leftLeg.bend);
+                leftLeg.bendDirection.setEnabled(parts.leftLeg.bendDirection);
 
-            var rightItem = builder.getPart("rightItem");
-            rightItem.x.setEnabled(parts.rightItem.x);
-            rightItem.y.setEnabled(parts.rightItem.y);
-            rightItem.z.setEnabled(parts.rightItem.z);
-            rightItem.pitch.setEnabled(parts.rightItem.pitch);
-            rightItem.yaw.setEnabled(parts.rightItem.yaw);
-            rightItem.roll.setEnabled(parts.rightItem.roll);
+                var rightItem = builder.getPart("rightItem");
+                rightItem.x.setEnabled(parts.rightItem.x);
+                rightItem.y.setEnabled(parts.rightItem.y);
+                rightItem.z.setEnabled(parts.rightItem.z);
+                rightItem.pitch.setEnabled(parts.rightItem.pitch);
+                rightItem.yaw.setEnabled(parts.rightItem.yaw);
+                rightItem.roll.setEnabled(parts.rightItem.roll);
 
-            var leftItem = builder.getPart("leftItem");
-            leftItem.x.setEnabled(parts.leftItem.x);
-            leftItem.y.setEnabled(parts.leftItem.y);
-            leftItem.z.setEnabled(parts.leftItem.z);
-            leftItem.pitch.setEnabled(parts.leftItem.pitch);
-            leftItem.yaw.setEnabled(parts.leftItem.yaw);
-            leftItem.roll.setEnabled(parts.leftItem.roll);
+                var leftItem = builder.getPart("leftItem");
+                leftItem.x.setEnabled(parts.leftItem.x);
+                leftItem.y.setEnabled(parts.leftItem.y);
+                leftItem.z.setEnabled(parts.leftItem.z);
+                leftItem.pitch.setEnabled(parts.leftItem.pitch);
+                leftItem.yaw.setEnabled(parts.leftItem.yaw);
+                leftItem.roll.setEnabled(parts.leftItem.roll);
 
 
-            anim = builder.build();
+                anim = builder.build();
+            }
 
             FirstPersonMode firstPersonMode = FirstPersonMode.DISABLED;
             if (firstPersonEnabled) {
@@ -233,7 +235,10 @@ public class PlayerAnimations {
                 animationContainer.replaceAnimation(animPlayer);
             } else {
                 KeyframeAnimationPlayer animPlayer = new KeyframeAnimationPlayer(anim).setFirstPersonMode(firstPersonMode);
-                if (fadeLength > 0 && easeID <= 35 && 0 <= easeID) {
+                if (fadeLength < 0) {
+                    fadeLength = Math.min(animPlayer.getStopTick()/4, 20);
+                }
+                if (fadeLength > 0 && 0 <= easeID) {
                     animationContainer.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(fadeLength, getEase(easeID)), animPlayer);
                 }
                 else {
@@ -268,7 +273,7 @@ public class PlayerAnimations {
     }
 
     public static Ease getEase(int ID) {
-        return (0 <= ID && ID <= 35) ? Ease.getEase((byte) ID) : Ease.LINEAR;
+        return Ease.getEase((byte) ID);
     }
 
     public static CustomModifierLayer getModifierLayer(AbstractClientPlayer player) {
