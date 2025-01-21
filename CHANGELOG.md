@@ -1,2 +1,1 @@
-Fixed a bug where animation didn't play with PlayerParts set to null client side.
-The mod now applies a little bit of fade length by default unless it's set to 0.
+I accidentally set the minimum MC version required to 1.20.4 instead of 1.20.1 :P
