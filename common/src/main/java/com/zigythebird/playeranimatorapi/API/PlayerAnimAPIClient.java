@@ -32,6 +32,16 @@ public class PlayerAnimAPIClient {
     }
 
     public static void playPlayerAnim(AbstractClientPlayer player, PlayerAnimationData data) {
+        boolean isFabric = Platform.getLoader().equals(ModLoader.Fabric);
+
+        if ((isFabric && Platform.isModLoaded("replaymod")) ||
+                Platform.isModLoaded("reforgedplaymod")) {
+            ReplayModCompat.playPlayerAnim(player, data.animationID(), data.parts(), data.modifiers(), data.fadeLength(), data.easeID(), data.priority(), data.startTick());
+        }
+
+        if (isFabric && Platform.isModLoaded("flashback"))
+            FlashbackCompat.playPlayerAnim(player, data.animationID(), data.parts(), data.modifiers(), data.fadeLength(), data.easeID(), data.priority(), data.startTick());
+
         PlayerAnimations.playAnimation(player, data);
     }
 
