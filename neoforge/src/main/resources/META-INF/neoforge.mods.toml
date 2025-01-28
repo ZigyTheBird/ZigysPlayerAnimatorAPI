@@ -10,7 +10,7 @@ config = "playeranimatorapi.mixins.json"
 
 [[mods]]
 modId = "playeranimatorapi"
-version = "2.2.1"
+version = "2.3.0"
 displayName = "Zigy's Player Animator API"
 authors = "Zigy"
 description = '''
@@ -36,6 +36,6 @@ side = "BOTH"
 [[dependencies.playeranimatorapi]]
 modId = "playeranimator"
 type="required"
-versionRange = "[2.0.0-alpha1+1.21,)"
+versionRange = "[2.0.1+1.21.1,)"
 ordering = "AFTER"
 side = "CLIENT"
