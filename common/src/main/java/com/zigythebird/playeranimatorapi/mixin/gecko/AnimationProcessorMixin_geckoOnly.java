@@ -17,7 +17,10 @@ import software.bernie.geckolib.animation.state.BoneSnapshot;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 @Mixin(AnimationProcessor.class)
 public abstract class AnimationProcessorMixin_geckoOnly<T extends GeoAnimatable> {

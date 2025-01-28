@@ -1,7 +1,7 @@
 package com.zigythebird.playeranimatorapi.data;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -9,11 +9,21 @@ import java.util.List;
 
 public class PlayerParts {
 
-    public static Codec<PlayerParts> CODEC = Codec.list(PlayerPart.CODEC).comapFlatMap(PlayerParts::readFromList, PlayerParts::toList).stable();
+    public static StreamCodec<FriendlyByteBuf, PlayerParts> STREAM_CODEC = new StreamCodec<FriendlyByteBuf, PlayerParts>() {
+        @Override
+        public PlayerParts decode(FriendlyByteBuf object) {
+            return PlayerParts.readFromList(object.readList((arg) -> PlayerPart.STEAM_CODEC.decode(arg)));
+        }
 
-    public static DataResult<PlayerParts> readFromList(List<PlayerPart> list) {
+        @Override
+        public void encode(FriendlyByteBuf object, PlayerParts object2) {
+            object.writeCollection(PlayerParts.toList(object2), (arg1, arg2) -> PlayerPart.STEAM_CODEC.encode(arg1, arg2));
+        }
+    };
+
+    public static PlayerParts readFromList(List<PlayerPart> list) {
         if (list.size() != 9) {
-            return DataResult.success(allEnabled);
+            return allEnabled;
         }
 
         PlayerParts parts = new PlayerParts();
@@ -26,7 +36,7 @@ public class PlayerParts {
         parts.leftLeg = list.get(6);
         parts.rightItem = list.get(7);
         parts.leftItem = list.get(8);
-        return DataResult.success(parts);
+        return parts;
     }
 
     public static List<PlayerPart> toList(PlayerParts parts) {

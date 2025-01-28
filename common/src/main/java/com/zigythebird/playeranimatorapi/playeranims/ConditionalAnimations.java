@@ -29,28 +29,6 @@ public class ConditionalAnimations {
             return perModConditions.get(data.animationID().getNamespace()).apply(data);
         }
 
-        AbstractClientPlayer player = (AbstractClientPlayer) Minecraft.getInstance().level.getPlayerByUUID(data.playerUUID());
-        CustomModifierLayer animationContainer = (CustomModifierLayer) PlayerAnimationAccess.getPlayerAssociatedData(player).get(PlayerAnimations.animationLayerId);
-
-        ResourceLocation currentAnim = animationContainer.currentAnim;
-        ResourceLocation baseAnim = data.animationID();
-        ResourceLocation runningAnim = data.animationID().withPath(data.animationID().getPath() + "_run");
-        ResourceLocation crouchedAnim = data.animationID().withPath(data.animationID().getPath() + "_crouch");
-        ResourceLocation crawlingAnim = data.animationID().withPath(data.animationID().getPath() + "_crawl");
-        ResourceLocation swimmingAnim = data.animationID().withPath(data.animationID().getPath() + "_swim");
-
-        Map<ResourceLocation, IPlayable> animations = PlayerAnimationRegistry.getAnimations();
-
-        if (player.isCrouching() && currentAnim != crawlingAnim && animations.containsKey(crouchedAnim)) {
-            return crouchedAnim;
-        } else if (player.isVisuallyCrawling() && currentAnim != crawlingAnim && animations.containsKey(crawlingAnim)) {
-            return crawlingAnim;
-        } else if (player.isVisuallySwimming() && currentAnim != swimmingAnim && animations.containsKey(swimmingAnim)) {
-            return swimmingAnim;
-        } else if (player.isSprinting() && currentAnim != runningAnim && animations.containsKey(runningAnim)) {
-            return runningAnim;
-        }
-
-        return baseAnim;
+        return data.animationID();
     }
 }

@@ -2,14 +2,12 @@ package com.zigythebird.playeranimatorapi.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.zigythebird.playeranimatorapi.data.PlayerParts;
-import com.zigythebird.playeranimatorapi.misc.PlayerModelInterface;
 import com.zigythebird.playeranimatorapi.playeranims.CustomModifierLayer;
 import com.zigythebird.playeranimatorapi.playeranims.PlayerAnimations;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -33,6 +31,7 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
 
             if (animationContainer != null && animationContainer.isActive()) {
                 PlayerParts parts = animationContainer.data.parts();
+                if (parts == null) parts = PlayerParts.allEnabled;
 
                 if (!parts.body.isVisible) {
                     ci.cancel();

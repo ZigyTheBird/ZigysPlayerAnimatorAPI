@@ -1,7 +1,6 @@
 package com.zigythebird.playeranimatorapi.events;
 
 import com.zigythebird.multiloaderutils.utils.Platform;
-import com.zigythebird.playeranimatorapi.azure.ModAzureUtilsClient;
 import com.zigythebird.playeranimatorapi.data.PlayerAnimationData;
 import com.zigythebird.playeranimatorapi.gecko.ModGeckoUtilsClient;
 import com.zigythebird.playeranimatorapi.playeranims.ConditionalAnimations;
@@ -23,13 +22,10 @@ public class ClientPlayerTickEvent {
                 ResourceLocation currentAnim = animationContainer.currentAnim;
 
                 if (currentAnim != null && !ConditionalAnimations.getAnimationForCurrentConditions(data).equals(currentAnim)) {
-                    PlayerAnimations.playAnimation((AbstractClientPlayer) player, data, true);
+                    PlayerAnimations.playAnimation(player, data, -1);
                 }
 
-                if (Platform.isModLoaded("azurelib")) {
-                    ModAzureUtilsClient.tick((AbstractClientPlayer) player, animationContainer);
-                }
-                else if (Platform.isModLoaded("geckolib")) {
+                if (Platform.isModLoaded("geckolib")) {
                     ModGeckoUtilsClient.tick((AbstractClientPlayer) player, animationContainer);
                 }
             }

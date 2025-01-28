@@ -1,48 +1,67 @@
 package com.zigythebird.playeranimatorapi.data;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.zigythebird.multiloaderutils.misc.ModCodecs;
 import com.zigythebird.playeranimatorapi.modifier.CommonModifier;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.Utf8String;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.ApiStatus;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Use at your own risk.
+ * All parameters explained in the wiki.
+ */
+@ApiStatus.Internal
 public record PlayerAnimationData(UUID playerUUID, ResourceLocation animationID, PlayerParts parts, List<CommonModifier> modifiers,
-                                  int fadeLength, int easeID, int priority, boolean firstPersonEnabled) {
+                                  int fadeLength, int easeID, int priority, int startTick) {
 
-    public static final Codec<UUID> UUID_CODEC = Codec.list(Codec.LONG).comapFlatMap(PlayerAnimationData::readUUID, PlayerAnimationData::writeUUID).stable();
-    public static final Codec<ResourceLocation> RESOURCE_LOCATION_CODEC = Codec.STRING.comapFlatMap(ResourceLocation::read, PlayerAnimationData::resourceLocationToString).stable();
-
-    public static DataResult<UUID> readUUID(List<Long> input) {
-        return DataResult.success(new UUID(input.get(0), input.get(1)));
-    }
-
-    public static List<Long> writeUUID(UUID uuid) {
-        List<Long> list = new ArrayList<>();
-        list.add(uuid.getMostSignificantBits());
-        list.add(uuid.getLeastSignificantBits());
-        return list;
-    }
-
-    public static String resourceLocationToString(ResourceLocation location) {
-        if (location == null) {
-            return "null:null";
+    public static final StreamCodec<ByteBuf, UUID> UUID_STREAM_CODEC = new StreamCodec<>() {
+        @Override
+        public UUID decode(ByteBuf object) {
+            return UUID.fromString(Utf8String.read(object, 32767));
         }
 
-        return location.toString();
-    }
+        @Override
+        public void encode(ByteBuf object, UUID object2) {
+            Utf8String.write(object, object2.toString(), 32767);
+        }
+    };
 
-    public static final Codec<PlayerAnimationData> CODEC = RecordCodecBuilder.create(playerAnimationDataInstance -> playerAnimationDataInstance.group(
-            UUID_CODEC.fieldOf("playerUUID").forGetter(PlayerAnimationData::playerUUID),
-            RESOURCE_LOCATION_CODEC.fieldOf("animationID").forGetter(PlayerAnimationData::animationID),
-            PlayerParts.CODEC.fieldOf("parts").forGetter(PlayerAnimationData::parts),
-            CommonModifier.LIST_CODEC.fieldOf("modifiers").forGetter(PlayerAnimationData::modifiers),
-            Codec.INT.fieldOf("fadeLength").forGetter(PlayerAnimationData::fadeLength),
-            Codec.INT.fieldOf("easeID").forGetter(PlayerAnimationData::easeID),
-            Codec.INT.fieldOf("priority").forGetter(PlayerAnimationData::priority),
-            Codec.BOOL.fieldOf("firstPersonEnabled").forGetter(PlayerAnimationData::firstPersonEnabled)
-    ).apply(playerAnimationDataInstance, PlayerAnimationData::new));
+    public static final StreamCodec<FriendlyByteBuf, PlayerAnimationData> STREAM_CODEC = new StreamCodec<>() {
+        @Override
+        public PlayerAnimationData decode(FriendlyByteBuf buf) {
+            return new PlayerAnimationData(
+                    UUID_STREAM_CODEC.decode(buf),
+                    ModCodecs.RESOURCELOCATION.decode(buf),
+                    PlayerParts.STREAM_CODEC.decode(buf),
+                    CommonModifier.STREAM_CODEC.apply(ByteBufCodecs.list()).decode(buf),
+                    ByteBufCodecs.INT.decode(buf),
+                    ByteBufCodecs.INT.decode(buf),
+                    ByteBufCodecs.INT.decode(buf),
+                    ByteBufCodecs.INT.decode(buf)
+            );
+        }
+
+        @Override
+        public void encode(FriendlyByteBuf buf, PlayerAnimationData obj) {
+            UUID_STREAM_CODEC.encode(buf, obj.playerUUID());
+            ModCodecs.RESOURCELOCATION.encode(buf, obj.animationID());
+            PlayerParts.STREAM_CODEC.encode(buf, obj.parts());
+            CommonModifier.STREAM_CODEC.apply(ByteBufCodecs.list()).encode(buf, obj.modifiers());
+            ByteBufCodecs.INT.encode(buf, obj.fadeLength());
+            ByteBufCodecs.INT.encode(buf, obj.easeID());
+            ByteBufCodecs.INT.encode(buf, obj.priority());
+            ByteBufCodecs.INT.encode(buf, obj.startTick());
+        }
+    };
+
+    public PlayerAnimationData getDataWithStartTick(int startTick) {
+        return new PlayerAnimationData(playerUUID, animationID, parts, modifiers, fadeLength, easeID, priority, startTick);
+    }
 }

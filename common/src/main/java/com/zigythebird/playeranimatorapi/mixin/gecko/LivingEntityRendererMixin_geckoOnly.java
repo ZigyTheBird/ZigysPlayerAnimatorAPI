@@ -2,9 +2,9 @@ package com.zigythebird.playeranimatorapi.mixin.gecko;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.zigythebird.playeranimatorapi.ModInitClient;
+import com.zigythebird.playeranimatorapi.data.PlayerParts;
 import com.zigythebird.playeranimatorapi.gecko.PlayerAnimationModel;
 import com.zigythebird.playeranimatorapi.gecko.PlayerAnimationRenderer;
-import com.zigythebird.playeranimatorapi.data.PlayerParts;
 import com.zigythebird.playeranimatorapi.misc.GeckoPlayerInterface;
 import com.zigythebird.playeranimatorapi.playeranims.CustomModifierLayer;
 import com.zigythebird.playeranimatorapi.playeranims.PlayerAnimations;

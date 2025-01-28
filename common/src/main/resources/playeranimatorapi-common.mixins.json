@@ -1,7 +1,7 @@
 {
   "required": true,
   "package": "com.zigythebird.playeranimatorapi.mixin",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "plugin": "com.zigythebird.playeranimatorapi.ModMixinPlugin",
   "client": [
@@ -9,9 +9,6 @@
     "InventoryScreenMixin",
     "LivingEntityRendererMixin",
     "ModelPartMixin",
-    "azure.AbstractClientAzurePlayerMixin_azureOnly",
-    "azure.LivingEntityRendererMixin_azureOnly",
-    "azure.PlayerAzureModelMixin_azureOnly",
     "gecko.AbstractClientAzurePlayerMixin_geckoOnly",
     "gecko.LivingEntityRendererMixin_geckoOnly",
     "gecko.PlayerAzureModelMixin_geckoOnly"
@@ -20,10 +17,6 @@
     "AnimationStackAccessor",
     "KeyframeAnimationPlayerAccessor",
     "PlayerMixin",
-    "azure.AnimatableManagerAccessor_azureOnly",
-    "azure.AnimationControllerAccessor_azureOnly",
-    "azure.AnimationProcessorMixin_azureOnly",
-    "azure.GeoModelMixin_azureOnly",
     "gecko.AnimatableManagerAccessor_geckoOnly",
     "gecko.AnimationControllerAccessor_geckoOnly",
     "gecko.AnimationProcessorMixin_geckoOnly",

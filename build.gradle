@@ -1,6 +1,6 @@
 plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "1.7.+" apply false
+    id "dev.architectury.loom" version "1.9.+" apply false
 
     id "com.modrinth.minotaur" version "2.+"
     id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -39,11 +39,20 @@ allprojects {
 
     repositories {
         mavenCentral()
-        maven { url 'https://maven.azuredoom.com/mods' }
         maven { url 'https://maven.kosmx.dev/' }
         maven { url = "https://maven.parchmentmc.org" }
         maven { url "https://maven.terraformersmc.com/releases/" }
-        maven { url 'https://api.modrinth.com/maven' }
+        exclusiveContent {
+            forRepository {
+                maven {
+                    name = "Modrinth"
+                    url = "https://api.modrinth.com/maven"
+                }
+            }
+            filter {
+                includeGroup "maven.modrinth"
+            }
+        }
         maven { url "https://maven.neoforged.net/releases/" }
         maven {
             url = "https://jitpack.io"
@@ -58,6 +67,18 @@ allprojects {
             content {
                 includeGroupByRegex("software\\.bernie.*")
                 includeGroup("com.eliotlash.mclib")
+            }
+        }
+        repositories {
+            exclusiveContent {
+                forRepository {
+                    maven {
+                        url "https://cursemaven.com"
+                    }
+                }
+                filter {
+                    includeGroup "curse.maven"
+                }
             }
         }
     }

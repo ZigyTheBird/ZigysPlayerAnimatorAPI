@@ -1,9 +1,12 @@
 {
   "required": true,
   "package": "com.zigythebird.playeranimatorapi.neoforge.mixin",
-  "compatibilityLevel": "JAVA_17",
+  "plugin": "com.zigythebird.playeranimatorapi.neoforge.ModMixinPluginForge",
+  "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
-  "client": [],
+  "client": [
+    "EmoteCraftClientInitMixinForge"
+  ],
   "mixins": [],
   "injectors": {
     "defaultRequire": 1

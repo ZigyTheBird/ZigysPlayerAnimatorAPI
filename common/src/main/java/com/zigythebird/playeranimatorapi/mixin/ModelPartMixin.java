@@ -30,7 +30,6 @@ public abstract class ModelPartMixin implements IsVisibleAccessor {
     private void render(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color, CallbackInfo ci) {
         if (!this.zigysPlayerAnimatorAPI$isVisible) {
             ci.cancel();
-            return;
         }
     }
 }

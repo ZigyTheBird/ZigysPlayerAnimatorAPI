@@ -31,20 +31,18 @@ dependencies {
     modImplementation "com.zigythebird.multiloaderutils:zigysmultiloaderutils-fabric-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
     include "com.zigythebird.multiloaderutils:zigysmultiloaderutils-fabric-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
 
-    modApi("com.github.Virtuoel:Pehkui:${pehkui_version}", {
+    modCompileOnly("com.github.Virtuoel:Pehkui:${pehkui_version}", {
         exclude group: "net.fabricmc.fabric-api"
     })
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
-    modImplementation("software.bernie.geckolib:geckolib-fabric-${minecraft_version}:${geckolib_version}")
-    modImplementation "mod.azure.azurelib:azurelib-fabric-$rootProject.minecraft_version:$rootProject.azurelib_version"
-
     modImplementation "dev.kosmx.player-anim:player-animation-lib-fabric:${rootProject.player_anim_version}"
 
-//    modImplementation "maven.modrinth:emotecraft:CUDCdgav"
-    modImplementation "maven.modrinth:replaymod:yn3njhcI"
+    modCompileOnly "maven.modrinth:emotecraft:TxPTEp93"
+    modCompileOnly "maven.modrinth:replaymod:yn3njhcI"
+    modCompileOnly "maven.modrinth:flashback:phWB81q5"
 }
 
 processResources {

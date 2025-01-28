@@ -1,46 +1,24 @@
 package com.zigythebird.playeranimatorapi.data;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerPart {
 
-    public static Codec<PlayerPart> CODEC = Codec.list(Codec.BOOL).comapFlatMap(PlayerPart::readFromList, PlayerPart::toList).stable();
-
-    public static List<Boolean> toList(PlayerPart part) {
-        List<Boolean> list = new ArrayList<>();
-        list.add(part.x);
-        list.add(part.y);
-        list.add(part.z);
-        list.add(part.pitch);
-        list.add(part.yaw);
-        list.add(part.roll);
-        list.add(part.bend);
-        list.add(part.bendDirection);
-        list.add(part.isVisible);
-        return list;
-    }
-
-    public static DataResult<PlayerPart> readFromList(List<Boolean> list) {
-        PlayerPart part = new PlayerPart();
-        try {
-            part.setX(list.get(0));
-            part.setY(list.get(1));
-            part.setZ(list.get(2));
-            part.setPitch(list.get(3));
-            part.setYaw(list.get(4));
-            part.setRoll(list.get(5));
-            part.setBend(list.get(6));
-            part.setBendDirection(list.get(7));
-            part.isVisible(list.get(8));
-            return DataResult.success(part);
-        } catch (IndexOutOfBoundsException e) {
-            return DataResult.success(part);
+    public static StreamCodec<FriendlyByteBuf, PlayerPart> STEAM_CODEC = new StreamCodec<>() {
+        @Override
+        public PlayerPart decode(FriendlyByteBuf object) {
+            return PlayerPart.readFromList(object.readList(FriendlyByteBuf::readBoolean));
         }
-    }
+
+        @Override
+        public void encode(FriendlyByteBuf object, PlayerPart object2) {
+            object.writeCollection(PlayerPart.toList(object2), FriendlyByteBuf::writeBoolean);
+        }
+    };
 
     public boolean x = true;
     public boolean y = true;
@@ -100,5 +78,37 @@ public class PlayerPart {
 
     public void isVisible(boolean isVisible) {
         this.isVisible = isVisible;
+    }
+
+    public static List<Boolean> toList(PlayerPart part) {
+        List<Boolean> list = new ArrayList<>();
+        list.add(part.x);
+        list.add(part.y);
+        list.add(part.z);
+        list.add(part.pitch);
+        list.add(part.yaw);
+        list.add(part.roll);
+        list.add(part.bend);
+        list.add(part.bendDirection);
+        list.add(part.isVisible);
+        return list;
+    }
+
+    public static PlayerPart readFromList(List<Boolean> list) {
+        PlayerPart part = new PlayerPart();
+        try {
+            part.setX(list.get(0));
+            part.setY(list.get(1));
+            part.setZ(list.get(2));
+            part.setPitch(list.get(3));
+            part.setYaw(list.get(4));
+            part.setRoll(list.get(5));
+            part.setBend(list.get(6));
+            part.setBendDirection(list.get(7));
+            part.isVisible(list.get(8));
+            return part;
+        } catch (IndexOutOfBoundsException e) {
+            return part;
+        }
     }
 }

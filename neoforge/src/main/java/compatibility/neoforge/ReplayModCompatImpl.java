@@ -1,4 +1,4 @@
-package com.zigythebird.playeranimatorapi.compatibility.fabric;
+package compatibility.neoforge;
 
 import com.replaymod.recording.ReplayModRecording;
 import com.zigythebird.multiloaderutils.network.MultiloaderPacket;
@@ -7,7 +7,6 @@ import com.zigythebird.playeranimatorapi.data.PlayerAnimationData;
 import com.zigythebird.playeranimatorapi.data.PlayerParts;
 import com.zigythebird.playeranimatorapi.modifier.CommonModifier;
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -21,7 +20,7 @@ public class ReplayModCompatImpl {
             PlayerAnimationData data = new PlayerAnimationData(player.getUUID(), animationID,
                     parts, modifiers, fadeLength, easeID, priority, startTick);
             PlayerAnimationData.STREAM_CODEC.encode(buf, data);
-            ReplayModRecording.instance.getConnectionEventHandler().getPacketListener().save(ServerPlayNetworking.createS2CPacket(new MultiloaderPacket(buf, ModInit.altPlayPlayerAnimationPacket)));
+            ReplayModRecording.instance.getConnectionEventHandler().getPacketListener().save(new MultiloaderPacket(buf, ModInit.altPlayPlayerAnimationPacket).toVanillaClientbound());
         }
     }
 
@@ -30,7 +29,7 @@ public class ReplayModCompatImpl {
             FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
             buf.writeUUID(player.getUUID());
             buf.writeResourceLocation(animationID);
-            ReplayModRecording.instance.getConnectionEventHandler().getPacketListener().save(ServerPlayNetworking.createS2CPacket(new MultiloaderPacket(buf, ModInit.altStopPlayerAnimationPacket)));
+            ReplayModRecording.instance.getConnectionEventHandler().getPacketListener().save(new MultiloaderPacket(buf, ModInit.altStopPlayerAnimationPacket).toVanillaClientbound());
         }
     }
 }

@@ -1,12 +1,12 @@
 package com.zigythebird.playeranimatorapi.registry;
 
 import com.google.gson.JsonObject;
-import com.zigythebird.playeranimatorapi.modifier.HeadPosBoundCamera;
-import com.zigythebird.playeranimatorapi.modifier.HeadRotBoundCamera;
-import com.zigythebird.playeranimatorapi.modifier.LengthModifier;
-import com.zigythebird.playeranimatorapi.modifier.MirrorOnAltHandModifier;
+import com.zigythebird.playeranimatorapi.modifier.*;
 import com.zigythebird.playeranimatorapi.playeranims.CustomModifierLayer;
+import dev.kosmx.playerAnim.api.firstPerson.FirstPersonConfiguration;
+import dev.kosmx.playerAnim.api.firstPerson.FirstPersonMode;
 import dev.kosmx.playerAnim.api.layered.modifier.AbstractModifier;
+import dev.kosmx.playerAnim.api.layered.modifier.FirstPersonModifier;
 import dev.kosmx.playerAnim.api.layered.modifier.MirrorModifier;
 import dev.kosmx.playerAnim.api.layered.modifier.SpeedModifier;
 import net.fabricmc.api.EnvType;
@@ -37,5 +37,24 @@ public class AnimModifierRegistry {
         registerModifier(ResourceLocation.fromNamespaceAndPath("playeranimatorapi", "mirroronalthand"), (layer, json) -> new MirrorOnAltHandModifier(layer));
         registerModifier(ResourceLocation.fromNamespaceAndPath("playeranimatorapi", "headposboundcamera"), (layer, json) -> new HeadPosBoundCamera(layer));
         registerModifier(ResourceLocation.fromNamespaceAndPath("playeranimatorapi", "headrotboundcamera"), (layer, json) -> new HeadRotBoundCamera(layer));
+        registerModifier(ResourceLocation.fromNamespaceAndPath("playeranimatorapi", "firstperson"), (layer, json) -> {
+            FirstPersonMode firstPersonMode = FirstPersonMode.NONE;
+            try {
+                firstPersonMode = FirstPersonMode.valueOf(json.get("firstPersonMode").getAsString());
+            }
+            catch (IllegalArgumentException ignore) {}
+
+            boolean showRightArm = false;
+            boolean showLeftArm = false;
+            boolean showRightItem = true;
+            boolean showLeftItem = true;
+
+            if (json.has("showRightArm")) showRightArm = json.get("showRightArm").getAsBoolean();
+            if (json.has("showLeftArm")) showRightArm = json.get("showLeftArm").getAsBoolean();
+            if (json.has("showRightItem")) showRightArm = json.get("showRightItem").getAsBoolean();
+            if (json.has("showLeftItem")) showRightArm = json.get("showLeftItem").getAsBoolean();
+
+            return new CustomFirstPersonModifier(firstPersonMode, new FirstPersonConfiguration(showRightArm, showLeftArm, showRightItem, showLeftItem));
+        });
     }
 }

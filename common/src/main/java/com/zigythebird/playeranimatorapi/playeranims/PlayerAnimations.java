@@ -1,13 +1,8 @@
 package com.zigythebird.playeranimatorapi.playeranims;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.mojang.serialization.JsonOps;
 import com.zigythebird.multiloaderutils.utils.NetworkManager;
 import com.zigythebird.multiloaderutils.utils.Platform;
 import com.zigythebird.playeranimatorapi.ModInit;
-import com.zigythebird.playeranimatorapi.azure.ModAzureUtilsClient;
 import com.zigythebird.playeranimatorapi.data.PlayerAnimationData;
 import com.zigythebird.playeranimatorapi.data.PlayerParts;
 import com.zigythebird.playeranimatorapi.gecko.ModGeckoUtilsClient;
@@ -15,12 +10,10 @@ import com.zigythebird.playeranimatorapi.mixin.AnimationStackAccessor;
 import com.zigythebird.playeranimatorapi.modifier.CommonModifier;
 import com.zigythebird.playeranimatorapi.registry.AnimModifierRegistry;
 import dev.kosmx.playerAnim.api.IPlayable;
-import dev.kosmx.playerAnim.api.firstPerson.FirstPersonMode;
 import dev.kosmx.playerAnim.api.layered.AnimationStack;
 import dev.kosmx.playerAnim.api.layered.IAnimation;
 import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import dev.kosmx.playerAnim.api.layered.modifier.AbstractFadeModifier;
-import dev.kosmx.playerAnim.api.layered.modifier.AbstractModifier;
 import dev.kosmx.playerAnim.core.data.KeyframeAnimation;
 import dev.kosmx.playerAnim.core.util.Ease;
 import dev.kosmx.playerAnim.core.util.Pair;
@@ -45,8 +38,6 @@ import java.util.UUID;
 public class PlayerAnimations {
     private static final Logger logger = LogManager.getLogger(ModInit.class);
 
-    public static Gson gson = new GsonBuilder().setLenient().serializeNulls().create();
-
     public static Map<ResourceLocation, Float> animLengthsMap;
     public static Map<ResourceLocation, ResourceLocation> geckoMap;
 
@@ -62,7 +53,7 @@ public class PlayerAnimations {
         );
 
         NetworkManager.registerReceiver(NetworkManager.Side.S2C, playerAnimPacket, (buf, context) -> {
-            PlayerAnimations.receivePacket(buf.readUtf());
+            PlayerAnimations.playAnimation(PlayerAnimationData.STREAM_CODEC.decode(buf));
         });
         NetworkManager.registerReceiver(NetworkManager.Side.S2C, playerAnimStopPacket, (buf, context) -> {
             PlayerAnimations.stopAnimation(buf.readUUID(), buf.readResourceLocation());
@@ -78,37 +69,33 @@ public class PlayerAnimations {
 
         if (animationContainer != null && animationContainer.isActive() && animationContainer.data.animationID().equals(animationID)) {
             animationContainer.animPlayer.stop();
-            if (Platform.isModLoaded("azurelib")) {
-                ModAzureUtilsClient.stopGeckoAnimation(player);
-            }
-            else if (Platform.isModLoaded("geckolib")) {
+            if (Platform.isModLoaded("geckolib")) {
                 ModGeckoUtilsClient.stopGeckoAnimation(player);
             }
         }
     }
 
-    public static void receivePacket(String jsonData) {
-        PlayerAnimationData data = PlayerAnimationData.CODEC.parse(JsonOps.INSTANCE, gson.fromJson(jsonData, JsonElement.class)).getOrThrow();
-        AbstractClientPlayer player = (AbstractClientPlayer) Minecraft.getInstance().level.getPlayerByUUID(data.playerUUID());
-        playAnimation(player, data);
+    public static void playAnimation(PlayerAnimationData data) {
+        playAnimation((AbstractClientPlayer) Minecraft.getInstance().level.getPlayerByUUID(data.playerUUID()),
+                data, data.parts(), data.modifiers(), data.fadeLength(), data.easeID(), data.startTick());
     }
 
-    public static void playAnimation(AbstractClientPlayer player, PlayerAnimationData data) {
-        playAnimation(player, data, true);
+    public static void playAnimation(Player player, PlayerAnimationData data) {
+        playAnimation(player, data, data.startTick());
     }
 
-    public static void playAnimation(AbstractClientPlayer player, PlayerAnimationData data, boolean replaceTick) {
-        playAnimation(player, data, data.parts(), data.modifiers(), data.fadeLength(), data.easeID(), data.firstPersonEnabled(), replaceTick);
+    public static void playAnimation(Player player, PlayerAnimationData data, int startTick) {
+        playAnimation((AbstractClientPlayer) player, data, data.parts(), data.modifiers(), data.fadeLength(), data.easeID(), startTick);
     }
 
     public static void playAnimation(AbstractClientPlayer player, PlayerAnimationData data, PlayerParts parts, List<CommonModifier> modifiers,
-                                     int fadeLength, int easeID, boolean firstPersonEnabled, boolean replaceTick) {
+                                     int fadeLength, int easeID, int startTick) {
         try {
             CustomModifierLayer animationContainer = getModifierLayer(player);
 
             ResourceLocation baseAnimationID = data.animationID();
 
-            if (baseAnimationID.toString().equals("null:null")) {
+            if (baseAnimationID == null || baseAnimationID.toString().equals("null:null")) {
                 return;
             }
 
@@ -131,19 +118,17 @@ public class PlayerAnimations {
 
             animationContainer.setCurrentAnimationLocation(animationID);
 
-            if (replaceTick) {
-                animationContainer.removeAllModifiers();
-                if (modifiers != null) {
-                    for (CommonModifier commonModifier : modifiers) {
-                        if (commonModifier.modifier != null) {
-                            animationContainer.addModifier(commonModifier.modifier);
-                        }
-                        else if (AnimModifierRegistry.getModifiers().containsKey(commonModifier.ID)) {
-                            try {
-                                animationContainer.addModifier(AnimModifierRegistry.getModifiers().get(commonModifier.ID).apply(animationContainer, commonModifier.data));
-                            } catch (NullPointerException | UnsupportedOperationException e) {
-                                ModInit.LOGGER.error("Failed to apply modifier: " + commonModifier.ID + " :" + e);
-                            }
+            animationContainer.removeAllModifiers();
+            if (modifiers != null) {
+                for (CommonModifier commonModifier : modifiers) {
+                    if (commonModifier.modifier != null) {
+                        animationContainer.addModifier(commonModifier.modifier);
+                    }
+                    else if (AnimModifierRegistry.getModifiers().containsKey(commonModifier.ID)) {
+                        try {
+                            animationContainer.addModifier(AnimModifierRegistry.getModifiers().get(commonModifier.ID).apply(animationContainer, commonModifier.data));
+                        } catch (NullPointerException | UnsupportedOperationException e) {
+                            ModInit.LOGGER.error("Failed to apply modifier: " + commonModifier.ID + " :" + e);
                         }
                     }
                 }
@@ -236,31 +221,19 @@ public class PlayerAnimations {
                 anim = builder.build();
             }
 
-            FirstPersonMode firstPersonMode = FirstPersonMode.DISABLED;
-            if (firstPersonEnabled) {
-                firstPersonMode = FirstPersonMode.THIRD_PERSON_MODEL;
+            if (startTick < 0 && animationContainer.isActive()) startTick = animationContainer.animPlayer.getCurrentTick();
+            KeyframeAnimationPlayer animPlayer = new KeyframeAnimationPlayer(anim, startTick);
+            if (fadeLength < 0) {
+                fadeLength = Math.min(animPlayer.getStopTick()/4, 20);
             }
-
-            if (!replaceTick) {
-                KeyframeAnimationPlayer animPlayer = new KeyframeAnimationPlayer(anim, animationContainer.animPlayer.getCurrentTick()).setFirstPersonMode(firstPersonMode);
+            if (fadeLength > 0 && 0 <= easeID) {
+                animationContainer.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(fadeLength, getEase(easeID)), animPlayer);
+            }
+            else {
                 animationContainer.replaceAnimation(animPlayer);
-            } else {
-                KeyframeAnimationPlayer animPlayer = new KeyframeAnimationPlayer(anim).setFirstPersonMode(firstPersonMode);
-                if (fadeLength < 0) {
-                    fadeLength = Math.min(animPlayer.getStopTick()/4, 20);
-                }
-                if (fadeLength > 0 && 0 <= easeID) {
-                    animationContainer.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(fadeLength, getEase(easeID)), animPlayer);
-                }
-                else {
-                    animationContainer.replaceAnimation(animPlayer);
-                }
             }
 
-            if (Platform.isModLoaded("azurelib")) {
-                ModAzureUtilsClient.playGeckoAnimation(player, data, animationContainer.getSpeed());
-            }
-            else if (Platform.isModLoaded("geckolib")) {
+            if (Platform.isModLoaded("geckolib")) {
                 ModGeckoUtilsClient.playGeckoAnimation(player, data, animationContainer.getSpeed());
             }
         } catch (NullPointerException e) {

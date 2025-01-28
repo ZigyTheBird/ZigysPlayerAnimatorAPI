@@ -52,23 +52,19 @@ public class PlayPlayerAnimationCommand {
                 }
                 case Advanced -> {
                     for (ServerPlayer player : EntityArgument.getPlayers(command, "player")) {
-                        PlayerAnimationData data = new PlayerAnimationData(player.getUUID(),
+                        PlayerAnimAPI.playPlayerAnim(command.getSource().getLevel(), player,
                                 ResourceLocationArgument.getId(command, "animationID"), null, null,
                                 IntegerArgumentType.getInteger(command, "fadeLength"), IntegerArgumentType.getInteger(command, "easeID"),
                                 IntegerArgumentType.getInteger(command, "priority"), BoolArgumentType.getBool(command, "firstPersonEnabled"));
-
-                        PlayerAnimAPI.playPlayerAnim(command.getSource().getLevel(), player, data);
                     }
                 }
                 case Complete -> {
                     for (ServerPlayer player : EntityArgument.getPlayers(command, "player")) {
-                        PlayerAnimationData data = new PlayerAnimationData(player.getUUID(),
+                        PlayerAnimAPI.playPlayerAnim(command.getSource().getLevel(), player,
                                 ResourceLocationArgument.getId(command, "animationID"), PlayerParts.fromBigInteger(playerPartsIntFromString(StringArgumentType.getString(command, "playerParts"))),
                                 modifierList(StringArgumentType.getString(command, "modifiers")),
                                 IntegerArgumentType.getInteger(command, "fadeLength"), IntegerArgumentType.getInteger(command, "easeID"),
                                 IntegerArgumentType.getInteger(command, "priority"), BoolArgumentType.getBool(command, "firstPersonEnabled"));
-
-                        PlayerAnimAPI.playPlayerAnim(command.getSource().getLevel(), player, data);
                     }
                 }
             }

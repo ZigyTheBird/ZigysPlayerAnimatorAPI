@@ -1,6 +1,6 @@
 package com.zigythebird.playeranimatorapi.compatibility.fabric;
 
-import com.replaymod.recording.ReplayModRecording;
+import com.moulberry.flashback.Flashback;
 import com.zigythebird.multiloaderutils.network.MultiloaderPacket;
 import com.zigythebird.playeranimatorapi.ModInit;
 import com.zigythebird.playeranimatorapi.data.PlayerAnimationData;
@@ -9,28 +9,29 @@ import com.zigythebird.playeranimatorapi.modifier.CommonModifier;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.network.ConnectionProtocol;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
-public class ReplayModCompatImpl {
+public class FlashbackCompatImpl {
     public static void playPlayerAnim(AbstractClientPlayer player, ResourceLocation animationID, PlayerParts parts, List<CommonModifier> modifiers, int fadeLength, int easeID, int priority, int startTick) {
-        if (ReplayModRecording.instance.getConnectionEventHandler().getPacketListener() != null) {
+        if (Flashback.RECORDER.readyToWrite()) {
             FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
             PlayerAnimationData data = new PlayerAnimationData(player.getUUID(), animationID,
                     parts, modifiers, fadeLength, easeID, priority, startTick);
             PlayerAnimationData.STREAM_CODEC.encode(buf, data);
-            ReplayModRecording.instance.getConnectionEventHandler().getPacketListener().save(ServerPlayNetworking.createS2CPacket(new MultiloaderPacket(buf, ModInit.altPlayPlayerAnimationPacket)));
+            Flashback.RECORDER.writePacketAsync(ServerPlayNetworking.createS2CPacket(new MultiloaderPacket(buf, ModInit.altPlayPlayerAnimationPacket)), ConnectionProtocol.PLAY);
         }
     }
 
     public static void stopPlayerAnim(AbstractClientPlayer player, ResourceLocation animationID) {
-        if (ReplayModRecording.instance.getConnectionEventHandler().getPacketListener() != null) {
+        if (Flashback.RECORDER.readyToWrite()) {
             FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
             buf.writeUUID(player.getUUID());
             buf.writeResourceLocation(animationID);
-            ReplayModRecording.instance.getConnectionEventHandler().getPacketListener().save(ServerPlayNetworking.createS2CPacket(new MultiloaderPacket(buf, ModInit.altStopPlayerAnimationPacket)));
+            Flashback.RECORDER.writePacketAsync(ServerPlayNetworking.createS2CPacket(new MultiloaderPacket(buf, ModInit.altStopPlayerAnimationPacket)), ConnectionProtocol.PLAY);
         }
     }
 }

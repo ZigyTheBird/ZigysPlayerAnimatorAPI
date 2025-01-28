@@ -9,7 +9,7 @@ import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.List;
 
-public class ReplayModCompat {
+public class FlashbackCompat {
 
     @ExpectPlatform
     public static void playPlayerAnim(AbstractClientPlayer player, ResourceLocation animationID, PlayerParts parts, List<CommonModifier> modifiers,

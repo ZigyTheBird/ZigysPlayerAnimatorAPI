@@ -18,20 +18,20 @@ configurations {
 dependencies {
     neoForge "net.neoforged:neoforge:${rootProject.neoforge_version}"
 
-    modImplementation "com.zigythebird.multiloaderutils:zigysmultiloaderutils-neoforge-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
+    implementation "com.zigythebird.multiloaderutils:zigysmultiloaderutils-neoforge-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
     include "com.zigythebird.multiloaderutils:zigysmultiloaderutils-neoforge-$rootProject.minecraft_version:$rootProject.multiloader_utils_version"
 
-    modApi("com.github.Virtuoel:Pehkui:$rootProject.pehkui_version-$rootProject.minecraft_version-neoforge")
+    compileOnly("com.github.Virtuoel:Pehkui:$rootProject.pehkui_version-$rootProject.minecraft_version-neoforge")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive false }
 
-    modImplementation("software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}")
-    modImplementation "mod.azure.azurelib:azurelib-neo-$rootProject.minecraft_version:$rootProject.azurelib_version"
+    compileOnly "software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
 
-    modImplementation "dev.kosmx.player-anim:player-animation-lib-forge:${rootProject.player_anim_version}"
+    implementation "dev.kosmx.player-anim:player-animation-lib-forge:${rootProject.player_anim_version}"
 
-//    modImplementation "curse.maven:emotecraft-forge-403422:4632460"
+    compileOnly "maven.modrinth:emotecraft:ph764ff5"
+    compileOnly "curse.maven:reforgedplay-mod-1018692:5629250"
 }
 
 processResources {
