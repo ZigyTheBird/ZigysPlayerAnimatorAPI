@@ -10,6 +10,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,8 +53,8 @@ public record PlayerAnimationData(UUID playerUUID, ResourceLocation animationID,
         public void encode(FriendlyByteBuf buf, PlayerAnimationData obj) {
             UUID_STREAM_CODEC.encode(buf, obj.playerUUID());
             ModCodecs.RESOURCELOCATION.encode(buf, obj.animationID());
-            PlayerParts.STREAM_CODEC.encode(buf, obj.parts());
-            CommonModifier.STREAM_CODEC.apply(ByteBufCodecs.list()).encode(buf, obj.modifiers());
+            PlayerParts.STREAM_CODEC.encode(buf, obj.parts() != null ? obj.parts() : PlayerParts.allEnabled);
+            CommonModifier.STREAM_CODEC.apply(ByteBufCodecs.list()).encode(buf, obj.modifiers() != null ? obj.modifiers() : new ArrayList<>());
             ByteBufCodecs.INT.encode(buf, obj.fadeLength());
             ByteBufCodecs.INT.encode(buf, obj.easeID());
             ByteBufCodecs.INT.encode(buf, obj.priority());
