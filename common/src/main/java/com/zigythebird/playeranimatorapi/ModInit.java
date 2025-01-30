@@ -12,7 +12,6 @@ public class ModInit {
 
     public static void init() {
         ModEntityDataSerializers.init();
-        MultiloaderUtils.forceClientToHaveMod(MOD_ID, Platform.getModVersion(MOD_ID));
 
         if (Platform.isModLoaded("azurelib", "mod.azure.azurelib.AzureLib")) {
             ModAzureUtils.init();
