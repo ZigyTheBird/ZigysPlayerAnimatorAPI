@@ -1,1 +1,1 @@
-Now has compatibility with velocity servers.
+Bug fixes

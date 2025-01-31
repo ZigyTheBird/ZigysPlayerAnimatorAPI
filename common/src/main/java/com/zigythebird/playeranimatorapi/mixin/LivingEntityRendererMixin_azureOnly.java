@@ -47,6 +47,7 @@ public class LivingEntityRendererMixin_azureOnly<T extends LivingEntity, M exten
 
             if (animationContainer != null && animationContainer.isActive()) {
                 PlayerParts parts = animationContainer.data.parts();
+                if (parts == null) parts = PlayerParts.allEnabled;
 
                 if (!parts.body.isVisible) {
                     ModInitClient.renderingGUI = false;

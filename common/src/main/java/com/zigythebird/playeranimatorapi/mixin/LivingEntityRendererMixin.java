@@ -33,6 +33,7 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
 
             if (animationContainer != null && animationContainer.isActive()) {
                 PlayerParts parts = animationContainer.data.parts();
+                if (parts == null) parts = PlayerParts.allEnabled;
 
                 if (!parts.body.isVisible) {
                     ci.cancel();
