@@ -17,7 +17,7 @@ public class FirstPersonExample {
         //data.addProperty("showRightArm", true);
 
         //This would show your left arm in first person.
-        //data.addProperty("showRightArm", true);
+        //data.addProperty("showLeftArm", true);
 
         //This would stop showing the right hand item in first person.
         //data.addProperty("showRightItem", false);

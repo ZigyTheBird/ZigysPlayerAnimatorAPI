@@ -50,9 +50,9 @@ public class AnimModifierRegistry {
             boolean showLeftItem = true;
 
             if (json.has("showRightArm")) showRightArm = json.get("showRightArm").getAsBoolean();
-            if (json.has("showLeftArm")) showRightArm = json.get("showLeftArm").getAsBoolean();
-            if (json.has("showRightItem")) showRightArm = json.get("showRightItem").getAsBoolean();
-            if (json.has("showLeftItem")) showRightArm = json.get("showLeftItem").getAsBoolean();
+            if (json.has("showLeftArm")) showLeftArm = json.get("showLeftArm").getAsBoolean();
+            if (json.has("showRightItem")) showRightItem = json.get("showRightItem").getAsBoolean();
+            if (json.has("showLeftItem")) showLeftItem = json.get("showLeftItem").getAsBoolean();
 
             return new CustomFirstPersonModifier(firstPersonMode, new FirstPersonConfiguration(showRightArm, showLeftArm, showRightItem, showLeftItem));
         });
