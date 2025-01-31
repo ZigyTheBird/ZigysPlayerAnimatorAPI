@@ -11,7 +11,7 @@
     "ModelPartMixin",
     "gecko.AbstractClientAzurePlayerMixin_geckoOnly",
     "gecko.LivingEntityRendererMixin_geckoOnly",
-    "gecko.PlayerAzureModelMixin_geckoOnly"
+    "gecko.PlayerGeckoModelMixin_geckoOnly"
   ],
   "mixins": [
     "AnimationStackAccessor",

@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerModel.class)
-public class PlayerAzureModelMixin_geckoOnly<T extends LivingEntity> implements GetGeckoModelRendererInterface {
+public class PlayerGeckoModelMixin_geckoOnly<T extends LivingEntity> implements GetGeckoModelRendererInterface {
 
     @Unique
     private PlayerAnimationRenderer zigysPlayerAnimatorAPI$renderer = null;

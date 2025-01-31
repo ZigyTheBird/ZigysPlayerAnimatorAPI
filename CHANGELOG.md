@@ -1,1 +1,1 @@
-Fixed very major bug.
+Fixed a bug.
