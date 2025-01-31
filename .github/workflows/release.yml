@@ -7,7 +7,6 @@ on:
         type: choice
         description: Which branch do you want to publish?
         options:
-        - dev
         - 1.21
         - 1.20.4
         - 1.20.1
@@ -20,7 +19,7 @@ on:
 
 jobs:
   build_dev:
-    uses: zigythebird/zigysplayeranimatorapi/.github/workflows/releasebuild.yml@dev
+    uses: zigythebird/zigysplayeranimatorapi/.github/workflows/releasebuild.yml@1.21
     with:
       branch: ${{ inputs.branch }} 
       GITHUB_REF: ${{ github.ref }}
