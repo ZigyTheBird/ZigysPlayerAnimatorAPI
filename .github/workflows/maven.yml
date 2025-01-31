@@ -1,0 +1,29 @@
+name: Publish to maven repository.
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        type: choice
+        description: Which branch do you want to publish?
+        options:
+        - 1.21
+        - 1.20.4
+        - 1.20.1
+      forge:
+        type: choice
+        description: NeoForge or Forge?
+        options:
+        - neoforge
+        - forge
+
+jobs:
+  build_dev:
+    uses: zigythebird/zigysplayeranimatorapi/.github/workflows/mavenbuild.yml@1.21
+    with:
+      branch: ${{ inputs.branch }} 
+      GITHUB_REF: ${{ github.ref }}
+      upload_docs: true
+      forge: ${{ inputs.forge }}
+    secrets:
+      MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}

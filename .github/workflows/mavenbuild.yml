@@ -1,0 +1,61 @@
+on:
+  workflow_call:
+    inputs:
+      branch:
+        required: true
+        type: string
+      GITHUB_REF:
+        required: true
+        type: string
+      upload_docs:
+        required: true
+        type: boolean
+      forge:
+        required: true
+        type: string
+    secrets:
+      MAVEN_TOKEN:
+        required: true
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch }}
+          
+      - name: Restore gradle.properties
+        shell: bash
+        env:
+          MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
+        run: |
+          mkdir -p ~/.gradle/
+          echo "GRADLE_USER_HOME=${HOME}/.gradle" >> $GITHUB_ENV
+          echo "${MAVEN_TOKEN}" > ~/.gradle/gradle.properties
+
+      - name: Get Artifact Id
+        uses: actions/github-script@v5
+        id: artifact_id
+        env:
+          branch: '${{ inputs.branch }}'
+        with:
+          result-encoding: string
+          script: |
+            // use env branch replace / with _
+            return process.env.branch.replace(/\//g, '_')
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'adopt'
+          java-version: 21
+
+      - name: Grant Execute Permission
+        run: chmod +x gradlew
+
+      - name: Build
+        run: |
+          ./gradlew publishMavenJavaPublicationToMavenRepository
