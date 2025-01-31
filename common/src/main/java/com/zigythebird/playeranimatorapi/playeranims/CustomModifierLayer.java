@@ -98,7 +98,8 @@ public class CustomModifierLayer<T extends IAnimation> extends ModifierLayer imp
     @Override
     public @NotNull Vec3f get3DTransform(@NotNull String modelName, @NotNull TransformType type, float tickDelta, @NotNull Vec3f value0) {
         Vec3f transform = super.get3DTransform(modelName, type, tickDelta, value0);
-        if (type == TransformType.POSITION && ((modelName.equals("leftItem") && !this.data.parts().leftItem.isVisible) || (modelName.equals("rightItem") && !this.data.parts().rightItem.isVisible))) {
+        if (type == TransformType.POSITION && ((modelName.equals("leftItem") && this.data.parts() != null && !this.data.parts().leftItem.isVisible) ||
+                (modelName.equals("rightItem") && this.data.parts() != null && !this.data.parts().rightItem.isVisible))) {
             transform = voidVector;
         }
         return transform;
