@@ -11,6 +11,7 @@ import org.joml.Vector3f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -50,7 +51,7 @@ public abstract class CameraMixin{
     private void computeCameraAngles(BlockGetter level, Entity entity, boolean detached, boolean thirdPersonReverse, float partialTick, CallbackInfo ci) {
         Vec3f vec = CameraUtils.computeCameraAngles(((Camera)(Object)this), partialTick);
         if (vec != null) {
-            this.setRotation(vec.getY(), vec.getX(), vec.getZ());
+            this.zigysPlayerAnimatorAPI$setRotation(vec.getY(), vec.getX(), vec.getZ());
         }
         Vec3f transform = CameraUtils.computeCameraLocation(((Camera)(Object)this), partialTick);
         if (transform != null) {
@@ -64,7 +65,8 @@ public abstract class CameraMixin{
         }
     }
 
-    protected void setRotation(float f, float g, float roll) {
+    @Unique
+    protected void zigysPlayerAnimatorAPI$setRotation(float f, float g, float roll) {
         this.xRot = g;
         this.yRot = f;
         this.rotation.rotationYXZ(3.1415927F - f * 0.017453292F, -g * 0.017453292F, -roll * 0.017453292F);

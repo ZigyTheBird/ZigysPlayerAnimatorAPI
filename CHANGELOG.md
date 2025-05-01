@@ -1,1 +1,1 @@
-Fixed a bug.
+Fixed issue with Camera class mixin causing incompatibilities with some other mods.
