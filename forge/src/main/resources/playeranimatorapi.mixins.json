@@ -4,9 +4,7 @@
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "plugin": "com.zigythebird.playeranimatorapi.forge.ModMixinPluginForge",
-  "client": [
-    "EmoteCraftClientInitMixinForge"
-  ],
+  "client": [],
   "mixins": [],
   "injectors": {
     "defaultRequire": 1

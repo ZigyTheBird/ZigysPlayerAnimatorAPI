@@ -1,1 +1,1 @@
-Bug fixes
+Fixed incompatibility with Emotecraft.
