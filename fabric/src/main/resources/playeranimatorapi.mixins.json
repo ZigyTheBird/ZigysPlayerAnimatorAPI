@@ -4,9 +4,7 @@
   "plugin": "com.zigythebird.playeranimatorapi.fabric.ModMixinPluginFabric",
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
-  "client": [
-    "EmoteCraftClientInitMixinFabric"
-  ],
+  "client": [],
   "mixins": [],
   "injectors": {
     "defaultRequire": 1

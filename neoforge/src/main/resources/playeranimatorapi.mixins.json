@@ -4,9 +4,7 @@
   "plugin": "com.zigythebird.playeranimatorapi.neoforge.ModMixinPluginForge",
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
-  "client": [
-    "EmoteCraftClientInitMixinForge"
-  ],
+  "client": [],
   "mixins": [],
   "injectors": {
     "defaultRequire": 1

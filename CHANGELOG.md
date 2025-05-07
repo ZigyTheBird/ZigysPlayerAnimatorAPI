@@ -1,1 +1,1 @@
-Fixed issue with Camera class mixin causing incompatibilities with some other mods.
+Fixed incompatibility with Emotecraft.
