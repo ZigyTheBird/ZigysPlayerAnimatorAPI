@@ -19,14 +19,16 @@ public class GeckoControllerRegistry {
         try {
             if (layer.isActive()) {
                 String modID = layer.data.animationID().getNamespace();
-                return (state) -> CONTROLLERS.get(modID).get(i).apply(state, layer);
+                NonNullList<BiFunction<AnimationState<AnimatablePlayerLayer>, CustomModifierLayer<?>, PlayState>> controllers = CONTROLLERS.get(modID);
+                if (controllers == null) {
+                    return state -> PlayState.CONTINUE;
+                }
+                return state -> controllers.get(i).apply(state, layer);
+            } else {
+                return state -> PlayState.CONTINUE;
             }
-            else {
-                return (state) -> PlayState.CONTINUE;
-            }
-        }
-        catch (Exception e) {
-            return (state) -> PlayState.CONTINUE;
+        } catch (Exception e) {
+            return state -> PlayState.CONTINUE;
         }
     }
 
