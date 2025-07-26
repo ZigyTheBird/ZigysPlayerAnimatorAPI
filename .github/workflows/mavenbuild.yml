@@ -58,4 +58,4 @@ jobs:
 
       - name: Build
         run: |
-          ./gradlew publishMavenPublicationToZigythebirdmodsRepository
+          ./gradlew publishMavenPublicationToRedlanceMinecraftRepository
