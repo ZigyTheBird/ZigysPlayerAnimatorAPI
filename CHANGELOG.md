@@ -1,1 +1,1 @@
-Fixed incompatability with mods rendering players with a custom model
+Fixed crash when playing anims with overlays
