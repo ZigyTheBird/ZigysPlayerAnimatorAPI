@@ -90,9 +90,9 @@ publishing {
         maven {
             name = "RedlanceMinecraft"
             url = "https://repo.redlance.org/public"
-            credentials {
-                username = "ZigyTheBird"
-                password = System.getenv("MAVEN_PASSWORD")
+            credentials(PasswordCredentials)
+            authentication {
+                basic(BasicAuthentication)
             }
         }
     }

@@ -14,7 +14,7 @@ on:
         required: true
         type: string
     secrets:
-      MAVEN_PASSWORD:
+      MAVEN_TOKEN:
         required: true
 
 
@@ -30,7 +30,7 @@ jobs:
       - name: Restore gradle.properties
         shell: bash
         env:
-          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+          MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
         run: |
           mkdir -p ~/.gradle/
           echo "GRADLE_USER_HOME=${HOME}/.gradle" >> $GITHUB_ENV
