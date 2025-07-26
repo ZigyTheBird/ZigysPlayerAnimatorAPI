@@ -26,4 +26,4 @@ jobs:
       upload_docs: true
       forge: ${{ inputs.forge }}
     secrets:
-      MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
+      MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
